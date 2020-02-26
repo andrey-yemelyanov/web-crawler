@@ -16,4 +16,6 @@ public interface UrlCache{
      * @return true if the url is present in the cache
      */
     public boolean contains(String url);
+
+    public int size();
 }

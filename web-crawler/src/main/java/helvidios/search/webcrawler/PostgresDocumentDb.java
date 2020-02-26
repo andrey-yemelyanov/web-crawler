@@ -2,9 +2,13 @@ package helvidios.search.webcrawler;
 
 public class PostgresDocumentDb implements DocumentDb{
 
+    private int nDocs;
+
     @Override
     public String save(Document doc) {
-        // TODO Auto-generated method stub
+        synchronized(this){
+            nDocs++;
+        }
         return null;
     }
 
@@ -18,6 +22,13 @@ public class PostgresDocumentDb implements DocumentDb{
     public Document get(String docId) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public int nDocs() {
+        synchronized(this){
+            return nDocs;
+        }
     }
 
 }

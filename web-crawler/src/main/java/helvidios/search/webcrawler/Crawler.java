@@ -8,14 +8,16 @@ import java.util.concurrent.*;
  */
 public class Crawler {
 
-    private static final int URL_QUEUE_CAPACITY = 1000;
-    private static final int DOC_QUEUE_CAPACITY = 1000;
-    private static final int N_DOWNLOADERS = 1;
-    private static final int N_DOC_HANDLERS = 1;
+    private static final int URL_QUEUE_CAPACITY = 10000;
+    private static final int DOC_QUEUE_CAPACITY = 10000;
+    private static final int N_DOWNLOADERS = 5;
+    private static final int N_DOC_HANDLERS = 20;
 
     private PageDownloaderPool downloaderPool;
     private DocumentHandlerPool handlerPool;
     private Log log;
+    private UrlCache cache;
+    private DocumentDb documentDb;
 
     /**
      * Initializes a new instance of {@link Crawler}.
@@ -26,19 +28,27 @@ public class Crawler {
      */
     public Crawler(List<String> seedUrls, Log log) throws InterruptedException {
 
-        UrlCache cache = new HashMapCache();
-        DocumentDb documentDb = new PostgresDocumentDb();
+        cache = new HashMapCache();
+        documentDb = new PostgresDocumentDb();
 
-        LinkedBlockingQueue<String> urlQueue = new LinkedBlockingQueue<String>(URL_QUEUE_CAPACITY);
+        BlockingQueue<String> urlQueue = new LinkedBlockingQueue<String>(URL_QUEUE_CAPACITY);
         // add seed urls to the url queue
         for(String url : seedUrls) urlQueue.put(url);
 
-        LinkedBlockingQueue<Document> docQueue = new LinkedBlockingQueue<Document>(DOC_QUEUE_CAPACITY);
+        BlockingQueue<Document> docQueue = new LinkedBlockingQueue<Document>(DOC_QUEUE_CAPACITY);
 
         downloaderPool = new PageDownloaderPool(urlQueue, docQueue, cache, log, N_DOWNLOADERS);
         handlerPool = new DocumentHandlerPool(urlQueue, docQueue, cache, documentDb, log, N_DOC_HANDLERS);
 
         this.log = log;
+    }
+
+    public int nDocs(){
+        return documentDb.nDocs();
+    }
+
+    public int nUrls(){
+        return cache.size();
     }
 
     /**

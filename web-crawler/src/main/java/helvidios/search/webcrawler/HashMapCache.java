@@ -19,4 +19,9 @@ public class HashMapCache implements UrlCache{
     public boolean contains(String url) {
         return map.containsKey(url);
     }
+
+    @Override
+    public int size() {
+        return map.size();
+    }
 }

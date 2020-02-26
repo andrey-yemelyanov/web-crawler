@@ -46,15 +46,14 @@ public class DocumentHandler extends Thread{
         log.info(String.format("DocumentHandler %d started.", id));
         while (!isStopped()) {
             try {
-                log.info(String.format("DocumentHandler %d: waiting for documents to become available...", id));
                 Document doc = docQueue.take();
+                documentDb.save(doc);
                 for(String url : doc.getUrls()){
                     if(!cache.contains(url)){
                         urlQueue.put(url);
                     }
                 }
-                documentDb.save(doc);
-                log.info(String.format("DocumentHandler %d: Processed doc from %s", id, doc.getUrl()));
+                //log.info(String.format("DocumentHandler %d: Processed doc from %s", id, doc.getUrl()));
             } catch (Exception ex) {
                 // log exception but keep running and try to process next document
                 log.err("Unable to process a document. " + ex.toString());

@@ -37,11 +37,10 @@ public class PageDownloader extends Thread {
         log.info(String.format("PageDownloader %d started.", id));
         while (!isStopped()) {
             try {
-                log.info(String.format("PageDownloader %d: waiting for urls to be available...", id));
                 String url = urlQueue.take();
                 String html = Jsoup.connect(url).get().html();
                 cache.add(url);
-                log.info(String.format("PageDownloader %d: downloaded %s", id, url));
+                //log.info(String.format("PageDownloader %d: downloaded %s", id, url));
                 docQueue.put(new Document(url, html));
             } catch (Exception ex) {
                 // log exception but keep running and try to download next url

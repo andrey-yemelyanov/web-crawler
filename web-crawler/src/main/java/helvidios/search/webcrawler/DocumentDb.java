@@ -23,4 +23,6 @@ public interface DocumentDb{
      * @param docId document id
      */
     public Document get(String docId);
+
+    public int nDocs();
 }
