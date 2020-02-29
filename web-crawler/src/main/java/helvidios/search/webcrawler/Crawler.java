@@ -30,7 +30,9 @@ public class Crawler {
         throws InterruptedException {
 
         urlQueue = new UrlQueue(timeout);
+        
         this.docRepo = docRepo;
+        this.docRepo.clear();
 
         // add seed urls to the url queue
         for(String url : seedUrls) urlQueue.addUrl(url);

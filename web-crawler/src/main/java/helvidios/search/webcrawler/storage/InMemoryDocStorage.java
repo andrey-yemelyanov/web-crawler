@@ -31,4 +31,9 @@ public class InMemoryDocStorage implements DocumentRepository {
     public int size() {
         return docs.size();
     }
+
+    @Override
+    public void clear() {
+        docs.clear();
+    }
 }

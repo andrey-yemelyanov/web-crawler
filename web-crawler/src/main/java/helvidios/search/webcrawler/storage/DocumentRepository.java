@@ -37,4 +37,9 @@ public interface DocumentRepository{
      * Returns the number of documents in the storage.
      */
     public int size();
+
+    /**
+     * Removes all documents from this repository.
+     */
+    public void clear();
 }
