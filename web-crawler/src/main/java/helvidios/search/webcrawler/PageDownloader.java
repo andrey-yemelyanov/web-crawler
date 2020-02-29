@@ -55,7 +55,9 @@ public class PageDownloader extends Thread {
                         urlQueue.addUrl(nextUrl);
                     }
                 }
+
                 log.info(String.format("Downloaded %s", url));
+                
             } catch(QueueTimeoutException ex){
                 log.info(ex.getMessage());
                 setStopped(true);

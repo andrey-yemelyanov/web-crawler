@@ -1,7 +1,6 @@
 package helvidios.search.webcrawler;
 
 import java.util.*;
-
 import helvidios.search.webcrawler.url.SameSiteUrlExtractor;
 
 public class App{
@@ -22,6 +21,7 @@ public class App{
             System.out.printf("%6d %10d", crawler.nUrls(), crawler.nDocs());
             Thread.sleep(200);
         }
+
         System.out.println("\nCrawling is completed.");
     }
 }

@@ -1,7 +1,6 @@
 package helvidios.search.webcrawler;
 
 import java.util.concurrent.*;
-
 import helvidios.search.webcrawler.exceptions.QueueTimeoutException;
 
 /**
@@ -24,6 +23,7 @@ public class UrlQueue{
 
     /**
      * Adds a new url to the queue. If the same url is already present in the queue, this operation has no effect.
+     * This method is thread-safe - only one thread can be executing it at any given time.
      * @param url URL
      * @throws InterruptedException
      */
@@ -35,13 +35,13 @@ public class UrlQueue{
 
     /**
      * Returns the next-in-line URL from the queue or blocks if the queue is empty.
-     * The call will time out after 60 seconds if the url queue is still empty.
+     * The call will time out after {@code timeout} seconds if the url queue is still empty.
      * 
      * @return URL
      * @throws InterruptedException
      * @throws QueueTimeoutException
      */
-    public synchronized String getUrl() throws InterruptedException, QueueTimeoutException {
+    public String getUrl() throws InterruptedException, QueueTimeoutException {
         String url = queue.poll(timeout, TimeUnit.SECONDS);
         if(url == null) {
             throw new QueueTimeoutException(

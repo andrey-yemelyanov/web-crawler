@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 import helvidios.search.webcrawler.HtmlDocument;
 
 /** 
- * This extractor finds all urls in HTML document without any filtering. 
+ * This extractor finds all urls in HTML document without any additional filtering. 
  * */
 public class SimpleUrlExtractor implements UrlExtractor {
 
