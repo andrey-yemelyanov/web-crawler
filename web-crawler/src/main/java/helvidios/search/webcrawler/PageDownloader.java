@@ -1,16 +1,20 @@
 package helvidios.search.webcrawler;
 
-import java.util.concurrent.BlockingQueue;
 import org.jsoup.Jsoup;
+import helvidios.search.webcrawler.exceptions.QueueTimeoutException;
+import helvidios.search.webcrawler.logging.Log;
+import helvidios.search.webcrawler.storage.DocumentRepository;
+import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
- * Continuously attempts to take a URL from the url queue and download the web page at
- * that URL. The downloaded page is then added to the document queue for further asynchronous processing.
+ * Continuously attempts to take a URL from the url queue and download the web
+ * page at that URL. The downloaded page is then saved in storage and new URLs
+ * are discovered.
  */
 public class PageDownloader extends Thread {
-    private BlockingQueue<String> urlQueue;
-    private BlockingQueue<Document> docQueue;
-    private UrlCache cache;
+    private UrlQueue urlQueue;
+    private DocumentRepository docRepo;
+    private UrlExtractor urlExtractor;
     private Log log;
     private boolean isStopped;
 
@@ -21,48 +25,65 @@ public class PageDownloader extends Thread {
      * Initializes a new instance of {@link PageDownloader}.
      */
     public PageDownloader(
-        BlockingQueue<String> urlQueue, 
-        BlockingQueue<Document> docQueue,
-        UrlCache cache,
+        UrlQueue urlQueue, 
+        DocumentRepository docRepo, 
+        UrlExtractor urlExtractor, 
         Log log) {
+
         this.urlQueue = urlQueue;
-        this.docQueue = docQueue;
-        this.cache = cache;
+        this.docRepo = docRepo;
+        this.urlExtractor = urlExtractor;
         this.log = log;
         this.id = counter++;
     }
 
     @Override
     public void run() {
-        log.info(String.format("PageDownloader %d started.", id));
+        log.info("PageDownloader started.");
         while (!isStopped()) {
+            String url = "";
             try {
-                String url = urlQueue.take();
+                url = urlQueue.getUrl();
+                
+                // download url
                 String html = Jsoup.connect(url).get().html();
-                cache.add(url);
-                //log.info(String.format("PageDownloader %d: downloaded %s", id, url));
-                docQueue.put(new Document(url, html));
+
+                HtmlDocument doc = new HtmlDocument(url, html);
+                docRepo.save(doc);
+                for (String nextUrl : urlExtractor.getUrls(doc)) {
+                    if (!docRepo.contains(Util.checksum(nextUrl))) {
+                        urlQueue.addUrl(nextUrl);
+                    }
+                }
+                log.info(String.format("Downloaded %s", url));
+            } catch(QueueTimeoutException ex){
+                log.info(ex.getMessage());
+                setStopped(true);
             } catch (Exception ex) {
                 // log exception but keep running and try to download next url
-                log.err("Unable to download a page. " + ex.toString());
+                log.err("Unable to download " + url, ex);
             }
         }
-        log.info(String.format("PageDownloader %d terminated.", id));
+        log.info("PageDownloader terminated.");
     }
 
     /**
      * Signals to this downloader to stop fetching URLs.
      */
-    public synchronized void doStop(){
+    public synchronized void doStop() {
         log.info(String.format("PageDownloader %d stopped.", id));
-        isStopped = true;
+        setStopped(true);
         interrupt();
     }
 
     /**
      * Returns true if this downloader is stopped.
      */
-    public synchronized boolean isStopped(){
+    public synchronized boolean isStopped() {
         return isStopped;
+    }
+
+    private synchronized void setStopped(boolean value){
+        isStopped = value;
     }
 }

@@ -1,7 +1,9 @@
 package helvidios.search.webcrawler;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
+import helvidios.search.webcrawler.logging.Log;
+import helvidios.search.webcrawler.storage.DocumentRepository;
+import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
  * Represents a pool of page downloader threads.
@@ -19,9 +21,9 @@ public class PageDownloaderPool{
      * @param nDownloaders max number of page downloaders running in this pool
      */
     public PageDownloaderPool(
-        BlockingQueue<String> urlQueue, 
-        BlockingQueue<Document> docQueue, 
-        UrlCache cache,
+        UrlQueue urlQueue, 
+        DocumentRepository docRepo, 
+        UrlExtractor urlExtractor,
         Log log,
         int nDownloaders){
 
@@ -29,7 +31,7 @@ public class PageDownloaderPool{
 
         downloaders = new ArrayList<>();
         for(int i = 0; i < nDownloaders; i++){
-            downloaders.add(new PageDownloader(urlQueue, docQueue, cache, log));
+            downloaders.add(new PageDownloader(urlQueue, docRepo, urlExtractor, log));
         }
     }
 
@@ -47,5 +49,12 @@ public class PageDownloaderPool{
     public void stop(){
         log.info("PageDownloaderPool stopped.");
         downloaders.forEach(PageDownloader::doStop);
+    }
+
+    /**
+     * Returns true if this downloader pool is stopped.
+     */
+    public boolean isStopped(){
+        return downloaders.stream().allMatch(downloader -> downloader.isStopped());
     }
 }
