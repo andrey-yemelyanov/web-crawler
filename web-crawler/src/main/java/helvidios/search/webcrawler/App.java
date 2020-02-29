@@ -4,19 +4,17 @@ import java.util.*;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.logging.Log4j;
 import helvidios.search.webcrawler.storage.MongoDbStorage;
-import helvidios.search.webcrawler.url.SameSiteUrlExtractor;
 
 public class App{
     public static void main(String... args) throws InterruptedException {
-        List<String> seedUrls = Arrays.asList(
-          "https://docs.oracle.com/javase/8/docs/api/allclasses-noframe.html");
+        
         String prefixUrl = "https://docs.oracle.com/javase/8/docs/api/";
+        List<String> seedUrls = Arrays.asList(prefixUrl + "allclasses-noframe.html");
+
         Log log = new Log4j();
-        Crawler crawler = new Crawler.Builder(seedUrls)
-                                     .setDocumentRepository(new MongoDbStorage(log))
+        Crawler crawler = new Crawler.Builder(seedUrls, prefixUrl)
+                                     .setDocumentRepository(new MongoDbStorage("localhost", 27017, log))
                                      .setLog(log)
-                                     .setNumberOfDownloaders(30)
-                                     .setUrlExtractor(new SameSiteUrlExtractor(prefixUrl))
                                      .build();
         crawler.start();
 

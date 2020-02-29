@@ -11,13 +11,23 @@ import helvidios.search.webcrawler.HtmlDocument;
 import helvidios.search.webcrawler.logging.Log;
 import static com.mongodb.client.model.Filters.*;
 
+/**
+ * MongoDB based implementation of {@link DocumentRepository}.
+ */
 public class MongoDbStorage implements DocumentRepository {
 
+    private final MongoClient client;
     private final MongoCollection<Document> collection;
     private final Log log;
 
-    public MongoDbStorage(Log log) {
-        MongoClient client = new MongoClient("localhost", 27017);
+    /**
+     * Initializes a new instance of {@link MongoDbStorage}.
+     * @param host hostname of the MongoDB server
+     * @param port port number on which MongoDB is listening
+     * @param log logging component
+     */
+    public MongoDbStorage(String host, int port, Log log) {
+        client = new MongoClient(host, port);
         MongoDatabase db = client.getDatabase("document-db");
         collection = db.getCollection("documents");
         this.log = log;

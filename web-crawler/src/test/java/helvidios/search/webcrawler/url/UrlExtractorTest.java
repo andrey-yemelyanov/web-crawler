@@ -25,4 +25,19 @@ public class UrlExtractorTest {
         Collections.sort(expected);
         assertThat(urls, is(expected));
     }
+
+    @Test
+    public void extractUrlsWithPrefix() throws IOException, Exception {
+        HtmlDocument doc = new HtmlDocument(
+            "http://www.mycrawler.net/dir1/dir2/page.html", 
+            new String(getClass().getClassLoader().getResourceAsStream("page1.html").readAllBytes()));
+
+        UrlExtractor extractor = new SimpleUrlExtractor("https://www.w3schools.com");
+        List<String> urls = extractor.getUrls(doc);
+        List<String> expected = Arrays.asList(
+            "https://www.w3schools.com/html/"
+        );
+        Collections.sort(expected);
+        assertThat(urls, is(expected));
+    }
 }

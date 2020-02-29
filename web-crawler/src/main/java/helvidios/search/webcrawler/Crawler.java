@@ -8,10 +8,6 @@ import helvidios.search.webcrawler.url.*;
 
 /**
  * A generic web crawler that traverses the URL graph until the URL queue becomes empty.
- * Since the web graph is infinitely large the crawler will run as long as there are new URLs 
- * to download and as long as the machine resources (memory and CPU) allow it.
- * It is therefore strongly recommended to use this crawler on a single web-site by instantiating the
- * {@link SameSiteUrlExtractor} class.
  */
 public class Crawler {
 
@@ -92,7 +88,7 @@ public class Crawler {
         private final static int TIMEOUT = 60;
 
         private DocumentRepository docRepo = new InMemoryDocStorage();
-        private UrlExtractor urlExtractor = new SimpleUrlExtractor();
+        private UrlExtractor urlExtractor;
         private Log log = new Log4j();
         private List<String> seedUrls;
         private int nDownloaders = N_DOWNLOADERS;
@@ -101,9 +97,11 @@ public class Crawler {
         /**
          * Initializes a new instance of {@link Builder}.
          * @param seedUrls initial URLs from which the crawling will begin
+         * @param prefixUrl URL prefix that all crawled URLs must have in common
          */
-        public Builder(List<String> seedUrls){
+        public Builder(List<String> seedUrls, String... prefixUrl){
             this.seedUrls = seedUrls;
+            this.urlExtractor = new SimpleUrlExtractor(prefixUrl);
         }
 
         /**
@@ -123,16 +121,6 @@ public class Crawler {
          */
         public Builder setLog(Log log){
             this.log = log;
-            return this;
-        }
-
-        /**
-         * Set which URL extractor to use during the crawling process.
-         * Default is a simple extractor that extracts all links from an HTML document without any filtering.
-         * @param urlExtractor
-         */
-        public Builder setUrlExtractor(UrlExtractor urlExtractor){
-            this.urlExtractor = urlExtractor;
             return this;
         }
 
