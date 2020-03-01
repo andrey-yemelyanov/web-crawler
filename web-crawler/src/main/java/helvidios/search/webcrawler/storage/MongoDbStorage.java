@@ -20,20 +20,87 @@ public class MongoDbStorage implements DocumentRepository {
     private final MongoCollection<Document> collection;
     private final Log log;
 
-    /**
-     * Initializes a new instance of {@link MongoDbStorage}.
-     * @param host hostname of the MongoDB server
-     * @param port port number on which MongoDB is listening
-     * @param log logging component
-     */
-    public MongoDbStorage(String host, int port, Log log) {
+    private MongoDbStorage(
+        String host, 
+        int port, 
+        Log log,
+        String database,
+        String collection) {
+        
         client = new MongoClient(host, port);
-        MongoDatabase db = client.getDatabase("document-db");
-        collection = db.getCollection("documents");
+        MongoDatabase db = client.getDatabase(database);
+        this.collection = db.getCollection(collection);
         this.log = log;
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
-        mongoLogger.setLevel(Level.SEVERE); 
+        mongoLogger.setLevel(Level.OFF); 
+    }
+
+    /**
+     * Builder class for {@link MongoDbStorage}.
+     */
+    public static class Builder{
+        private final static String HOST = "localhost";
+        private final static int PORT = 27017;
+        private final static String DATABASE = "document-db";
+        private final static String COLLECTION = "documents";
+
+        private String host = HOST;
+        private int port = PORT;
+        private Log log;
+        private String database = DATABASE;
+        private String collection = COLLECTION;
+
+        /**
+         * Initializes a new instance of {@link Builder}.
+         * @param log logging component
+         */
+        public Builder(Log log){
+            this.log = log;
+        }
+
+        /**
+         * Sets database server host. Default is {@value #HOST}.
+         * @param host hostname
+         */
+        public Builder setHost(String host){
+            this.host = host;
+            return this;
+        }
+
+        /**
+         * Sets database server port number. Default is {@value #PORT}.
+         * @param port port number
+         */
+        public Builder setPort(int port){
+            this.port = port;
+            return this;
+        }
+
+        /**
+         * Sets MongoDB database name to connect to. Default is {@value #DATABASE}.
+         * @param database database name
+         */
+        public Builder setDatabase(String database){
+            this.database = database;
+            return this;
+        }
+
+        /**
+         * Sets MongoDB collection to work with. Default is {@value #COLLECTION}.
+         * @param collection collection name
+         */
+        public Builder setCollection(String collection){
+            this.collection = collection;
+            return this;
+        }
+
+        /**
+         * Builds an instance of {@link MongoDbStorage}.
+         */
+        public MongoDbStorage build(){
+            return new MongoDbStorage(host, port, log, database, collection);
+        }
     }
 
     @Override

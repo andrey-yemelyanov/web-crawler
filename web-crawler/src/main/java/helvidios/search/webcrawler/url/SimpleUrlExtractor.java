@@ -10,7 +10,8 @@ import org.jsoup.select.Elements;
 import helvidios.search.webcrawler.HtmlDocument;
 
 /** 
- * This extractor finds all urls in HTML document without any additional filtering. 
+ * Extracts distinct normalized absolute URLs from an HTML document.
+ * If {@code urlPrefix} is specified, then only URLs that begin with the prefix are extracted.
  * */
 public class SimpleUrlExtractor implements UrlExtractor {
 
@@ -22,7 +23,7 @@ public class SimpleUrlExtractor implements UrlExtractor {
 
     @Override
     public List<String> getUrls(HtmlDocument doc) {
-        
+
         Elements links = Jsoup.parse(doc.getContent(), doc.getUrl())
                               .select("a[href]");
         

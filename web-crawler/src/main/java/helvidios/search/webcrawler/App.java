@@ -3,6 +3,7 @@ package helvidios.search.webcrawler;
 import java.util.*;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.logging.Log4j;
+import helvidios.search.webcrawler.storage.DocumentRepository;
 import helvidios.search.webcrawler.storage.MongoDbStorage;
 
 public class App{
@@ -12,8 +13,11 @@ public class App{
         List<String> seedUrls = Arrays.asList(prefixUrl + "allclasses-noframe.html");
 
         Log log = new Log4j();
+
+        DocumentRepository docRepo = new MongoDbStorage.Builder(log).build();
+
         Crawler crawler = new Crawler.Builder(seedUrls, prefixUrl)
-                                     .setDocumentRepository(new MongoDbStorage("localhost", 27017, log))
+                                     .setDocumentRepository(docRepo)
                                      .setLog(log)
                                      .build();
         crawler.start();
