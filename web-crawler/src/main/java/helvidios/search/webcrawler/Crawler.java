@@ -1,13 +1,14 @@
 package helvidios.search.webcrawler;
 
-import java.util.*;
+import java.net.MalformedURLException;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.logging.Log4j;
 import helvidios.search.webcrawler.storage.*;
 import helvidios.search.webcrawler.url.*;
 
 /**
- * A generic web crawler that traverses the URL graph until the URL queue becomes empty.
+ * A generic web crawler that traverses the URL graph until the URL queue
+ * becomes empty.
  */
 public class Crawler {
 
@@ -17,28 +18,20 @@ public class Crawler {
     private Log log;
 
     private Crawler(
-        List<String> seedUrls, 
-        DocumentRepository docRepo,
-        UrlExtractor urlExtractor,
+        String seedUrl, 
+        DocumentRepository docRepo, 
+        UrlExtractor urlExtractor, 
         Log log,
-        int nDownloaders,
-        int timeout) 
-        throws InterruptedException {
+        int nDownloaders, 
+        int timeout) throws InterruptedException {
 
         urlQueue = new UrlQueue(timeout);
-        
+        urlQueue.addUrl(seedUrl);
+
         this.docRepo = docRepo;
-        this.docRepo.clear();
+        this.docRepo.clear(); // remove any previously downloaded documents
 
-        // add seed urls to the url queue
-        for(String url : seedUrls) urlQueue.addUrl(url);
-
-        downloaderPool = new PageDownloaderPool(
-            urlQueue, 
-            docRepo, 
-            urlExtractor, 
-            log, 
-            nDownloaders);
+        downloaderPool = new PageDownloaderPool(urlQueue, docRepo, urlExtractor, log, nDownloaders);
 
         this.log = log;
     }
@@ -46,14 +39,14 @@ public class Crawler {
     /**
      * Returns the number of documents that have been downloaded so far.
      */
-    public int nDocs(){
+    public int nDocs() {
         return docRepo.size();
     }
 
     /**
      * Returns the number of URLs currently scheduled for download.
      */
-    public int nUrls(){
+    public int nUrls() {
         return urlQueue.size();
     }
 
@@ -68,7 +61,7 @@ public class Crawler {
     /**
      * Stops the crawling process by stopping asynchronous downloaders.
      */
-    public void stop(){
+    public void stop() {
         log.info("Web crawler stopped.");
         downloaderPool.stop();
     }
@@ -76,32 +69,33 @@ public class Crawler {
     /**
      * Returns true if this crawler is completed or stopped.
      */
-    public boolean isStopped(){
+    public boolean isStopped() {
         return downloaderPool.isStopped();
     }
 
     /**
      * Builder for a Crawler object.
      */
-    public static class Builder{
+    public static class Builder {
         private final static int N_DOWNLOADERS = 30;
         private final static int TIMEOUT = 60;
 
         private DocumentRepository docRepo = new InMemoryDocStorage();
         private UrlExtractor urlExtractor;
         private Log log = new Log4j();
-        private List<String> seedUrls;
+        private String seedUrl;
         private int nDownloaders = N_DOWNLOADERS;
         private int timeout = TIMEOUT;
 
         /**
          * Initializes a new instance of {@link Builder}.
-         * @param seedUrls initial URLs from which the crawling will begin
-         * @param prefixUrl URL prefix that all crawled URLs must have in common
+         * 
+         * @param seedUrl initial URLs from which the crawling will begin
+         * @throws MalformedURLException
          */
-        public Builder(List<String> seedUrls, String... prefixUrl){
-            this.seedUrls = seedUrls;
-            this.urlExtractor = new SimpleUrlExtractor(prefixUrl);
+        public Builder(String seedUrl) throws MalformedURLException {
+            this.seedUrl = seedUrl;
+            this.urlExtractor = new SimpleUrlExtractor(Util.getBaseUrl(seedUrl));
         }
 
         /**
@@ -148,7 +142,7 @@ public class Crawler {
          * Builds an instance of {@link Crawler} for the supplied configuration settings.
          */
         public Crawler build() throws InterruptedException {
-            return new Crawler(seedUrls, docRepo, urlExtractor, log, nDownloaders, timeout);
+            return new Crawler(seedUrl, docRepo, urlExtractor, log, nDownloaders, timeout);
         }
     }
 }

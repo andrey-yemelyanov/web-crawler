@@ -1,28 +1,27 @@
 package helvidios.search.webcrawler;
 
-import java.util.*;
+import java.net.MalformedURLException;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.logging.Log4j;
 import helvidios.search.webcrawler.storage.DocumentRepository;
 import helvidios.search.webcrawler.storage.MongoDbStorage;
 
-public class App{
-    public static void main(String... args) throws InterruptedException {
+public class App {
+    public static void main(String... args) throws InterruptedException, MalformedURLException {
         
-        String prefixUrl = "https://docs.oracle.com/javase/8/docs/api/";
-        List<String> seedUrls = Arrays.asList(prefixUrl + "allclasses-noframe.html");
+        String seedUrl = "https://docs.oracle.com/javase/8/docs/api/allclasses-noframe.html";
 
         Log log = new Log4j();
 
         DocumentRepository docRepo = new MongoDbStorage.Builder(log).build();
 
-        Crawler crawler = new Crawler.Builder(seedUrls, prefixUrl)
+        Crawler crawler = new Crawler.Builder(seedUrl)
                                      .setDocumentRepository(docRepo)
                                      .setLog(log)
                                      .build();
         crawler.start();
 
-        System.out.println("Crawling " + prefixUrl);
+        System.out.println("Crawling " + Util.getBaseUrl(seedUrl));
         System.out.println("--URLS-------DOCS--");
         while(!crawler.isStopped()){
             System.out.print("\r");

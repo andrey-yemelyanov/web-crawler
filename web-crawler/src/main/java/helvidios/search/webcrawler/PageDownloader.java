@@ -45,11 +45,12 @@ public class PageDownloader extends Thread {
             try {
                 url = urlQueue.getUrl();
                 
-                // download url
                 String html = Jsoup.connect(url).get().html();
 
                 HtmlDocument doc = new HtmlDocument(url, html);
+                
                 docRepo.save(doc);
+
                 for (String nextUrl : urlExtractor.getUrls(doc)) {
                     if (!docRepo.contains(Util.checksum(nextUrl))) {
                         urlQueue.addUrl(nextUrl);

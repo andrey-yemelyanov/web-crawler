@@ -4,7 +4,7 @@ import java.util.*;
 import helvidios.search.webcrawler.HtmlDocument;
 
 /**
- * Extracts normalized absolute URLs from an HTML document that conform to a set of rules.
+ * Extracts normalized absolute URLs from an HTML document.
  */
 public interface UrlExtractor {
 

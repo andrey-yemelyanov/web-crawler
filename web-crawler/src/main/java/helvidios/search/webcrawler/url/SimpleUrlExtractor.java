@@ -1,60 +1,37 @@
 package helvidios.search.webcrawler.url;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jsoup.Jsoup;
-import org.jsoup.select.Elements;
 import helvidios.search.webcrawler.HtmlDocument;
+import helvidios.search.webcrawler.Util;
 
-/** 
+/**
  * Extracts distinct normalized absolute URLs from an HTML document.
- * If {@code urlPrefix} is specified, then only URLs that begin with the prefix are extracted.
- * */
+ */
 public class SimpleUrlExtractor implements UrlExtractor {
 
-    private final List<String> urlPrefixes;
+    private final String baseUrl;
 
-    public SimpleUrlExtractor(String... urlPrefix) {
-        this.urlPrefixes = Arrays.asList(urlPrefix);
+    /**
+     * Initializes a new instance of {@link SimpleUrlExtractor}.
+     * @param baseUrl base URL which all URLs must have in common
+     */
+    public SimpleUrlExtractor(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     @Override
     public List<String> getUrls(HtmlDocument doc) {
 
-        Elements links = Jsoup.parse(doc.getContent(), doc.getUrl())
-                              .select("a[href]");
-        
-        Stream<String> urls = links.stream()
-                                 .map(link -> link.attr("abs:href")) // get absolute urls
-                                 .map(this::normalize) // normalize urls
-                                 .filter(url -> !url.isEmpty()) // remove invalid/empty urls
-                                 .filter(url -> !url.equals(doc.getUrl())) // remove same urls as url of the original document
-                                 .distinct()
-                                 .sorted();
-
-        if(!urlPrefixes.isEmpty()){
-            // remove urls not sharing urlPrefix
-            urls = urls.filter(url -> urlPrefixes.stream().anyMatch(prefix -> url.startsWith(prefix)));
-        }
-
-        return urls.collect(Collectors.toList());
-    }
-
-    private String normalize(String url) {
-        try{
-            URL absoluteUrl = new URL(url);
-            return new URL(
-                absoluteUrl.getProtocol(), 
-                absoluteUrl.getHost(), 
-                absoluteUrl.getPort(), 
-                absoluteUrl.getPath())
-            .toString();
-        }catch(IOException ex){
-            // log exception
-        }
-        return "";
+        return Jsoup.parse(doc.getContent(), doc.getUrl())
+                    .select("a[href]")
+                    .stream()
+                    .map(link -> link.attr("abs:href"))
+                    .map(Util::normalize)
+                    .filter(url -> url.startsWith(baseUrl))
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
     }
 }
