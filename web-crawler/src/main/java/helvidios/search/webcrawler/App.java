@@ -9,7 +9,7 @@ import helvidios.search.webcrawler.storage.MongoDbStorage;
 public class App {
     public static void main(String... args) throws InterruptedException, MalformedURLException {
         
-        String seedUrl = "https://docs.oracle.com/javase/8/docs/api/allclasses-noframe.html";
+        String seedUrl = "https://fergana.news/";
 
         Log log = new Log4j();
 

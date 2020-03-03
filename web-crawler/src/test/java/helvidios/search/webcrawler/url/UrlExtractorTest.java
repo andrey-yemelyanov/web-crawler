@@ -52,4 +52,13 @@ public class UrlExtractorTest {
         assertThat(urls.size(), is(4240));
         assertThat(urls.stream().allMatch(url -> url.startsWith(baseUrl)), is(true));
     }
+
+    @Test
+    public void getUrlsDiadrom() throws Exception{
+        HtmlDocument doc = new HtmlDocument("https://diadrom.se/", TestUtil.readFile("diadrom.html"));
+        String baseUrl = Util.getBaseUrl(doc.getUrl());
+        UrlExtractor extractor = new SimpleUrlExtractor(baseUrl);
+        List<String> urls = extractor.getUrls(doc);
+        assertThat(urls.stream().allMatch(url -> url.startsWith(baseUrl)), is(true));
+    }
 }

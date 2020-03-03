@@ -29,6 +29,7 @@ public class SimpleUrlExtractor implements UrlExtractor {
                     .stream()
                     .map(link -> link.attr("abs:href"))
                     .map(Util::normalize)
+                    .filter(url -> url != null)
                     .filter(url -> url.startsWith(baseUrl))
                     .distinct()
                     .sorted()
