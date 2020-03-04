@@ -1,6 +1,5 @@
 package helvidios.search.webcrawler;
 
-import java.io.IOException;
 import helvidios.search.webcrawler.exceptions.QueueTimeoutException;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.storage.DocumentRepository;
