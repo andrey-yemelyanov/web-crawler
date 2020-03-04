@@ -31,7 +31,7 @@ public class PageDownloaderPool{
 
         downloaders = new ArrayList<>();
         for(int i = 0; i < nDownloaders; i++){
-            downloaders.add(new PageDownloader(urlQueue, docRepo, urlExtractor, log));
+            downloaders.add(new InternetPageDownloader(urlQueue, docRepo, urlExtractor, log));
         }
     }
 

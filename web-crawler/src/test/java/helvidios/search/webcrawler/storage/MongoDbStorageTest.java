@@ -1,16 +1,25 @@
 package helvidios.search.webcrawler.storage;
 
 import static org.junit.Assert.assertThat;
+import org.junit.Rule;
 import org.junit.Test;
-
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import helvidios.search.webcrawler.HtmlDocument;
-import helvidios.search.webcrawler.LogMock;
+import helvidios.search.webcrawler.logging.Log;
+
 import static org.hamcrest.Matchers.*;
 
 public class MongoDbStorageTest{
+
+    @Mock Log log;
+
+    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Test
     public void testDbAccess() throws Exception {
-        DocumentRepository docRepo = new MongoDbStorage.Builder(new LogMock())
+        DocumentRepository docRepo = new MongoDbStorage.Builder(log)
                                                        .setDatabase("test-db")
                                                        .setCollection("testcollection")
                                                        .build();

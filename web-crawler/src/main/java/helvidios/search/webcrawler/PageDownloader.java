@@ -1,6 +1,6 @@
 package helvidios.search.webcrawler;
 
-import org.jsoup.Jsoup;
+import java.io.IOException;
 import helvidios.search.webcrawler.exceptions.QueueTimeoutException;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.storage.DocumentRepository;
@@ -8,10 +8,10 @@ import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
  * Continuously attempts to take a URL from the url queue and download the web
- * page at that URL. The downloaded page is then saved in storage and new URLs
- * are discovered.
+ * page at that URL. The downloaded page is then saved in storage and newly discovered URLs
+ * are added to the crawler frontier.
  */
-public class PageDownloader extends Thread {
+public abstract class PageDownloader extends Thread {
     private UrlQueue urlQueue;
     private DocumentRepository docRepo;
     private UrlExtractor urlExtractor;
@@ -43,14 +43,16 @@ public class PageDownloader extends Thread {
         while (!isStopped()) {
             String url = "";
             try {
+                // get the next URL to download from the crawler frontier
                 url = urlQueue.getUrl();
-                
-                String html = Jsoup.connect(url).get().html();
 
-                HtmlDocument doc = new HtmlDocument(url, html);
-                
+                // download the document with this URL
+                HtmlDocument doc = new HtmlDocument(url, downloadPage(url));
+
+                // store the downloaded document in repository
                 docRepo.save(doc);
 
+                // add the newly discovered URLs in the downloaded document to the crawler frontier
                 for (String nextUrl : urlExtractor.getUrls(doc)) {
                     if (!docRepo.contains(Util.checksum(nextUrl))) {
                         urlQueue.addUrl(nextUrl);
@@ -61,6 +63,7 @@ public class PageDownloader extends Thread {
                 
             } catch(QueueTimeoutException ex){
                 log.info(ex.getMessage());
+                // there are no more URLs in the frontier queue - just terminate this downloader
                 setStopped(true);
             } catch (Exception ex) {
                 // log exception but keep running and try to download next url
@@ -69,6 +72,14 @@ public class PageDownloader extends Thread {
         }
         log.info("PageDownloader terminated.");
     }
+
+    /**
+     * Downloads an HTML page from the specified URL.
+     * @param url URL of the HTML document to download
+     * @return full HTML content of the downloaded page
+     * @throws Exception
+     */
+    public abstract String downloadPage(String url) throws Exception;
 
     /**
      * Signals to this downloader to stop fetching URLs.
