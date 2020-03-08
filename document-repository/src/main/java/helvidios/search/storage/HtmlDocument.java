@@ -1,12 +1,9 @@
 package helvidios.search.storage;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Represents an HTML document.
  */
 public class HtmlDocument {
-    private final static AtomicInteger counter = new AtomicInteger();
 
     private int id;
     private String url;
@@ -17,12 +14,11 @@ public class HtmlDocument {
      * 
      * @param url     URL of the document
      * @param content HTML content of the document
-     * @throws Exception
      */
-    public HtmlDocument(String url, String content) throws Exception {
+    public HtmlDocument(String url, String content) {
         this.url = url;
         this.content = content;
-        this.id = counter.getAndIncrement();
+        this.id = urlToId(url);
     }
 
     /**
@@ -56,5 +52,13 @@ public class HtmlDocument {
         if(!(obj instanceof HtmlDocument)) return false;
         HtmlDocument other = (HtmlDocument) obj;
         return this.id == other.id;
+    }
+
+    /**
+     * Returns a unique integer identifier corresponding to a given URL.
+     * @param url URL
+     */
+    public static int urlToId(String url){
+        return url.hashCode();
     }
 }
