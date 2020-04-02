@@ -5,9 +5,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import helvidios.search.storage.DocumentRepository;
+import helvidios.search.storage.HtmlDocument;
+import helvidios.search.storage.InMemoryDocumentRepository;
 import helvidios.search.webcrawler.logging.Log;
-import helvidios.search.webcrawler.storage.DocumentRepository;
-import helvidios.search.webcrawler.storage.InMemoryDocStorage;
 import helvidios.search.webcrawler.url.SimpleUrlExtractor;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -33,7 +34,7 @@ public class PageDownloaderTest {
         UrlQueue urlQueue = new UrlQueue(1);
         urlQueue.addUrl(url1);
 
-        DocumentRepository docRepo = new InMemoryDocStorage();
+        DocumentRepository docRepo = new InMemoryDocumentRepository();
 
         PageDownloader pageDownloader = new PageDownloader(
             urlQueue,
@@ -53,7 +54,7 @@ public class PageDownloaderTest {
 
         pageDownloader.run();
 
-        assertThat(docRepo.size(), is(4));
+        assertThat(docRepo.size(), is(4L));
         assertThat(urlQueue.size(), is(0));
 
         List<HtmlDocument> expectedDocs = Arrays.asList(
@@ -64,10 +65,10 @@ public class PageDownloaderTest {
         );
         
         List<HtmlDocument> actualDocs = Arrays.asList(
-            docRepo.get(Util.checksum(url1)),
-            docRepo.get(Util.checksum(url2)),
-            docRepo.get(Util.checksum(url3)),
-            docRepo.get(Util.checksum(url4))
+            docRepo.get(url1),
+            docRepo.get(url2),
+            docRepo.get(url3),
+            docRepo.get(url4)
         );
 
         assertThat(actualDocs, is(expectedDocs));

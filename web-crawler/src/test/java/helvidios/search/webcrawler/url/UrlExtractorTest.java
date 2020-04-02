@@ -1,7 +1,7 @@
 package helvidios.search.webcrawler.url;
 
 import org.junit.Test;
-import helvidios.search.webcrawler.HtmlDocument;
+import helvidios.search.storage.HtmlDocument;
 import helvidios.search.webcrawler.TestUtil;
 import helvidios.search.webcrawler.Util;
 import java.util.*;

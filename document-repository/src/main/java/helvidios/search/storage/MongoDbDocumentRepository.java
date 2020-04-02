@@ -8,6 +8,9 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.*;
 
+/**
+ * MongoDB based implementation of {@link DocumentRepository}.
+ */
 public class MongoDbDocumentRepository implements DocumentRepository {
 
     private final MongoClient client;
@@ -46,7 +49,8 @@ public class MongoDbDocumentRepository implements DocumentRepository {
     }
 
     public boolean contains(String url) {
-        return collection.find(eq("_id", HtmlDocument.urlToId(url))).first() != null;
+        int docId = new HtmlDocument(url, "").getId();
+        return collection.find(eq("_id", docId)).first() != null;
     }
 
     public void clear() {
@@ -55,13 +59,14 @@ public class MongoDbDocumentRepository implements DocumentRepository {
 
     public Iterator<HtmlDocument> iterator() {
         return new Iterator<HtmlDocument>() {
+            private Iterator<Document> it = collection.find().iterator();
 
             public boolean hasNext() {
-                return collection.find().iterator().hasNext();
+                return it.hasNext();
             }
 
             public HtmlDocument next() {
-                Document doc = collection.find().iterator().next();
+                Document doc = it.next();
                 return new HtmlDocument(
                     doc.get("url").toString(), 
                     doc.get("content").toString());
@@ -129,5 +134,10 @@ public class MongoDbDocumentRepository implements DocumentRepository {
         public MongoDbDocumentRepository build(){
             return new MongoDbDocumentRepository(host, port, database, collection);
         }
+    }
+
+    @Override
+    public HtmlDocument get(String url) {
+        return get(url.hashCode());
     }
 }

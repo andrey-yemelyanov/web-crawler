@@ -18,7 +18,7 @@ public class HtmlDocument {
     public HtmlDocument(String url, String content) {
         this.url = url;
         this.content = content;
-        this.id = urlToId(url);
+        this.id = hashCode();
     }
 
     /**
@@ -52,13 +52,5 @@ public class HtmlDocument {
         if(!(obj instanceof HtmlDocument)) return false;
         HtmlDocument other = (HtmlDocument) obj;
         return this.id == other.id;
-    }
-
-    /**
-     * Returns a unique integer identifier corresponding to a given URL.
-     * @param url URL
-     */
-    public static int urlToId(String url){
-        return url.hashCode();
     }
 }

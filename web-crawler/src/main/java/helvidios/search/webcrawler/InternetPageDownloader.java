@@ -2,8 +2,8 @@ package helvidios.search.webcrawler;
 
 import java.io.IOException;
 import org.jsoup.Jsoup;
+import helvidios.search.storage.DocumentRepository;
 import helvidios.search.webcrawler.logging.Log;
-import helvidios.search.webcrawler.storage.DocumentRepository;
 import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**

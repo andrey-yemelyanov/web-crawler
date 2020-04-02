@@ -1,7 +1,7 @@
 package helvidios.search.webcrawler.url;
 
 import java.util.*;
-import helvidios.search.webcrawler.HtmlDocument;
+import helvidios.search.storage.HtmlDocument;
 
 /**
  * Extracts normalized absolute URLs from an HTML document.

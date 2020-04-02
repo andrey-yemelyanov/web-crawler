@@ -1,19 +1,19 @@
 package helvidios.search.webcrawler;
 
 import java.net.MalformedURLException;
+import helvidios.search.storage.DocumentRepository;
+import helvidios.search.storage.MongoDbDocumentRepository;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.logging.Log4j;
-import helvidios.search.webcrawler.storage.DocumentRepository;
-import helvidios.search.webcrawler.storage.MongoDbStorage;
 
 public class App {
     public static void main(String... args) throws InterruptedException, MalformedURLException {
         
-        String seedUrl = "https://fergana.news/";
+        String seedUrl = "https://docs.oracle.com/javase/8/docs/api/index-files/index-1.html";
 
         Log log = new Log4j();
 
-        DocumentRepository docRepo = new MongoDbStorage.Builder(log).build();
+        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
 
         Crawler crawler = new Crawler.Builder(seedUrl)
                                      .setDocumentRepository(docRepo)

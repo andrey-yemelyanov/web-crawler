@@ -1,8 +1,8 @@
 package helvidios.search.webcrawler;
 
 import java.util.*;
+import helvidios.search.storage.DocumentRepository;
 import helvidios.search.webcrawler.logging.Log;
-import helvidios.search.webcrawler.storage.DocumentRepository;
 import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**

@@ -28,6 +28,13 @@ public interface DocumentRepository {
     boolean contains(String url);
 
     /**
+     * Retrieves an HTML document with the given URL.
+     * @param url document URL
+     * @return HTML document or {@code null} if document not found
+     */
+    public HtmlDocument get(String url);
+
+    /**
      * Removes all documents from the storage.
      */
     void clear();

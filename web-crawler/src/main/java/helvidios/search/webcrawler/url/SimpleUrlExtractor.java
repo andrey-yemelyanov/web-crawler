@@ -3,7 +3,7 @@ package helvidios.search.webcrawler.url;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
-import helvidios.search.webcrawler.HtmlDocument;
+import helvidios.search.storage.HtmlDocument;
 import helvidios.search.webcrawler.Util;
 
 /**

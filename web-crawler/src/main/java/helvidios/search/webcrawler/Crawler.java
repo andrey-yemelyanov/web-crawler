@@ -1,9 +1,10 @@
 package helvidios.search.webcrawler;
 
 import java.net.MalformedURLException;
+import helvidios.search.storage.DocumentRepository;
+import helvidios.search.storage.InMemoryDocumentRepository;
 import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.logging.Log4j;
-import helvidios.search.webcrawler.storage.*;
 import helvidios.search.webcrawler.url.*;
 
 /**
@@ -39,7 +40,7 @@ public class Crawler {
     /**
      * Returns the number of documents that have been downloaded so far.
      */
-    public int nDocs() {
+    public long nDocs() {
         return docRepo.size();
     }
 
@@ -80,7 +81,7 @@ public class Crawler {
         private final static int N_DOWNLOADERS = 30;
         private final static int TIMEOUT = 60;
 
-        private DocumentRepository docRepo = new InMemoryDocStorage();
+        private DocumentRepository docRepo = new InMemoryDocumentRepository();
         private UrlExtractor urlExtractor;
         private Log log = new Log4j();
         private String seedUrl;

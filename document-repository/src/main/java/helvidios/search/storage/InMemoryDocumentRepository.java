@@ -34,4 +34,9 @@ public class InMemoryDocumentRepository implements DocumentRepository {
     public long size() {
         return docs.size();
     }
+
+    @Override
+    public HtmlDocument get(String url) {
+        return get(url.hashCode());
+    }
 }

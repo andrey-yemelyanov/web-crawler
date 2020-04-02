@@ -1,8 +1,9 @@
 package helvidios.search.webcrawler;
 
+import helvidios.search.storage.DocumentRepository;
+import helvidios.search.storage.HtmlDocument;
 import helvidios.search.webcrawler.exceptions.QueueTimeoutException;
 import helvidios.search.webcrawler.logging.Log;
-import helvidios.search.webcrawler.storage.DocumentRepository;
 import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
@@ -49,11 +50,11 @@ public abstract class PageDownloader extends Thread {
                 HtmlDocument doc = new HtmlDocument(url, downloadPage(url));
 
                 // store the downloaded document in repository
-                docRepo.save(doc);
+                docRepo.insert(doc);
 
                 // add the newly discovered URLs in the downloaded document to the crawler frontier
                 for (String nextUrl : urlExtractor.getUrls(doc)) {
-                    if (!docRepo.contains(Util.checksum(nextUrl))) {
+                    if (!docRepo.contains(nextUrl)) {
                         urlQueue.addUrl(nextUrl);
                     }
                 }
