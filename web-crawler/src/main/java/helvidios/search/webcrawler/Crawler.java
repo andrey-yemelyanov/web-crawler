@@ -35,6 +35,8 @@ public class Crawler {
         downloaderPool = new PageDownloaderPool(urlQueue, docRepo, urlExtractor, log, nDownloaders);
 
         this.log = log;
+
+        log.info(String.format("WebCrawler initialized.\nSeed URL: %s.", seedUrl));
     }
 
     /**
@@ -91,12 +93,26 @@ public class Crawler {
         /**
          * Initializes a new instance of {@link Builder}.
          * 
-         * @param seedUrl initial URLs from which the crawling will begin
+         * @param seedUrl initial URL from which the crawling will begin
          * @throws MalformedURLException
          */
         public Builder(String seedUrl) throws MalformedURLException {
             this.seedUrl = seedUrl;
             this.urlExtractor = new SimpleUrlExtractor(Util.getBaseUrl(seedUrl));
+        }
+
+        /**
+         * Initializes a new instance of {@link Builder}.
+         * 
+         * @param seedUrl initial URL from which the crawling will begin
+         * @param urlPrefix prefix that all crawled URLs must share. 
+         * E.g. to crawl only Java 8 API docs use the following prefix: https://docs.oracle.com/javase/8/docs/api.
+         * Otherwise the crawler might end up downloading the entire docs.oracle.com domain.
+         * @throws MalformedURLException
+         */
+        public Builder(String seedUrl, String urlPrefix) throws MalformedURLException {
+            this.seedUrl = seedUrl;
+            this.urlExtractor = new SimpleUrlExtractor(urlPrefix);
         }
 
         /**

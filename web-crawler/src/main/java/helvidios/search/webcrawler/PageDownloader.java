@@ -43,6 +43,7 @@ public abstract class PageDownloader extends Thread {
         while (!isStopped()) {
             String url = "";
             try {
+
                 // get the next URL to download from the crawler frontier
                 url = urlQueue.getUrl();
 
@@ -50,7 +51,10 @@ public abstract class PageDownloader extends Thread {
                 HtmlDocument doc = new HtmlDocument(url, downloadPage(url));
 
                 // store the downloaded document in repository
-                docRepo.insert(doc);
+                if(!docRepo.contains(url)) {
+                    docRepo.insert(doc);
+                    log.info(String.format("Downloaded [%d] %s", doc.getId(), url));
+                }
 
                 // add the newly discovered URLs in the downloaded document to the crawler frontier
                 for (String nextUrl : urlExtractor.getUrls(doc)) {
@@ -58,16 +62,13 @@ public abstract class PageDownloader extends Thread {
                         urlQueue.addUrl(nextUrl);
                     }
                 }
-
-                log.info(String.format("Downloaded %s", url));
-                
             } catch(QueueTimeoutException ex){
                 log.info(ex.getMessage());
                 // there are no more URLs in the frontier queue - just terminate this downloader
                 setStopped(true);
             } catch (Exception ex) {
                 // log exception but keep running and try to download next url
-                log.err("Unable to download " + url, ex);
+                log.err(String.format("Unable to download %s", url), ex);
             }
         }
         log.info("PageDownloader terminated.");

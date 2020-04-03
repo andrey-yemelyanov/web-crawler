@@ -50,7 +50,13 @@ public class MongoDbDocumentRepository implements DocumentRepository {
 
     public boolean contains(String url) {
         int docId = new HtmlDocument(url, "").getId();
-        return collection.find(eq("_id", docId)).first() != null;
+        return get(docId) != null;
+    }
+
+    @Override
+    public HtmlDocument get(String url) {
+        int docId = new HtmlDocument(url, "").getId();
+        return get(docId);
     }
 
     public void clear() {
@@ -134,10 +140,5 @@ public class MongoDbDocumentRepository implements DocumentRepository {
         public MongoDbDocumentRepository build(){
             return new MongoDbDocumentRepository(host, port, database, collection);
         }
-    }
-
-    @Override
-    public HtmlDocument get(String url) {
-        return get(url.hashCode());
     }
 }

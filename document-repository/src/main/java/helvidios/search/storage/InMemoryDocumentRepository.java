@@ -37,6 +37,7 @@ public class InMemoryDocumentRepository implements DocumentRepository {
 
     @Override
     public HtmlDocument get(String url) {
-        return get(url.hashCode());
+        int docId = new HtmlDocument(url, "").getId();
+        return get(docId);
     }
 }
