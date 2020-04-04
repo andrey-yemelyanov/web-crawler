@@ -19,10 +19,6 @@ public class InMemoryDocumentRepository implements DocumentRepository {
         return docs.get(id);
     }
 
-    public boolean contains(String url) {
-        return docs.containsKey(url.hashCode());
-    }
-
     public void clear() {
         docs.clear();
     }
@@ -35,9 +31,14 @@ public class InMemoryDocumentRepository implements DocumentRepository {
         return docs.size();
     }
 
-    @Override
+    public boolean contains(String url) {
+        return get(url) != null;
+    }
+
     public HtmlDocument get(String url) {
-        int docId = new HtmlDocument(url, "").getId();
-        return get(docId);
+        return docs.values().stream()
+                            .filter(doc -> doc.getUrl().equals(url))
+                            .findFirst()
+                            .orElse(null);
     }
 }

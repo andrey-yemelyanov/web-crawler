@@ -19,11 +19,10 @@ public class MongoDbDocumentRepository implements DocumentRepository {
     private MongoDbDocumentRepository(
         String host, 
         int port, 
-        String database,
-        String collection){
+        String database){
 
         this.client = new MongoClient(host, port);
-        this.collection = client.getDatabase(database).getCollection(collection);
+        this.collection = client.getDatabase(database).getCollection("documents");
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
@@ -37,26 +36,25 @@ public class MongoDbDocumentRepository implements DocumentRepository {
                  .append("insertedDate", new Date()));
     }
 
-    public HtmlDocument get(int id) {
-        Document doc = collection.find(eq("_id", id)).first();
-        if (doc == null){
-            return null;
-        }
-            
+    private HtmlDocument toHtmlDocument(Document doc){
+        if(doc == null) return null;
         return new HtmlDocument(
                 doc.get("url").toString(), 
                 doc.get("content").toString());
     }
 
-    public boolean contains(String url) {
-        int docId = new HtmlDocument(url, "").getId();
-        return get(docId) != null;
+    public HtmlDocument get(int id) {
+        Document doc = collection.find(eq("_id", id)).first();
+        return toHtmlDocument(doc);
     }
 
-    @Override
+    public boolean contains(String url) {
+        return get(url) != null;
+    }
+
     public HtmlDocument get(String url) {
-        int docId = new HtmlDocument(url, "").getId();
-        return get(docId);
+        Document doc = collection.find(eq("url", url)).first();
+        return toHtmlDocument(doc);
     }
 
     public void clear() {
@@ -73,9 +71,7 @@ public class MongoDbDocumentRepository implements DocumentRepository {
 
             public HtmlDocument next() {
                 Document doc = it.next();
-                return new HtmlDocument(
-                    doc.get("url").toString(), 
-                    doc.get("content").toString());
+                return toHtmlDocument(doc);
             }
         };
     }
@@ -91,12 +87,10 @@ public class MongoDbDocumentRepository implements DocumentRepository {
         private final static String HOST = "localhost";
         private final static int PORT = 27017;
         private final static String DATABASE = "document-db";
-        private final static String COLLECTION = "documents";
 
         private String host = HOST;
         private int port = PORT;
         private String database = DATABASE;
-        private String collection = COLLECTION;
 
         /**
          * Sets database server host. Default is {@value #HOST}.
@@ -126,19 +120,10 @@ public class MongoDbDocumentRepository implements DocumentRepository {
         }
 
         /**
-         * Sets MongoDB collection to work with. Default is {@value #COLLECTION}.
-         * @param collection collection name
-         */
-        public Builder setCollection(String collection){
-            this.collection = collection;
-            return this;
-        }
-
-        /**
          * Builds an instance of {@link MongoDbDocumentRepository}.
          */
         public MongoDbDocumentRepository build(){
-            return new MongoDbDocumentRepository(host, port, database, collection);
+            return new MongoDbDocumentRepository(host, port, database);
         }
     }
 }

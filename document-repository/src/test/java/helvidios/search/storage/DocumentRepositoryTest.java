@@ -9,8 +9,7 @@ public class DocumentRepositoryTest {
     @Test
     public void testMongoDbDocRepo(){
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
-                                                                  .setDatabase("test-db")
-                                                                  .setCollection("testcollection")
+                                                                  .setDatabase("test-document-db")
                                                                   .build();
         testDocRepo(docRepo);
     }

@@ -53,7 +53,7 @@ public abstract class PageDownloader extends Thread {
                 // store the downloaded document in repository
                 if(!docRepo.contains(url)) {
                     docRepo.insert(doc);
-                    log.info(String.format("Downloaded [%d] %s", doc.getId(), url));
+                    log.info(String.format("Downloaded %s", doc.toString()));
                 }
 
                 // add the newly discovered URLs in the downloaded document to the crawler frontier
