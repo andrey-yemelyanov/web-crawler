@@ -9,10 +9,10 @@ public class TokenizerTest {
 
     @Test
     public void tokenizeQueryText(){
-        String query = "HashMap putIfAbsent";
+        String query = "HashMap putIfAbsent runnable's 'ps2s'";
         Tokenizer tokenizer = new TextTokenizer();
         List<String> tokens = tokenizer.getTokens(query);
-        assertThat(tokens, is(Arrays.asList("hashmap", "putifabsent")));
+        assertThat(tokens, is(Arrays.asList("hashmap", "putifabsent", "runnable", "s", "ps2s")));
     }
 
     @Test
