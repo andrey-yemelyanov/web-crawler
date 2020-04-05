@@ -17,7 +17,7 @@ public class App
 {
     public static void main( String[] args ) throws Exception
     {
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
         Tokenizer tokenizer = new HtmlTokenizer();
@@ -43,10 +43,17 @@ public class App
 
         System.out.printf("Done! Index size: %d\n", index.size());
 
-        long endTime = System.nanoTime();
-        long durationInNano = (endTime - startTime);
-        System.out.println("Indexing time: " + TimeUnit.SECONDS.toSeconds(durationInNano) + " seconds.");
+        long endTime = System.currentTimeMillis();
+		long timeElapsed = endTime - startTime;
+        System.out.println("Indexing time: " + format(timeElapsed / 1000));
 
         lemmatizer.close();
+    }
+
+    private static String format(long totalSeconds){
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
