@@ -43,8 +43,8 @@ public class MongoDbDocumentRepository implements DocumentRepository {
                 doc.get("content").toString());
     }
 
-    public HtmlDocument get(int id) {
-        Document doc = collection.find(eq("_id", id)).first();
+    public HtmlDocument get(DocId id) {
+        Document doc = collection.find(eq("_id", id.get())).first();
         return toHtmlDocument(doc);
     }
 
@@ -53,8 +53,7 @@ public class MongoDbDocumentRepository implements DocumentRepository {
     }
 
     public HtmlDocument get(String url) {
-        Document doc = collection.find(eq("url", url)).first();
-        return toHtmlDocument(doc);
+        return get(new DocId(url));
     }
 
     public void clear() {

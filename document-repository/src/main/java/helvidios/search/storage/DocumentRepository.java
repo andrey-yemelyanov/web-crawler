@@ -18,7 +18,7 @@ public interface DocumentRepository {
      * @param id unique document identifier
      * @return HTML document or {@code null} if document not found
      */
-    public HtmlDocument get(int id);
+    public HtmlDocument get(DocId id);
 
     /**
      * Checks if a document with the given URL is present in the storage.

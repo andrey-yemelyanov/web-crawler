@@ -28,9 +28,9 @@ public class DocumentRepositoryTest {
         HtmlDocument doc3 = new HtmlDocument("http://www.url3.com", "<html></html>");
 
         assertThat(docRepo.size(), is(0L));
-        assertThat(docRepo.get(doc1.getId()), is(nullValue()));
-        assertThat(docRepo.get(doc2.getId()), is(nullValue()));
-        assertThat(docRepo.get(doc3.getId()), is(nullValue()));
+        assertThat(docRepo.get(new DocId(doc1.getId())), is(nullValue()));
+        assertThat(docRepo.get(new DocId(doc2.getId())), is(nullValue()));
+        assertThat(docRepo.get(new DocId(doc3.getId())), is(nullValue()));
 
         docRepo.insert(doc1);
         docRepo.insert(doc2);

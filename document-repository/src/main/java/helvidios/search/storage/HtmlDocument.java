@@ -1,15 +1,13 @@
 package helvidios.search.storage;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Represents an HTML document.
  */
 public class HtmlDocument {
 
-    private int id;
-    private String url;
-    private String content;
+    private final DocId docId;
+    private final String url;
+    private final String content;
 
     /**
      * Initializes a new instance of {@link HtmlDocument}.
@@ -20,14 +18,14 @@ public class HtmlDocument {
     public HtmlDocument(String url, String content) {
         this.url = url;
         this.content = content;
-        this.id = url.hashCode();
+        this.docId = new DocId(url);
     }
 
     /**
      * Returns the unique id of this document.
      */
     public int getId() {
-        return id;
+        return docId.get();
     }
 
     /**
@@ -48,16 +46,16 @@ public class HtmlDocument {
     public boolean equals(Object obj){
         if(!(obj instanceof HtmlDocument)) return false;
         HtmlDocument other = (HtmlDocument) obj;
-        return this.id == other.id;
+        return this.docId.equals(other.docId);
     }
 
     @Override
     public int hashCode(){
-        return id;
+        return docId.hashCode();
     }
 
     @Override
     public String toString(){
-        return String.format("[%d] %s", id, url);
+        return String.format("%s %s", docId, url);
     }
 }
