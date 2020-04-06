@@ -31,8 +31,7 @@ public class App
             HtmlDocument doc = it.next();
             List<String> tokens = tokenizer.getTokens(doc.getContent());
             for(String term : lemmatizer.getLemmas(tokens)){
-                index.putIfAbsent(term, new TreeSet<Integer>());
-                index.get(term).add(doc.getId());
+                index.computeIfAbsent(term, key -> new TreeSet<>()).add(doc.getId());
             }
             System.out.printf("Indexed doc %s\n", doc);
         }
