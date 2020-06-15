@@ -1,11 +1,11 @@
 # web-search
 Web search project consisting of a web crawler, indexer and searcher.
 
-Indexer algorithm
+# Indexer algorithm
 
-Index construction follows the algorithm specified in the [Introction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html) book.
+Index construction is sort-based and follows the algorithm specified in the [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html) book.
 
-
+!(https://nlp.stanford.edu/IR-book/html/htmledition/img54.png)
 
 Multiple indexers run in parallel (using Java ExecutorService) where each indexer has the following workflow:
 
