@@ -23,8 +23,11 @@ Once all the documents have been processed, the indexer will sort the global ter
 The resulting in-memory index will have the following example dictionary structure:
 
 `term1 -> [(docId1, 432), (docId2, 2), (docId6, 21)]`
+
 `term2 -> [(docId2, 12), (docId6, 21)]`
+
 `term3 -> [(docId6, 1)]`
+
 etc...
 
 The index will then be stored in MongoDB for further use by the searcher.
