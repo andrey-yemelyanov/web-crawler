@@ -3,7 +3,7 @@ Web search project consisting of a web crawler, indexer and searcher.
 
 # Indexer algorithm
 
-Index construction is sort-based and follows the algorithm specified in the [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html) book.
+Index construction is done by sorting and grouping and follows the algorithm specified in the [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html) book.
 
 ![Indexing process](https://nlp.stanford.edu/IR-book/html/htmledition/img54.png)
 
