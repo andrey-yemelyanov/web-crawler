@@ -35,7 +35,7 @@ class Indexer implements Callable<Map<String, List<Term>>> {
     public Map<String, List<Term>> call() throws Exception {
         final long id = Thread.currentThread().getId();
         int nDocsProcessed = 0;
-        log.info("Indexer {} started.\n", id);
+        log.info("Indexer {} started.", id);
         while (!docQueue.isEmpty()) {
             try {
                 int docId = docQueue.remove();
@@ -58,13 +58,13 @@ class Indexer implements Callable<Map<String, List<Term>>> {
                 }
 
                 nDocsProcessed++;
-                log.info("Indexer {}: Indexed {}. Found {} terms.\n", id, doc.toString(), tokens.size());
+                log.info("Indexer {}: Indexed {}. Found {} terms.", id, doc.toString(), tokens.size());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 log.error("Indexer failed", ex);
             }
         }
-        log.info("Indexer {} completed. Processed {} docs.\n", id, nDocsProcessed);
+        log.info("Indexer {} completed. Processed {} docs.", id, nDocsProcessed);
         return toPostingsLists(index);
     }
 

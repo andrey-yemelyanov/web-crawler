@@ -56,7 +56,8 @@ public class IndexBuilder implements AutoCloseable {
         }
 
         log.info("Indexing completed.");
-        log.info("Index size: {}\n{}\n", index.getIndex().size(), index);
+        log.info("Index size: {}", index.getIndex().size());
+        log.info("Dictionary:\n{}", index.getIndex().keySet());
         System.out.printf("Indexing completed.\nIndex size: %d\n", index.getIndex().size());
     }
 
