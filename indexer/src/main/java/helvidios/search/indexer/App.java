@@ -1,10 +1,7 @@
 package helvidios.search.indexer;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
 import helvidios.search.storage.DocumentRepository;
-import helvidios.search.storage.HtmlDocument;
 import helvidios.search.storage.MongoDbDocumentRepository;
 import helvidios.search.tokenizer.HtmlTokenizer;
 import helvidios.search.tokenizer.Tokenizer;
@@ -17,36 +14,20 @@ public class App
 {
     public static void main( String[] args ) throws Exception
     {
-        long startTime = System.currentTimeMillis();
-
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
         Tokenizer tokenizer = new HtmlTokenizer();
-        ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer();
+        
+        try(ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer()){
+            try(Indexer indexer = new Indexer(docRepo, tokenizer, lemmatizer)){
+                long startTime = System.currentTimeMillis();
 
-        System.out.println("Indexing started...");
+                indexer.buildIndex();
 
-        Map<String, SortedSet<Integer>> index = new HashMap<>();
-        Iterator<HtmlDocument> it = docRepo.iterator();
-        while(it.hasNext()){
-            HtmlDocument doc = it.next();
-            List<String> tokens = tokenizer.getTokens(doc.getContent());
-            for(String term : lemmatizer.getLemmas(tokens)){
-                index.computeIfAbsent(term, key -> new TreeSet<>()).add(doc.getId());
+                long endTime = System.currentTimeMillis();
+                long timeElapsed = endTime - startTime;
+                System.out.println("Indexing time: " + format(timeElapsed / 1000));
             }
-            System.out.printf("Indexed doc %s\n", doc);
         }
-
-        for(String term : index.keySet()){
-            System.out.println(term);
-        }
-
-        System.out.printf("Done! Index size: %d\n", index.size());
-
-        long endTime = System.currentTimeMillis();
-		long timeElapsed = endTime - startTime;
-        System.out.println("Indexing time: " + format(timeElapsed / 1000));
-
-        lemmatizer.close();
     }
 
     private static String format(long totalSeconds){
