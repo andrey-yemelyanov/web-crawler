@@ -1,15 +1,15 @@
 package helvidios.search.webcrawler;
 
 import java.util.*;
+import org.apache.logging.log4j.Logger;
 import helvidios.search.storage.DocumentRepository;
-import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
  * Represents a pool of page downloader threads.
  */
 public class PageDownloaderPool{
-    private Log log;
+    private Logger log;
     private List<PageDownloader> downloaders;
 
     /**
@@ -24,7 +24,7 @@ public class PageDownloaderPool{
         UrlQueue urlQueue, 
         DocumentRepository docRepo, 
         UrlExtractor urlExtractor,
-        Log log,
+        Logger log,
         int nDownloaders){
 
         this.log = log;

@@ -6,6 +6,8 @@ import helvidios.search.tokenizer.Tokenizer;
 import java.util.*;
 import java.util.concurrent.*;
 
+import org.apache.logging.log4j.Logger;
+
 class Indexer implements Callable<Map<String, List<Term>>> {
 
     private final BlockingQueue<Integer> docQueue;
@@ -13,24 +15,27 @@ class Indexer implements Callable<Map<String, List<Term>>> {
     private final Tokenizer tokenizer;
     private final Lemmatizer lemmatizer;
     private final Map<String, SortedSet<Term>> index;
+    private final Logger log;
 
     Indexer(
         BlockingQueue<Integer> docQueue,
         DocumentRepository docRepo,
         Tokenizer tokenizer, 
-        Lemmatizer lemmatizer){
+        Lemmatizer lemmatizer,
+        Logger log){
         this.docQueue = docQueue;
         this.docRepo = docRepo;
         this.tokenizer = tokenizer;
         this.lemmatizer = lemmatizer;
         this.index = new HashMap<>();
+        this.log = log;
     }
 
     @Override
     public Map<String, List<Term>> call() throws Exception {
         final long id = Thread.currentThread().getId();
         int nDocsProcessed = 0;
-        System.out.printf("Indexer %d started.\n", id);
+        log.info("Indexer {} started.\n", id);
         while (!docQueue.isEmpty()) {
             try {
                 int docId = docQueue.remove();
@@ -53,12 +58,13 @@ class Indexer implements Callable<Map<String, List<Term>>> {
                 }
 
                 nDocsProcessed++;
-                System.out.printf("Indexer %d: Indexed %s. Found %d terms.\n", id, doc.toString(), tokens.size());
+                log.info("Indexer {}: Indexed {}. Found {} terms.\n", id, doc.toString(), tokens.size());
             } catch (Exception ex) {
                 ex.printStackTrace();
+                log.error("Indexer failed", ex);
             }
         }
-        System.out.printf("Indexer %d completed. Processed %d docs.\n", id, nDocsProcessed);
+        log.info("Indexer {} completed. Processed {} docs.\n", id, nDocsProcessed);
         return toPostingsLists(index);
     }
 

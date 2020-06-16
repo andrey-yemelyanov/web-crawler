@@ -1,9 +1,9 @@
 package helvidios.search.webcrawler;
 
+import org.apache.logging.log4j.Logger;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
 import helvidios.search.webcrawler.exceptions.QueueTimeoutException;
-import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
@@ -15,7 +15,7 @@ public abstract class PageDownloader extends Thread {
     private UrlQueue urlQueue;
     private DocumentRepository docRepo;
     private UrlExtractor urlExtractor;
-    private Log log;
+    private Logger log;
     private boolean isStopped;
 
     private static int counter = 0;
@@ -28,7 +28,7 @@ public abstract class PageDownloader extends Thread {
         UrlQueue urlQueue, 
         DocumentRepository docRepo, 
         UrlExtractor urlExtractor, 
-        Log log) {
+        Logger log) {
 
         this.urlQueue = urlQueue;
         this.docRepo = docRepo;
@@ -68,7 +68,7 @@ public abstract class PageDownloader extends Thread {
                 setStopped(true);
             } catch (Exception ex) {
                 // log exception but keep running and try to download next url
-                log.err(String.format("Unable to download %s", url), ex);
+                log.error(String.format("Unable to download %s", url), ex);
             }
         }
         log.info("PageDownloader terminated.");

@@ -1,9 +1,9 @@
 package helvidios.search.webcrawler;
 
 import java.io.IOException;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import helvidios.search.storage.DocumentRepository;
-import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.url.UrlExtractor;
 
 /**
@@ -22,7 +22,7 @@ public class InternetPageDownloader extends PageDownloader {
         UrlQueue urlQueue, 
         DocumentRepository docRepo, 
         UrlExtractor urlExtractor, 
-        Log log) {
+        Logger log) {
         super(urlQueue, docRepo, urlExtractor, log);
 
     }
