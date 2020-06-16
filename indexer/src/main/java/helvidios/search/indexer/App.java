@@ -31,9 +31,9 @@ public class App
         Tokenizer tokenizer = new HtmlTokenizer();
         
         try(ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer()){
-            try(Indexer indexer = new Indexer(docRepo, tokenizer, lemmatizer)){
+            try(IndexBuilder indexer = new IndexBuilder(docRepo, tokenizer, lemmatizer)){
                 long startTime = System.currentTimeMillis();
-                indexer.buildIndex();
+                indexer.build();
                 long endTime = System.currentTimeMillis();
                 long timeElapsed = endTime - startTime;
                 System.out.println("Indexing time: " + format(timeElapsed / 1000));
