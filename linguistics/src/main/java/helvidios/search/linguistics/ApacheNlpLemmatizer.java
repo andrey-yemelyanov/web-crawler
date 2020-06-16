@@ -42,7 +42,7 @@ public class ApacheNlpLemmatizer implements AutoCloseable, Lemmatizer {
      * Returns a normalized representation of supplied tokens in their dictionary form.
      * @param tokens tokens in English
      */
-    public List<String> getLemmas(List<String> tokens){
+    public synchronized List<String> getLemmas(List<String> tokens){
         String[] tokensArray = tokens.toArray(new String[0]);
         String tags[] = posTagger.tag(tokensArray);
         String[] lemmas = lemmatizer.lemmatize(tokensArray, tags);

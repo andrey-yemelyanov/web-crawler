@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.*;
 public class LemmatizerTest {
 
     @Test
-    public void getLemmas(){
+    public void getLemmas() throws Exception {
         List<String> tokens = Arrays.asList(
             "thrown", 
             "putIfAbsent", 
@@ -52,25 +52,25 @@ public class LemmatizerTest {
             "removes"
         );
 
-        try(ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer()){
-            List<String> lemmas = lemmatizer.getLemmas(tokens);
-            assertThat(lemmas, is(Arrays.asList(
-                "throw", 
-                "putIfAbsent", 
-                "write", 
-                "operating", 
-                "specify", 
-                "car", 
-                "performs", 
-                "entry",
-                "hashmap",
-                "replaceall",
-                "123",
-                "concurrentmodificationexception",
-                "externally",
-                "proceed",
-                "remove"
-            )));
-        }
+        ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer();
+        List<String> lemmas = lemmatizer.getLemmas(tokens);
+        assertThat(lemmas, is(Arrays.asList(
+            "throw", 
+            "putIfAbsent", 
+            "write", 
+            "operating", 
+            "specify", 
+            "car", 
+            "performs", 
+            "entry",
+            "hashmap",
+            "replaceall",
+            "123",
+            "concurrentmodificationexception",
+            "externally",
+            "proceed",
+            "remove"
+        )));
+        lemmatizer.close();
     }
 }

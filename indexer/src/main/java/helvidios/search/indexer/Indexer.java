@@ -7,9 +7,8 @@ import helvidios.search.tokenizer.*;
 import java.util.*;
 
 public class Indexer implements AutoCloseable {
-    private final int N_DOC_PROCESSORS = 10;
+    private final int N_INVERTERS = 10;
 
-    private final BlockingDeque<Term> terms;
     private final BlockingQueue<Integer> docQueue;
     private final DocumentRepository docRepo;
     private final ExecutorService pool;
@@ -21,55 +20,32 @@ public class Indexer implements AutoCloseable {
         this.docRepo = docRepo;
         this.tokenizer = tokenizer;
         this.lemmatizer = lemmatizer;
-        this.terms = new LinkedBlockingDeque<>();
-        this.pool = Executors.newFixedThreadPool(N_DOC_PROCESSORS);
+        this.pool = Executors.newFixedThreadPool(N_INVERTERS);
     }
 
-    public void buildIndex() {
+    public void buildIndex() throws InterruptedException, ExecutionException {
 
         System.out.println("Indexing started...");
         
         // populate document queue with document ids to be indexed
         docRepo.iterator().forEachRemaining(doc -> docQueue.add(doc.getId()));
 
-        // run concurrent document processors - extract terms from each document
-        List<CompletableFuture<?>> jobs = new ArrayList<>();
-        for (int i = 0; i < N_DOC_PROCESSORS; i++) {
-            jobs.add(CompletableFuture.runAsync(() ->
-            {
-
-                System.out.printf("Document processor %d started.\n", Thread.currentThread().getId());
-
-                while (!docQueue.isEmpty()) {
-                    try {
-                        int docId = docQueue.remove();
-                        HtmlDocument doc = docRepo.get(new DocId(docId));
-                        List<String> tokens = tokenizer.getTokens(doc.getContent());
-                        for (String term : lemmatizer.getLemmas(tokens)) {
-                            terms.add(new Term(term, docId));
-                        }
-                        System.out.println("Processed " + doc.toString());
-                    } catch (Exception ex) {
-                        System.out.println(ex.toString());
-                    }
-                }
-
-                System.out.printf("Document processor %d terminated.\n", Thread.currentThread().getId());
-
-            }, pool));
+        // run concurrent inverters
+        List<Inverter> inverters = new ArrayList<>();
+        for(int i = 0; i < N_INVERTERS; i++){
+            inverters.add(new Inverter(
+                docQueue,
+                docRepo,
+                tokenizer,
+                lemmatizer
+            ));
         }
+        List<Future<Map<String, SortedSet<Term>>>> jobs = pool.invokeAll(inverters);
 
-        // wait for all document processors to finish
-        CompletableFuture.allOf(jobs.toArray(new CompletableFuture[0])).join();
-
-        // sort terms by term and docId
-        List<Term> sortedTerms = new ArrayList<>(terms);
-        sortedTerms.sort((t1, t2) -> {
-            if(t1.getTerm().equals(t2.getTerm())){
-                return Integer.compare(t1.getDocId(), t2.getDocId());
-            }
-            return t1.getTerm().compareTo(t2.getTerm());
-        });
+        Map<String, SortedSet<Term>> index = new HashMap<>();
+        for(Future<Map<String, SortedSet<Term>>> job : jobs){
+            System.out.println(job.get());
+        }
 
         System.out.println("Indexing completed.");
     }
