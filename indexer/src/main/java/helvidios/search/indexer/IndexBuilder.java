@@ -84,25 +84,30 @@ public class IndexBuilder implements AutoCloseable {
 
         log.info("Indexing completed.");
         log.info("Index size: {}", index.size());
-        log.info("Vocabulary:\n{}", index.getVocabulary());
         System.out.printf("Indexing completed.\nIndex size: %d\n", index.size());
     }
 
-    private static InMemoryIndex buildIndex(
+    private InMemoryIndex buildIndex(
         List<Future<Map<Term, List<Posting>>>> jobs) throws Exception{
         
         InMemoryIndex index = new InMemoryIndex();
         for(Future<Map<Term, List<Posting>>> job : jobs){
+            log.info("Appending index subset from job {}...", job.hashCode());
             index.append(job.get());
+            log.info("Index subset successfully appended from job {}.", job.hashCode());
         }
+
+        log.info("Full index built. Index size {}.", index.size());
 
         return index;
     }
 
     private void storeIndex(InMemoryIndex index){
+        log.info("Storing index in repository...");
         for(Term term : index.getVocabulary()){
             indexRepo.addTerm(term, index.getPostingsList(term));
         }
+        log.info("Successfully stored index.");
     }
 
     @Override

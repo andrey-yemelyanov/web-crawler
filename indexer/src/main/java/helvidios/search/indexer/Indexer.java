@@ -43,7 +43,7 @@ class Indexer implements Callable<Map<Term, List<Posting>>> {
         while (!docQueue.isEmpty()) {
             try {
                 Integer docId = docQueue.poll();
-                if(docId == null) break;
+                if(docId == null) continue;
 
                 HtmlDocument doc = docRepo.get(new DocId(docId));
                 List<String> tokens = tokenizer.getTokens(doc.getContent());

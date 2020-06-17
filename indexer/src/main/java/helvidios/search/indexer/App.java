@@ -22,24 +22,25 @@ public class App
     public static void main( String[] args ) throws Exception
     {
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
-        docRepo.clear();
-        HtmlDocument doc1 = new HtmlDocument(
-            "https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html",
-            new String(Files.readAllBytes(Paths.get("Collections.html"))),
-            "Java Collections");
-        HtmlDocument doc2 = new HtmlDocument(
-            "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html",
-            new String(Files.readAllBytes(Paths.get("Stream.html"))),
-            "Java Stream");
-        HtmlDocument doc3 = new HtmlDocument(
-            "https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html",
-            new String(Files.readAllBytes(Paths.get("Class.html"))),
-            "Java Class");
-        docRepo.insert(doc1);
-        docRepo.insert(doc2);
-        docRepo.insert(doc3);
+        // docRepo.clear();
+        // HtmlDocument doc1 = new HtmlDocument(
+        //     "https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html",
+        //     new String(Files.readAllBytes(Paths.get("Collections.html"))),
+        //     "Java Collections");
+        // HtmlDocument doc2 = new HtmlDocument(
+        //     "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html",
+        //     new String(Files.readAllBytes(Paths.get("Stream.html"))),
+        //     "Java Stream");
+        // HtmlDocument doc3 = new HtmlDocument(
+        //     "https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html",
+        //     new String(Files.readAllBytes(Paths.get("Class.html"))),
+        //     "Java Class");
+        // docRepo.insert(doc1);
+        // docRepo.insert(doc2);
+        // docRepo.insert(doc3);
 
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder().build();
+        indexRepo.clear();
 
         Tokenizer tokenizer = new HtmlTokenizer();
         
