@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-App<indexer>",
+            "request": "launch",
+            "mainClass": "helvidios.search.indexer.App",
+            "projectName": "indexer"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-App<index>",
+            "request": "launch",
+            "mainClass": "helvidios.search.index.storage.App",
+            "projectName": "index"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-App<web-crawler>",
+            "request": "launch",
+            "mainClass": "helvidios.search.webcrawler.App",
+            "projectName": "web-crawler"
+        }
+    ]
+}

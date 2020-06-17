@@ -87,7 +87,7 @@ public class MongoDbDocumentRepository implements DocumentRepository {
     public static class Builder{
         private final static String HOST = "localhost";
         private final static int PORT = 27017;
-        private final static String DATABASE = "document-db";
+        private final static String DATABASE = "search-db";
 
         private String host = HOST;
         private int port = PORT;

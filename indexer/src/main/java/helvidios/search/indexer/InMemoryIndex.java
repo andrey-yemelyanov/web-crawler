@@ -1,21 +1,23 @@
 package helvidios.search.indexer;
 
 import java.util.*;
+import helvidios.search.index.Posting;
+import helvidios.search.index.Term;
 
 class InMemoryIndex {
 
-    private final Map<String, List<Term>> index = new HashMap<>();
+    private final Map<Term, List<Posting>> index = new HashMap<>();
 
-    void append(Map<String, List<Term>> subIndex){
-        for(String key : subIndex.keySet()){
-            index.put(key, mergePostingsLists(
-                index.computeIfAbsent(key, (k) -> new LinkedList<>()), 
-                subIndex.get(key)));
+    void append(Map<Term, List<Posting>> subIndex){
+        for(Term term : subIndex.keySet()){
+            index.put(term, mergePostingsLists(
+                index.computeIfAbsent(term, (k) -> new LinkedList<>()), 
+                subIndex.get(term)));
         }
     }
 
-    private List<Term> mergePostingsLists(List<Term> list1, List<Term> list2){
-        List<Term> merged = new LinkedList<>();
+    private List<Posting> mergePostingsLists(List<Posting> list1, List<Posting> list2){
+        List<Posting> merged = new LinkedList<>();
         
         int i = 0, j = 0;
         while(i < list1.size() && j < list2.size()){
@@ -37,8 +39,17 @@ class InMemoryIndex {
         return merged;
     }
 
-    Map<String, List<Term>> getIndex(){
-        return index;
+    List<Term> getVocabulary(){
+        return new ArrayList<>(index.keySet());
+    }
+
+    List<Posting> getPostingsList(Term term){
+        if(!index.containsKey(term)) return new ArrayList<>();
+        return index.get(term);
+    }
+
+    long size(){
+        return index.size();
     }
 
     @Override

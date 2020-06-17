@@ -3,6 +3,7 @@ package helvidios.search.indexer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.apache.logging.log4j.*;
+import helvidios.search.index.storage.*;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
@@ -38,10 +39,12 @@ public class App
         docRepo.insert(doc2);
         docRepo.insert(doc3);
 
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder().build();
+
         Tokenizer tokenizer = new HtmlTokenizer();
         
         try(ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer()){
-            try(IndexBuilder indexer = new IndexBuilder(docRepo, tokenizer, lemmatizer, LOGGER)){
+            try(IndexBuilder indexer = new IndexBuilder(docRepo, indexRepo, tokenizer, lemmatizer, LOGGER)){
                 long startTime = System.currentTimeMillis();
                 indexer.build();
                 long endTime = System.currentTimeMillis();

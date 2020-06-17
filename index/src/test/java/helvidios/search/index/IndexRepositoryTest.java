@@ -1,0 +1,70 @@
+package helvidios.search.index;
+
+import org.junit.Test;
+import helvidios.search.index.storage.IndexRepository;
+import helvidios.search.index.storage.MongoDbIndexRepository;
+import java.util.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+
+public class IndexRepositoryTest {
+    @Test
+    public void addTerm(){
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+                                                              .setDatabase("test-index")
+                                                              .build();
+        indexRepo.clear();
+
+        Term term = new Term("hashmap");
+
+        List<Posting> postingsList = Arrays.asList(
+            new Posting(term, 1000, 15),
+            new Posting(term, 1001, 25),
+            new Posting(term, 1002, 30)
+        );
+
+        indexRepo.addTerm(term, postingsList);
+
+        List<Posting> storedPostingsList = indexRepo.getPostingsList(term);
+        assertThat(storedPostingsList, is(postingsList));
+        assertThat(indexRepo.size(), is(1L));
+    }
+
+    @Test
+    public void getVocabulary(){
+
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+                                                              .setDatabase("test-index")
+                                                              .build();
+        indexRepo.clear();
+
+        Term term1 = new Term("hashmap");
+        List<Posting> postingsList1 = Arrays.asList(
+            new Posting(term1, 1000, 15),
+            new Posting(term1, 1001, 25),
+            new Posting(term1, 1002, 30)
+        );
+
+        Term term2 = new Term("array");
+        List<Posting> postingsList2 = Arrays.asList(
+            new Posting(term2, 1000, 15),
+            new Posting(term2, 1001, 25),
+            new Posting(term2, 1002, 30)
+        );
+
+        Term term3 = new Term("bitset");
+        List<Posting> postingsList3 = Arrays.asList(
+            new Posting(term3, 1000, 15),
+            new Posting(term3, 1001, 25),
+            new Posting(term3, 1002, 30)
+        );
+
+        indexRepo.addTerm(term1, postingsList1);
+        indexRepo.addTerm(term2, postingsList2);
+        indexRepo.addTerm(term3, postingsList3);
+
+        List<Term> vocabulary = indexRepo.getVocabulary();
+
+        assertThat(vocabulary, is(Arrays.asList(term2, term3, term1)));
+    }
+}
