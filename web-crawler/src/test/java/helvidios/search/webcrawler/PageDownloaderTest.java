@@ -1,5 +1,6 @@
 package helvidios.search.webcrawler;
 
+import org.apache.logging.log4j.Logger;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -8,7 +9,6 @@ import org.mockito.junit.MockitoRule;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
 import helvidios.search.storage.InMemoryDocumentRepository;
-import helvidios.search.webcrawler.logging.Log;
 import helvidios.search.webcrawler.url.SimpleUrlExtractor;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -16,7 +16,7 @@ import java.util.*;
 
 public class PageDownloaderTest {
 
-    @Mock Log log;
+    @Mock Logger log;
 
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 

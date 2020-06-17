@@ -1,10 +1,9 @@
 package helvidios.search.webcrawler;
 
 import java.net.MalformedURLException;
+import org.apache.logging.log4j.*;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.InMemoryDocumentRepository;
-import helvidios.search.webcrawler.logging.Log;
-import helvidios.search.webcrawler.logging.Log4j;
 import helvidios.search.webcrawler.url.*;
 
 /**
@@ -16,13 +15,13 @@ public class Crawler {
     private PageDownloaderPool downloaderPool;
     private DocumentRepository docRepo;
     private UrlQueue urlQueue;
-    private Log log;
+    private Logger log;
 
     private Crawler(
         String seedUrl, 
         DocumentRepository docRepo, 
         UrlExtractor urlExtractor, 
-        Log log,
+        Logger log,
         int nDownloaders, 
         int timeout) throws InterruptedException {
 
@@ -85,7 +84,7 @@ public class Crawler {
 
         private DocumentRepository docRepo = new InMemoryDocumentRepository();
         private UrlExtractor urlExtractor;
-        private Log log = new Log4j();
+        private Logger log = LogManager.getLogger(Crawler.class.getName());
         private String seedUrl;
         private int nDownloaders = N_DOWNLOADERS;
         private int timeout = TIMEOUT;
@@ -130,7 +129,7 @@ public class Crawler {
          * Default is the Log4j-based implementation.
          * @param log
          */
-        public Builder setLog(Log log){
+        public Builder setLog(Logger log){
             this.log = log;
             return this;
         }
