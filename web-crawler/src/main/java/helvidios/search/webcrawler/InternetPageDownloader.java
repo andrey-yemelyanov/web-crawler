@@ -32,4 +32,17 @@ public class InternetPageDownloader extends PageDownloader {
         return Jsoup.connect(url).get().html();
     }
 
+    @Override
+    protected String getDocumentTitle(String content) {
+        final String defaultTitle = "Unknown document title";
+        try{
+            String title = Jsoup.parse(content).title().trim();
+            if(title == null || title.isEmpty()) return defaultTitle;
+            return title;
+        }catch(Exception ex){
+            log.error(ex);
+            return defaultTitle;
+        }
+    }
+
 }

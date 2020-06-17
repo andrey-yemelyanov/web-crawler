@@ -23,9 +23,9 @@ public class DocumentRepositoryTest {
     private void testDocRepo(DocumentRepository docRepo){
         docRepo.clear();
 
-        HtmlDocument doc1 = new HtmlDocument("http://www.url1.com", "<html></html>");
-        HtmlDocument doc2 = new HtmlDocument("http://www.url2.com", "<html></html>");
-        HtmlDocument doc3 = new HtmlDocument("http://www.url3.com", "<html></html>");
+        HtmlDocument doc1 = new HtmlDocument("http://www.url1.com", "<html></html>", "title1");
+        HtmlDocument doc2 = new HtmlDocument("http://www.url2.com", "<html></html>", "title2");
+        HtmlDocument doc3 = new HtmlDocument("http://www.url3.com", "<html></html>", "title3");
 
         assertThat(docRepo.size(), is(0L));
         assertThat(docRepo.get(new DocId(doc1.getId())), is(nullValue()));
@@ -43,6 +43,10 @@ public class DocumentRepositoryTest {
         assertThat(docRepo.contains(doc1.getUrl()), is(true));
         assertThat(docRepo.contains(doc2.getUrl()), is(true));
         assertThat(docRepo.contains(doc3.getUrl()), is(true));
+
+        assertThat(docRepo.get(new DocId(doc1.getId())).getTitle(), is("title1"));
+        assertThat(docRepo.get(new DocId(doc2.getId())).getTitle(), is("title2"));
+        assertThat(docRepo.get(new DocId(doc3.getId())).getTitle(), is("title3"));
 
         List<HtmlDocument> allDocs = new ArrayList<>();
         docRepo.iterator().forEachRemaining(allDocs::add);

@@ -16,9 +16,29 @@ import java.util.*;
 
 public class PageDownloaderTest {
 
-    @Mock Logger log;
+    @Mock
+    Logger log;
 
-    @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Test
+    public void getHtmlTitle() throws Exception {
+        final String page1 = TestUtil.readFile("webgraph/page1.html");
+        final String page2 = TestUtil.readFile("webgraph/page2.html");
+        
+        UrlQueue urlQueue = new UrlQueue(1);
+        DocumentRepository docRepo = new InMemoryDocumentRepository();
+        PageDownloader pageDownloader = new InternetPageDownloader(
+            urlQueue,
+            docRepo,
+            new SimpleUrlExtractor("BASEURL"),
+            log
+        );
+
+        assertThat(pageDownloader.getDocumentTitle(page1), is("Unknown document title"));
+        assertThat(pageDownloader.getDocumentTitle(page2), is("Page2 Title Long Text"));
+    }
 
     @Test
     public void runPageDownloader() throws Exception {
@@ -50,6 +70,11 @@ public class PageDownloaderTest {
                 if(url.equals(url4)) return page4;
                 throw new Exception(String.format("Document for url %s not found.", url));
             }
+
+            @Override
+            protected String getDocumentTitle(String content) {
+                return "titleABC";
+            }
         };
 
         pageDownloader.run();
@@ -58,10 +83,10 @@ public class PageDownloaderTest {
         assertThat(urlQueue.size(), is(0));
 
         List<HtmlDocument> expectedDocs = Arrays.asList(
-            new HtmlDocument(url1, page1),
-            new HtmlDocument(url2, page2),
-            new HtmlDocument(url3, page3),
-            new HtmlDocument(url4, page4)
+            new HtmlDocument(url1, page1, "title1"),
+            new HtmlDocument(url2, page2, "title1"),
+            new HtmlDocument(url3, page3, "title1"),
+            new HtmlDocument(url4, page4, "title1")
         );
         
         List<HtmlDocument> actualDocs = Arrays.asList(
@@ -72,5 +97,10 @@ public class PageDownloaderTest {
         );
 
         assertThat(actualDocs, is(expectedDocs));
+
+        assertThat(docRepo.get(url1).getTitle(), is("titleABC"));
+        assertThat(docRepo.get(url2).getTitle(), is("titleABC"));
+        assertThat(docRepo.get(url3).getTitle(), is("titleABC"));
+        assertThat(docRepo.get(url4).getTitle(), is("titleABC"));
     }
 }

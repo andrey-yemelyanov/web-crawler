@@ -33,6 +33,7 @@ public class MongoDbDocumentRepository implements DocumentRepository {
             new Document("_id", doc.getId())
                  .append("url", doc.getUrl())
                  .append("content", doc.getContent())
+                 .append("title", doc.getTitle())
                  .append("insertedDate", new Date()));
     }
 
@@ -40,7 +41,8 @@ public class MongoDbDocumentRepository implements DocumentRepository {
         if(doc == null) return null;
         return new HtmlDocument(
                 doc.get("url").toString(), 
-                doc.get("content").toString());
+                doc.get("content").toString(),
+                doc.get("title").toString());
     }
 
     public HtmlDocument get(DocId id) {

@@ -8,17 +8,27 @@ public class HtmlDocument {
     private final DocId docId;
     private final String url;
     private final String content;
+    private final String title;
 
     /**
      * Initializes a new instance of {@link HtmlDocument}.
      * 
      * @param url     URL of the document
      * @param content HTML content of the document
+     * @param title   Document title
      */
-    public HtmlDocument(String url, String content) {
+    public HtmlDocument(String url, String content, String title) {
         this.url = url;
         this.content = content;
         this.docId = new DocId(url);
+        this.title = title;
+    }
+
+    /**
+     * Returns human-readable title of this document.
+     */
+    public String getTitle(){
+        return title;
     }
 
     /**
@@ -56,6 +66,6 @@ public class HtmlDocument {
 
     @Override
     public String toString(){
-        return String.format("%s %s", docId, url);
+        return String.format("%s '%s' %s", docId, title, url);
     }
 }

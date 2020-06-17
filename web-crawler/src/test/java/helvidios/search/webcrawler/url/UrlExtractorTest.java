@@ -12,7 +12,7 @@ public class UrlExtractorTest {
     @Test
     public void extractUrls() throws Exception {
         HtmlDocument doc = new HtmlDocument("http://www.mycrawler.net/dir1/dir2/page.html",
-                TestUtil.readFile("page1.html"));
+                TestUtil.readFile("page1.html"), "title1");
 
         UrlExtractor extractor = new SimpleUrlExtractor(Util.getBaseUrl(doc.getUrl()));
         List<String> urls = extractor.getUrls(doc);
@@ -26,7 +26,7 @@ public class UrlExtractorTest {
     @Test
     public void extractUrlsWithPrefix() throws Exception {
         HtmlDocument doc = new HtmlDocument("http://www.mycrawler.net/dir1/dir2/page.html",
-                TestUtil.readFile("page1.html"));
+                TestUtil.readFile("page1.html"), "title1");
 
         UrlExtractor extractor = new SimpleUrlExtractor("https://www.w3schools.com");
         List<String> urls = extractor.getUrls(doc);
@@ -37,7 +37,10 @@ public class UrlExtractorTest {
 
     @Test
     public void noMathchingUrls() throws Exception {
-        HtmlDocument doc = new HtmlDocument("http://www.mycrawler.net/dir1/dir2/page.html", TestUtil.readFile("page1.html"));
+        HtmlDocument doc = new HtmlDocument(
+            "http://www.mycrawler.net/dir1/dir2/page.html", 
+            TestUtil.readFile("page1.html"),
+            "title");
         UrlExtractor extractor = new SimpleUrlExtractor("https://www.google.com");
         List<String> urls = extractor.getUrls(doc);
         assertThat(urls.isEmpty(), is(true));
@@ -45,7 +48,10 @@ public class UrlExtractorTest {
 
     @Test
     public void getUrlsJavaDocs() throws Exception {
-        HtmlDocument doc = new HtmlDocument("https://docs.oracle.com/javase/8/docs/api/allclasses-noframe.html", TestUtil.readFile("JavaDoc.html"));
+        HtmlDocument doc = new HtmlDocument(
+            "https://docs.oracle.com/javase/8/docs/api/allclasses-noframe.html", 
+            TestUtil.readFile("JavaDoc.html"),
+            "title");
         String baseUrl = Util.getBaseUrl(doc.getUrl());
         UrlExtractor extractor = new SimpleUrlExtractor(baseUrl);
         List<String> urls = extractor.getUrls(doc);
@@ -55,7 +61,7 @@ public class UrlExtractorTest {
 
     @Test
     public void getUrlsDiadrom() throws Exception{
-        HtmlDocument doc = new HtmlDocument("https://diadrom.se/", TestUtil.readFile("diadrom.html"));
+        HtmlDocument doc = new HtmlDocument("https://diadrom.se/", TestUtil.readFile("diadrom.html"), "title");
         String baseUrl = Util.getBaseUrl(doc.getUrl());
         UrlExtractor extractor = new SimpleUrlExtractor(baseUrl);
         List<String> urls = extractor.getUrls(doc);

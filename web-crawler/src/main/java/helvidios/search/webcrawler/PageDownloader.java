@@ -15,8 +15,9 @@ public abstract class PageDownloader extends Thread {
     private UrlQueue urlQueue;
     private DocumentRepository docRepo;
     private UrlExtractor urlExtractor;
-    private Logger log;
     private boolean isStopped;
+
+    protected Logger log;
 
     private static int counter = 0;
     private int id;
@@ -48,7 +49,8 @@ public abstract class PageDownloader extends Thread {
                 url = urlQueue.getUrl();
 
                 // download the document with this URL
-                HtmlDocument doc = new HtmlDocument(url, downloadPage(url));
+                String content = downloadPage(url);
+                HtmlDocument doc = new HtmlDocument(url, content, getDocumentTitle(content));
 
                 // store the downloaded document in repository
                 if(!docRepo.contains(url)) {
@@ -80,7 +82,9 @@ public abstract class PageDownloader extends Thread {
      * @return full HTML content of the downloaded page
      * @throws Exception
      */
-    public abstract String downloadPage(String url) throws Exception;
+    protected abstract String downloadPage(String url) throws Exception;
+
+    protected abstract String getDocumentTitle(String content);
 
     /**
      * Signals to this downloader to stop fetching URLs.
