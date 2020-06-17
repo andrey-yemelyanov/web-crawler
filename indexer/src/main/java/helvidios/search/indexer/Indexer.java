@@ -38,13 +38,15 @@ class Indexer implements Callable<Map<String, List<Term>>> {
         log.info("Indexer {} started.", id);
         while (!docQueue.isEmpty()) {
             try {
-                int docId = docQueue.remove();
+                Integer docId = docQueue.poll();
+                if(docId == null) break;
                 HtmlDocument doc = docRepo.get(new DocId(docId));
                 List<String> tokens = tokenizer.getTokens(doc.getContent());
+                List<String> lemmas = lemmatizer.getLemmas(tokens);
                 
                 // generate frequency map for terms in this document
                 Map<String, Integer> freq = new HashMap<>();
-                for (String term : lemmatizer.getLemmas(tokens)) {
+                for (String term : lemmas) {
                     freq.put(term, freq.getOrDefault(term, 0) + 1);
                 }
 
