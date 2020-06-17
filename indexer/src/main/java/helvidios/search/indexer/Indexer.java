@@ -5,7 +5,6 @@ import helvidios.search.storage.*;
 import helvidios.search.tokenizer.Tokenizer;
 import java.util.*;
 import java.util.concurrent.*;
-
 import org.apache.logging.log4j.Logger;
 
 class Indexer implements Callable<Map<String, List<Term>>> {

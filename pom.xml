@@ -12,6 +12,7 @@
 	  <module>tokenizer</module>
     <module>linguistics</module>
     <module>web-crawler</module>
+    <module>index</module>
     <module>indexer</module>
   </modules>
   <properties>
