@@ -67,24 +67,24 @@ public class IndexBuilder implements AutoCloseable {
         log.info("Indexing {} documents...", docQueue.size());
 
         // run concurrent indexers
-        List<Indexer> indexers = new ArrayList<>();
-        for(int i = 0; i < N_CONCURRENT_INDEXERS; i++){
-            indexers.add(new Indexer(
-                docQueue,
-                docRepo,
-                tokenizer,
-                lemmatizer,
-                log
-            ));
-        }
+        // List<Indexer> indexers = new ArrayList<>();
+        // for(int i = 0; i < N_CONCURRENT_INDEXERS; i++){
+        //     indexers.add(new Indexer(
+        //         docQueue,
+        //         docRepo,
+        //         tokenizer,
+        //         lemmatizer,
+        //         log
+        //     ));
+        // }
 
-        InMemoryIndex index = buildIndex(pool.invokeAll(indexers));
+        //InMemoryIndex index = buildIndex(pool.invokeAll(indexers));
 
-        storeIndex(index);
+        //storeIndex(index);
 
         log.info("Indexing completed.");
-        log.info("Index size: {}", index.size());
-        System.out.printf("Indexing completed.\nIndex size: %d\n", index.size());
+        //log.info("Index size: {}", index.size());
+        //System.out.printf("Indexing completed.\nIndex size: %d\n", index.size());
     }
 
     private InMemoryIndex buildIndex(

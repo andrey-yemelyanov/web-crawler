@@ -3,7 +3,7 @@ package helvidios.search.index;
 import java.util.Objects;
 
 /**
- * Represents an index posting for a certain term.
+ * Represents a non-positional index posting for a certain term.
  */
 public class Posting implements Comparable<Posting> {
     private final int docId;
