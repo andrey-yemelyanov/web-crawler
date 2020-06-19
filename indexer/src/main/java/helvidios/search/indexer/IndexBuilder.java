@@ -31,6 +31,7 @@ public class IndexBuilder implements AutoCloseable {
     }
 
     public void build() throws Exception{
+        
         log.info("Indexing started. {} documents in corpus.", docRepo.size());
         long startTime = System.currentTimeMillis();
 
@@ -40,9 +41,13 @@ public class IndexBuilder implements AutoCloseable {
         for(String blockFile : blockFiles){
             readers.add(new FileBlockReader(blockFile, log));
         }
-        ExternalSort externalSort = new ExternalSort(readers);
-        String completeBlock = externalSort.sort();
-
+        
+        String completeBlock;
+        try(BlockWriter writer = new FileBlockWriter()){
+            ExternalSort externalSort = new ExternalSort(readers, writer);
+            completeBlock = externalSort.sort();
+        }
+        
         try(BlockReader br = new FileBlockReader(completeBlock, log)){
             Indexer indexer = new Indexer(indexRepo, br, log);
             indexer.buildIndex();
