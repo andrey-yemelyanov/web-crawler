@@ -5,6 +5,8 @@ import java.util.*;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import helvidios.search.index.Posting;
 import helvidios.search.index.Term;
@@ -26,6 +28,8 @@ public class MongoDbIndexRepository implements IndexRepository {
 
         this.client = new MongoClient(host, port);
         this.collection = client.getDatabase(database).getCollection("index");
+        IndexOptions indexOptions = new IndexOptions().unique(true);
+        this.collection.createIndex(Indexes.ascending("term"), indexOptions);
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
@@ -37,14 +41,14 @@ public class MongoDbIndexRepository implements IndexRepository {
         
         for(Posting posting : postingsList){
             Map<String, Object> map = new HashMap<>();
-            map.put("docId", posting.getDocId());
-            map.put("freq", posting.getFreq());
+            map.put("docId", posting.docId());
+            map.put("tf", posting.tf());
             list.add(new BasicDBObject(map));
         }
 
         collection.insertOne(
-            new Document("_id", term.getTermId())
-                .append("term", term.getTerm())
+            new Document("term", term.name())
+                .append("df", postingsList.size())
                 .append("postingsList", list)
         );
     }
@@ -53,7 +57,7 @@ public class MongoDbIndexRepository implements IndexRepository {
     public List<Term> getVocabulary() {
         List<Term> terms = new ArrayList<>();
         for(Document doc : collection.find().sort(new BasicDBObject("term", 1))){
-            terms.add(new Term(doc.getString("term")));
+            terms.add(new Term(doc.getString("term"), doc.getInteger("df")));
         }
         return terms;
     }
@@ -61,10 +65,10 @@ public class MongoDbIndexRepository implements IndexRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<Posting> getPostingsList(Term term) {
-        Document doc = collection.find(eq("_id", term.getTermId())).first();
+        Document doc = collection.find(eq("term", term.name())).first();
         List<Document> postingsList = (List<Document>) doc.get("postingsList");
         return postingsList.stream()
-                           .map(obj -> new Posting(term, obj.getInteger("docId"), obj.getInteger("freq")))
+                           .map(obj -> new Posting(new Term(term.name(), doc.getInteger("df")), obj.getInteger("docId"), obj.getInteger("tf")))
                            .collect(Collectors.toList());
     }
     

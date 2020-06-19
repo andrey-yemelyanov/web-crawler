@@ -17,7 +17,9 @@ public class TermDocIdPair implements Comparable<TermDocIdPair> {
 
     @Override
     public int compareTo(TermDocIdPair other) {
-        if(this.term().equals(other.term())) return Integer.compare(this.docId(), other.docId());
+        if(this.term().equals(other.term())) {
+            return Integer.compare(this.docId(), other.docId());
+        }
         return this.term().compareTo(other.term());
     }
 

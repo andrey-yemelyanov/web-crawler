@@ -10,10 +10,12 @@ public class FileBlockReader implements BlockReader {
 
     private final InputStream inputStream;
     private final Logger log;
+    private final String filePath;
 
     public FileBlockReader(String filePath, Logger log) throws Exception {
         inputStream = new BufferedInputStream(new FileInputStream(filePath));
         this.log = log;
+        this.filePath = filePath;
     }
 
     @Override
@@ -70,6 +72,11 @@ public class FileBlockReader implements BlockReader {
     @Override
     public void close() throws Exception {
         inputStream.close();
+    }
+
+    @Override
+    public String filePath() {
+        return filePath;
     }
     
 }

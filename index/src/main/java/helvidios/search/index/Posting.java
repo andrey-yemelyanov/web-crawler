@@ -7,7 +7,7 @@ import java.util.Objects;
  */
 public class Posting implements Comparable<Posting> {
     private final int docId;
-    private final int freq;
+    private final int tf;
     private final Term term;
 
     /**
@@ -16,30 +16,30 @@ public class Posting implements Comparable<Posting> {
      * @param docId document ID where the specified term appears
      * @param freq number of times the specified term appears in the document
      */
-    public Posting(Term term, int docId, int freq){
+    public Posting(Term term, int docId, int tf){
         this.term = term;
         this.docId = docId;
-        this.freq = freq;
+        this.tf = tf;
     }
 
     /**
      * Returns document ID where the term appears.
      */
-    public int getDocId(){
+    public int docId(){
         return docId;
     }
 
     /**
      * Returns number of times this term occurs in the associated document.
      */
-    public int getFreq(){
-        return freq;
+    public int tf(){
+        return tf;
     }
 
     /**
      * Returns a term associated with this posting.
      */
-    public Term getTerm(){
+    public Term term(){
         return term;
     }
 
@@ -52,11 +52,16 @@ public class Posting implements Comparable<Posting> {
     public boolean equals(Object obj){
         if(!(obj instanceof Posting)) return false;
         Posting other = (Posting) obj;
-        return this.term.equals(other.term) && this.docId == other.docId && this.freq == other.freq;
+        return this.term.equals(other.term) && this.docId == other.docId && this.tf == other.tf;
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(term, docId, freq);
+        return Objects.hash(term, docId, tf);
+    }
+
+    @Override
+    public String toString(){
+        return String.format("(%s, docId=%d, tf=%d)", term.toString(), docId, tf);
     }
 }

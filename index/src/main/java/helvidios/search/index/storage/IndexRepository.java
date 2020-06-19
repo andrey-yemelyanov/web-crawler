@@ -21,7 +21,7 @@ public interface IndexRepository {
     public List<Term> getVocabulary();
 
     /**
-     * Returns a postings list for a given term.
+     * Returns a sorted postings list for a given term.
      */
     public List<Posting> getPostingsList(Term term);
 
@@ -31,7 +31,7 @@ public interface IndexRepository {
     public void clear();
 
     /**
-     * Returns vocabulary size of this index.
+     * Returns number of unique terms in this index.
      */
     public long size();
 }

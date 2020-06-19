@@ -28,6 +28,10 @@ public class IndexRepositoryTest {
         List<Posting> storedPostingsList = indexRepo.getPostingsList(term);
         assertThat(storedPostingsList, is(postingsList));
         assertThat(indexRepo.size(), is(1L));
+
+        List<Term> vocabulary = indexRepo.getVocabulary();
+        assertThat(vocabulary.size(), is(1));
+        assertThat(vocabulary.get(0).df(), is(3));
     }
 
     @Test
@@ -66,5 +70,33 @@ public class IndexRepositoryTest {
         List<Term> vocabulary = indexRepo.getVocabulary();
 
         assertThat(vocabulary, is(Arrays.asList(term2, term3, term1)));
+        assertThat(vocabulary.get(0).df(), is(3));
+        assertThat(vocabulary.get(1).df(), is(3));
+        assertThat(vocabulary.get(2).df(), is(3));
+    }
+
+    @Test(expected = Exception.class)
+    public void  nonUniqueTerm(){
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+                                                              .setDatabase("test-index")
+                                                              .build();
+        indexRepo.clear();
+
+        Term term1 = new Term("hashmap");
+        List<Posting> postingsList1 = Arrays.asList(
+            new Posting(term1, 1000, 15),
+            new Posting(term1, 1001, 25),
+            new Posting(term1, 1002, 30)
+        );
+
+        Term term2 = new Term("hashmap");
+        List<Posting> postingsList2 = Arrays.asList(
+            new Posting(term2, 1000, 15),
+            new Posting(term2, 1001, 25),
+            new Posting(term2, 1002, 30)
+        );
+
+        indexRepo.addTerm(term1, postingsList1);
+        indexRepo.addTerm(term2, postingsList2);
     }
 }

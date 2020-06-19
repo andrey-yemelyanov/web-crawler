@@ -4,9 +4,14 @@ import helvidios.search.linguistics.Lemmatizer;
 import helvidios.search.storage.*;
 import helvidios.search.tokenizer.Tokenizer;
 import java.util.*;
-import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Scalable inverter with support for block-based indexing.
+ * When run on a document corpus, this inverter will generate a sorted list
+ * of (term, docId) pairs sorted by term and docId. This postings list may be
+ * stored in multiple files on disk if the size of the list exceeds {@value #BLOCK_SIZE} records.
+ */
 class Inverter {
 
     private final DocumentRepository docRepo;
@@ -15,7 +20,7 @@ class Inverter {
     private final List<TermDocIdPair> postings;
     private final Logger log;
 
-    private static final int BLOCK_SIZE = 1 * 1000 * 1000;
+    private static final int BLOCK_SIZE = 10 * 1000 * 1000;
 
     Inverter(
         DocumentRepository docRepo,
@@ -29,7 +34,13 @@ class Inverter {
         this.log = log;
     }
 
-    List<String> index() throws Exception {
+    /**
+     * Builds a sorted list of (term, docId) pairs for each document in the corpus. 
+     * Stores the resulting list on potentially multiple block files on disk. 
+     * @return list of file pathnames to all the blocks
+     * @throws Exception
+     */
+    List<String> buildPostings() throws Exception {
         List<String> blocks = new ArrayList<>();
         Iterator<HtmlDocument> it = docRepo.iterator();
         int nDocs = 0;
