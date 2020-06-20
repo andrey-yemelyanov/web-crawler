@@ -43,6 +43,7 @@ public class MongoDbIndexRepository implements IndexRepository {
             Map<String, Object> map = new HashMap<>();
             map.put("docId", posting.docId());
             map.put("tf", posting.tf());
+            map.put("tfIdfScore", posting.tfIdfScore());
             list.add(new BasicDBObject(map));
         }
 
@@ -67,8 +68,13 @@ public class MongoDbIndexRepository implements IndexRepository {
     public List<Posting> getPostingsList(Term term) {
         Document doc = collection.find(eq("term", term.name())).first();
         List<Document> postingsList = (List<Document>) doc.get("postingsList");
+        final Term t = new Term(term.name(), doc.getInteger("df"));
         return postingsList.stream()
-                           .map(obj -> new Posting(new Term(term.name(), doc.getInteger("df")), obj.getInteger("docId"), obj.getInteger("tf")))
+                           .map(obj -> {
+                               Posting posting = new Posting(t, obj.getInteger("docId"), obj.getInteger("tf"));
+                               posting.setTfIdfScore(obj.getDouble("tfIdfScore"));
+                               return posting;
+                            })
                            .collect(Collectors.toList());
     }
     

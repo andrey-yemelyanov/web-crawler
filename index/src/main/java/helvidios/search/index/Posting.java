@@ -10,6 +10,16 @@ public class Posting implements Comparable<Posting> {
     private final int tf;
     private final Term term;
 
+    private double tfIdfScore;
+
+    public double tfIdfScore(){
+        return tfIdfScore;
+    }
+
+    public void setTfIdfScore(double score){
+        this.tfIdfScore = score;
+    }
+
     /**
      * Initializes a new instance of {@link Posting}.
      * @param term term

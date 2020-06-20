@@ -38,18 +38,18 @@ public class IndexBuilder implements AutoCloseable {
         Inverter inverter = new Inverter(docRepo, tokenizer, lemmatizer, log);
         List<String> blockFiles = inverter.buildPostings();
 
-        for(String blockFile : blockFiles){
-            readers.add(new FileBlockReader(blockFile, log));
-        }
-        
         String completeBlock;
         try(BlockWriter writer = new FileBlockWriter()){
+            for(String blockFile : blockFiles){
+                readers.add(new FileBlockReader(blockFile, log));
+            }
+
             ExternalSort externalSort = new ExternalSort(readers, writer);
             completeBlock = externalSort.sort();
         }
         
         try(BlockReader br = new FileBlockReader(completeBlock, log)){
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, docRepo.size());
             indexer.buildIndex();
         }
 

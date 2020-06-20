@@ -48,7 +48,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 1)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, 1);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -67,7 +67,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 3)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, 1);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -88,7 +88,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 3)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, 1);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -111,7 +111,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, 1);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -137,7 +137,7 @@ public class IndexerTest {
             new TermDocIdPair("tree", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, 1);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"), new Term("node"), new Term("tree"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -161,16 +161,21 @@ public class IndexerTest {
     public void buildIndex6() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
             new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
             new TermDocIdPair("node", 3),
             new TermDocIdPair("tree", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log);
+            Indexer indexer = new Indexer(indexRepo, br, log, 73);
             indexer.buildIndex();
-            assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"), new Term("node"), new Term("tree"))));
+            assertThat(indexRepo.terms, is(Arrays.asList(
+                new Term("map"), 
+                new Term("node"), 
+                new Term("tree"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 1)
+                    new Posting(new Term("map"), 1, 3)
                 ),
                 Arrays.asList(
                     new Posting(new Term("node"), 3, 1)
@@ -179,6 +184,9 @@ public class IndexerTest {
                     new Posting(new Term("tree"), 4, 1)
                 )
             )));
+
+            Posting mapPosting = indexRepo.postings.get(0).get(0);
+            assertThat(mapPosting.tfIdfScore(), is(2.7523538010889577));
         }
     }
 }

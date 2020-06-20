@@ -11,11 +11,13 @@ class Indexer {
     private final IndexRepository indexRepo;
     private final BlockReader blockReader;
     private final Logger log;
+    private final long nDocs;
 
-    Indexer(IndexRepository indexRepo, BlockReader blockReader, Logger log){
+    Indexer(IndexRepository indexRepo, BlockReader blockReader, Logger log, long nDocumentsInCorpus){
         this.indexRepo = indexRepo;
         this.blockReader = blockReader;
         this.log = log;
+        this.nDocs = nDocumentsInCorpus;
     }
 
     void buildIndex(){
@@ -35,9 +37,7 @@ class Indexer {
                 freq = 1;
             }else{  // postings with different terms and docIds
                 postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
-                log.info("Writing '{}' to index,  postings size = {}...", currentTerm.toString(), postings.size());
-                indexRepo.addTerm(currentTerm, postings);
-                log.info("Successfully written '{}' to index.", currentTerm.toString());
+                writeTermPostingsList(currentTerm, postings);
                 postings = new ArrayList<>();
                 currentPosting = posting;
                 currentTerm = new Term(currentPosting.term());
@@ -46,9 +46,23 @@ class Indexer {
         }
 
         postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
-        log.info("Writing '{}' to index,  postings size = {}...", currentTerm.toString(), postings.size());
-        indexRepo.addTerm(currentTerm, postings);
-        log.info("Successfully written '{}' to index.", currentTerm.toString());
+        writeTermPostingsList(currentTerm, postings);
         log.info("Index successfully built! Size = {} terms", indexRepo.size());
+    }
+
+    private void writeTermPostingsList(Term term, List<Posting> postingsList){
+        log.info("Writing '{}' to index,  postings size = {}...", term.toString(), postingsList.size());
+        computeTfIdfScores(postingsList);
+        indexRepo.addTerm(term, postingsList);
+        log.info("Successfully written '{}' to index.", term.toString());
+    }
+
+    private void computeTfIdfScores(List<Posting> postingsList){
+        final double idf = Math.log10(((double) nDocs) / postingsList.size());
+        for(Posting posting : postingsList){
+            final double tf = 1 + Math.log10(posting.tf());
+            final double tdIdfScore = tf * idf;
+            posting.setTfIdfScore(tdIdfScore);
+        }
     }
 }

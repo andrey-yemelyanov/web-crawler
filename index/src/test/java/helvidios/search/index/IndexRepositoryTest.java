@@ -99,4 +99,26 @@ public class IndexRepositoryTest {
         indexRepo.addTerm(term1, postingsList1);
         indexRepo.addTerm(term2, postingsList2);
     }
+
+    @Test
+    public void storeTfIdfScore(){
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+                                                              .setDatabase("test-index")
+                                                              .build();
+        indexRepo.clear();
+
+        Term term = new Term("hashmap");
+        Posting posting = new Posting(term, 1000, 15);
+        posting.setTfIdfScore(0.4321);
+        List<Posting> postingsList = Arrays.asList(posting);
+
+        indexRepo.addTerm(term, postingsList);
+
+        List<Posting> actual = indexRepo.getPostingsList(term);
+        assertThat(actual.size(), is(1));
+        assertThat(actual.get(0).term().equals(term), is(true));
+        assertThat(actual.get(0).docId(), is(1000));
+        assertThat(actual.get(0).tf(), is(15));
+        assertThat(actual.get(0).tfIdfScore(), is(0.4321));
+    }
 }
