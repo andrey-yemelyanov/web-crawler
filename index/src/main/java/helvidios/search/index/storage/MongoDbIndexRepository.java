@@ -67,6 +67,7 @@ public class MongoDbIndexRepository implements IndexRepository {
     @SuppressWarnings("unchecked")
     public List<Posting> getPostingsList(Term term) {
         Document doc = collection.find(eq("term", term.name())).first();
+        if(doc == null) return Arrays.asList();
         List<Document> postingsList = (List<Document>) doc.get("postingsList");
         final Term t = new Term(term.name(), doc.getInteger("df"));
         return postingsList.stream()

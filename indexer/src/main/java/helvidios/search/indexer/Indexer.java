@@ -37,7 +37,7 @@ class Indexer {
                 freq = 1;
             }else{  // postings with different terms and docIds
                 postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
-                writeTermPostingsList(currentTerm, postings);
+                writePostingsList(currentTerm, postings);
                 postings = new ArrayList<>();
                 currentPosting = posting;
                 currentTerm = new Term(currentPosting.term());
@@ -46,11 +46,11 @@ class Indexer {
         }
 
         postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
-        writeTermPostingsList(currentTerm, postings);
+        writePostingsList(currentTerm, postings);
         log.info("Index successfully built! Size = {} terms", indexRepo.size());
     }
 
-    private void writeTermPostingsList(Term term, List<Posting> postingsList){
+    private void writePostingsList(Term term, List<Posting> postingsList){
         log.info("Writing '{}' to index,  postings size = {}...", term.toString(), postingsList.size());
         computeTfIdfScores(postingsList);
         indexRepo.addTerm(term, postingsList);
@@ -61,8 +61,8 @@ class Indexer {
         final double idf = Math.log10(((double) nDocs) / postingsList.size());
         for(Posting posting : postingsList){
             final double tf = 1 + Math.log10(posting.tf());
-            final double tdIdfScore = tf * idf;
-            posting.setTfIdfScore(tdIdfScore);
+            final double tfIdfScore = tf * idf;
+            posting.setTfIdfScore(tfIdfScore);
         }
     }
 }

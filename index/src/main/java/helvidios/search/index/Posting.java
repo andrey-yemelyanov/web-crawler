@@ -24,7 +24,7 @@ public class Posting implements Comparable<Posting> {
      * Initializes a new instance of {@link Posting}.
      * @param term term
      * @param docId document ID where the specified term appears
-     * @param freq number of times the specified term appears in the document
+     * @param tf number of times the specified term appears in the document
      */
     public Posting(Term term, int docId, int tf){
         this.term = term;
