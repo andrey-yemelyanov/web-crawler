@@ -56,7 +56,7 @@ public class Searcher {
             return Arrays.asList();
         }
         List<String> terms = lemmatizer.getLemmas(tokens);
-        List<Match> matches = getMatches(terms, k);
+        List<Match> matches = getTopKMatches(computeDocumentScores(terms), k);
         log.info("Found {} matches for query {}.", matches.size(), query);
         return matches;
     }
@@ -68,26 +68,43 @@ public class Searcher {
         return index.vocabulary();
     }
 
-    private List<Match> getMatches(List<String> terms, int k){
+    private Map<Integer, Double> computeDocumentScores(List<String> terms){
 
         Map<String, Double> queryWeights = weights(terms);
         Map<Integer, Double> scores = new HashMap<>();
-        
-        // accumulate scores
+        Map<Integer, Double> len = new HashMap<>();
+
+        List<Double> w = new ArrayList<>();
         for(String term : terms){
             List<Posting> postings = index.postingsList(term);
             for(Posting posting : postings){
+                final int docId = posting.docId();
+                if(docId == 249024210){
+                    w.add(posting.tfIdfScore());
+                }
+                len.put(
+                    docId, 
+                    len.getOrDefault(docId, 0.0) + Math.pow(posting.tfIdfScore(), 2)
+                );
                 scores.put(
-                    posting.docId(), 
-                    scores.getOrDefault(posting.docId(), 0.0) + (queryWeights.get(term) * posting.tfIdfScore())
+                    docId, 
+                    scores.getOrDefault(docId, 0.0) + (queryWeights.get(term) * posting.tfIdfScore())
                 );
             }
         }
 
         // length-normalize scores
-        //....
+        for(int docId : scores.keySet()){
+            final double docScore = scores.get(docId);
+            final double haha = len.get(docId);
+            final double docVectorLen = Math.sqrt(len.get(docId));
+            //scores.put(docId, docScore / docVectorLen);
+        }
 
-        // return K top matches
+        return scores;
+    }
+
+    private List<Match> getTopKMatches(Map<Integer, Double> scores, int k){
         return scores.keySet().stream()
                               .sorted((docId1, docId2) -> Double.compare(scores.get(docId2), scores.get(docId1)))
                               .limit(k)
@@ -113,5 +130,4 @@ public class Searcher {
         }
         return weights;
     }
-
 }
