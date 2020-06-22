@@ -89,7 +89,7 @@ public class Searcher {
 
         // return K top matches
         return scores.keySet().stream()
-                              .sorted((docId1, docId2) -> Double.compare(scores.get(docId1), scores.get(docId2)))
+                              .sorted((docId1, docId2) -> Double.compare(scores.get(docId2), scores.get(docId1)))
                               .limit(k)
                               .map(docId -> buildMatch(docId, scores.get(docId)))
                               .collect(Collectors.toList());
@@ -108,6 +108,9 @@ public class Searcher {
 
     private Map<String, Double> weights(List<String> terms){
         Map<String, Double> weights = new HashMap<>();
+        for(String term : terms){
+            weights.put(term, 1.0);
+        }
         return weights;
     }
 

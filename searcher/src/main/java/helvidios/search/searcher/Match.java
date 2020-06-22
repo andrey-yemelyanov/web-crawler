@@ -24,6 +24,11 @@ public class Match {
         this.score = score;
     }
 
+    @Override
+    public String toString(){
+        return String.format("(%d) '%s' [%s] score=%f", docId, title, url, score);
+    }
+
     /**
      * Returns document ID where the match occurs.
      */
