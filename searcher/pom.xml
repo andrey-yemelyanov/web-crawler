@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>helvidios.search.searcher</groupId>
+  <artifactId>searcher</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>searcher</name>
+  
+  <!-- parent pom -->
+  <parent>
+    <artifactId>modules</artifactId>
+    <groupId>helvidios.search</groupId>
+    <version>1.0</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>helvidios.search.storage</groupId>
+      <artifactId>document-repository</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>helvidios.search.linguistics</groupId>
+      <artifactId>linguistics</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>helvidios.search.tokenizer</groupId>
+      <artifactId>tokenizer</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>helvidios.search.index</groupId>
+      <artifactId>index</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+</project>
