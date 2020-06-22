@@ -89,9 +89,9 @@ public class Searcher {
 
         // return K top matches
         return scores.keySet().stream()
-                              .map(docId -> buildMatch(docId, scores.get(docId)))
-                              .sorted((m1, m2) -> Double.compare(m1.score(), m2.score()))
+                              .sorted((docId1, docId2) -> Double.compare(scores.get(docId1), scores.get(docId2)))
                               .limit(k)
+                              .map(docId -> buildMatch(docId, scores.get(docId)))
                               .collect(Collectors.toList());
     }
 
