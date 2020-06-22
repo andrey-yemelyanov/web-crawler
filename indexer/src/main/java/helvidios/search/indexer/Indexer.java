@@ -26,6 +26,8 @@ class Indexer {
         Term currentTerm = new Term(currentPosting.term());
         int freq = 1;
         List<Posting> postings = new ArrayList<>();
+
+        log.info("Indexing started.");
         
         while(it.hasNext()){
             TermDocIdPair posting = it.next();
@@ -60,9 +62,13 @@ class Indexer {
     private void computeTfIdfScores(List<Posting> postingsList){
         final double idf = Math.log10(((double) nDocs) / postingsList.size());
         for(Posting posting : postingsList){
+            log.info("Computing tf-idf score for term {} in docId={}: tf={}, nDocs={}, df={}", 
+                posting.term().name(), posting.docId(), posting.tf(), nDocs, postingsList.size());
             final double tf = 1 + Math.log10(posting.tf());
             final double tfIdfScore = tf * idf;
             posting.setTfIdfScore(tfIdfScore);
+            log.info("tf-idf=(1+log10({}))*(log10({}/{}))={}", 
+                posting.tf(), nDocs, postingsList.size(), tfIdfScore);
         }
     }
 }
