@@ -25,11 +25,18 @@ public class App {
     public static void main(String[] args) throws Exception
     {
         System.out.println("Welcome to the SEARCH console!");
-        
-        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
-        System.out.println(docRepo.toString());
 
-        IndexRepository indexRepo = new MongoDbIndexRepository.Builder().build();
+        final String dbName = "javadocs-search-db";
+
+        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
+                                                                  .setDatabase(dbName)
+                                                                  .build();
+        
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+                                                              .setDatabase(dbName)
+                                                              .build();
+        
+        System.out.println(docRepo.toString());
         System.out.println(indexRepo.toString());
         
         Tokenizer tokenizer = new HtmlTokenizer();

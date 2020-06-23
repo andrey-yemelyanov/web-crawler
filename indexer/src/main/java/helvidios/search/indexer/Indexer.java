@@ -12,6 +12,7 @@ class Indexer {
     private final BlockReader blockReader;
     private final Logger log;
     private final long nDocs;
+    private final Map<Integer, Double> vectorMagnitude = new HashMap<>();
 
     Indexer(IndexRepository indexRepo, BlockReader blockReader, Logger log, long nDocumentsInCorpus){
         this.indexRepo = indexRepo;
@@ -22,6 +23,7 @@ class Indexer {
 
     void buildIndex(){
         Iterator<TermDocIdPair> it = blockReader.iterator();
+        if(!it.hasNext()) return;
         TermDocIdPair currentPosting = it.next();
         Term currentTerm = new Term(currentPosting.term());
         int freq = 1;
@@ -49,6 +51,7 @@ class Indexer {
 
         postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
         writePostingsList(currentTerm, postings);
+        writeVectorMagnitude();
         log.info("Index successfully built! Size = {} terms", indexRepo.size());
     }
 
@@ -57,6 +60,25 @@ class Indexer {
         computeTfIdfScores(postingsList);
         indexRepo.addTerm(term, postingsList);
         log.info("Successfully written '{}' to index.", term.toString());
+
+        accumulateVectorMagnitude(postingsList);
+    }
+
+    private void accumulateVectorMagnitude(List<Posting> postingsList){
+        for(Posting posting : postingsList){
+            final int docId = posting.docId();
+            vectorMagnitude.put(
+                docId,
+                vectorMagnitude.getOrDefault(docId, 0.0) + Math.pow(posting.tfIdfScore(), 2)
+            );
+        }
+    }
+
+    private void writeVectorMagnitude(){
+        // compute final vector magnitude for each docId and store it in the index
+        for(int docId : vectorMagnitude.keySet()){
+            indexRepo.addDocumentVectorMagnitude(docId, Math.sqrt(vectorMagnitude.get(docId)));
+        }
     }
 
     private void computeTfIdfScores(List<Posting> postingsList){

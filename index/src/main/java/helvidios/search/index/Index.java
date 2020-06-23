@@ -51,4 +51,12 @@ public class Index {
         log.info("Index lookup: Retrieved postings list for term '{}'. Postings list size={}.", term, postingsList.size());
         return postingsList;
     }
+
+    /**
+     * Returns document vector magnitude for a specific document vector.
+     * @param docId document ID
+     */
+    public double documentVectorMagnitude(int docId){
+        return indexRepo.documentVectorMagnitude(docId);
+    }
 }

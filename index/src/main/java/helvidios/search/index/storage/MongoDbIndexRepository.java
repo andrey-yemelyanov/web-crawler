@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 public class MongoDbIndexRepository implements IndexRepository {
 
     private final MongoClient client;
-    private final MongoCollection<Document> collection;
+    private final MongoCollection<Document> indexCollection;
+    private final MongoCollection<Document> docVectorCollection;
     private final String connectionDetails;
 
     private MongoDbIndexRepository(
@@ -27,17 +28,22 @@ public class MongoDbIndexRepository implements IndexRepository {
         int port,
         String database){
 
-        final String collectionName = "index";
+        final String indexCollectionName = "index";
+        final String docVectorCollectionName = "doc-vector-magnitudes";
+
         this.client = new MongoClient(host, port);
-        this.collection = client.getDatabase(database).getCollection(collectionName);
+        
+        this.indexCollection = client.getDatabase(database).getCollection(indexCollectionName);
         IndexOptions indexOptions = new IndexOptions().unique(true);
-        this.collection.createIndex(Indexes.ascending("term"), indexOptions);
+        this.indexCollection.createIndex(Indexes.ascending("term"), indexOptions);
+
+        this.docVectorCollection = client.getDatabase(database).getCollection(docVectorCollectionName);
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
 
-        this.connectionDetails = String.format("Index repository: MongoDB at %s:%d/%s/%s",
-            host, port, database, collectionName);
+        this.connectionDetails = String.format("Index repository: MongoDB at %s:%d/%s",
+            host, port, database);
     }
 
     @Override
@@ -57,7 +63,7 @@ public class MongoDbIndexRepository implements IndexRepository {
             list.add(new BasicDBObject(map));
         }
 
-        collection.insertOne(
+        indexCollection.insertOne(
             new Document("term", term.name())
                 .append("df", postingsList.size())
                 .append("postingsList", list)
@@ -67,7 +73,7 @@ public class MongoDbIndexRepository implements IndexRepository {
     @Override
     public List<Term> getVocabulary() {
         List<Term> terms = new ArrayList<>();
-        for(Document doc : collection.find().sort(new BasicDBObject("term", 1))){
+        for(Document doc : indexCollection.find().sort(new BasicDBObject("term", 1))){
             terms.add(new Term(doc.getString("term"), doc.getInteger("df")));
         }
         return terms;
@@ -76,7 +82,7 @@ public class MongoDbIndexRepository implements IndexRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<Posting> getPostingsList(Term term) {
-        Document doc = collection.find(eq("term", term.name())).first();
+        Document doc = indexCollection.find(eq("term", term.name())).first();
         if(doc == null) return Arrays.asList();
         List<Document> postingsList = (List<Document>) doc.get("postingsList");
         final Term t = new Term(term.name(), doc.getInteger("df"));
@@ -140,11 +146,25 @@ public class MongoDbIndexRepository implements IndexRepository {
 
     @Override
     public void clear() {
-        collection.deleteMany(new Document());
+        indexCollection.deleteMany(new Document());
+        docVectorCollection.deleteMany(new Document());
     }
 
     @Override
     public long size() {
-        return collection.count();
+        return indexCollection.count();
+    }
+
+    @Override
+    public double documentVectorMagnitude(int docId) {
+        Document doc = docVectorCollection.find(eq("_id", docId)).first();
+        return doc.getDouble("magnitude");
+    }
+
+    @Override
+    public void addDocumentVectorMagnitude(int docId, double magnitude) {
+        docVectorCollection.insertOne(
+            new Document("_id", docId).append("magnitude", magnitude)
+        );
     }
 }

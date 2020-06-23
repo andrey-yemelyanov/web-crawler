@@ -39,5 +39,17 @@ public class IndexRepoMock implements IndexRepository {
         // TODO Auto-generated method stub
         return 0;
     }
+
+    @Override
+    public double documentVectorMagnitude(int docId) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void addDocumentVectorMagnitude(int docId, double magnitude) {
+        // TODO Auto-generated method stub
+
+    }
     
 }

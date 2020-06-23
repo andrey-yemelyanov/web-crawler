@@ -39,7 +39,18 @@ public class IndexerTest {
         @Override
         public void clear() {}
         @Override
-        public long size() {return 0;}
+        public long size() {return terms.size();}
+
+        Map<Integer, Double> magnt = new HashMap<>();
+        @Override
+        public double documentVectorMagnitude(int docId) {
+            return magnt.get(docId);
+        }
+
+        @Override
+        public void addDocumentVectorMagnitude(int docId, double magnitude) {
+            magnt.put(docId, magnitude);
+        }
     }
 
     @Test
@@ -56,6 +67,9 @@ public class IndexerTest {
                     new Posting(new Term("map"), 1, 1)
                 )
             )));
+            Posting posting = indexRepo.postings.get(0).get(0);
+            assertThat(posting.tfIdfScore(), is(0.0));
+            assertThat(indexRepo.documentVectorMagnitude(posting.docId()), is(0.0));
         }
     }  
     
@@ -137,7 +151,7 @@ public class IndexerTest {
             new TermDocIdPair("tree", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log, 1);
+            Indexer indexer = new Indexer(indexRepo, br, log, 5);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"), new Term("node"), new Term("tree"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -154,6 +168,25 @@ public class IndexerTest {
                     new Posting(new Term("tree"), 4, 1)
                 )
             )));
+
+            List<Posting> mapPostings = indexRepo.postings.get(0);
+            List<Posting> nodePostings = indexRepo.postings.get(1);
+            List<Posting> treePostings = indexRepo.postings.get(2);
+
+            assertThat(mapPostings.get(0).tfIdfScore(), is(0.5177318877571058));
+            assertThat(mapPostings.get(1).tfIdfScore(), is(0.3979400086720376));
+            
+            assertThat(nodePostings.get(0).tfIdfScore(), is(0.28863187775142785));
+            assertThat(nodePostings.get(1).tfIdfScore(), is(0.2218487496163564));
+            assertThat(nodePostings.get(2).tfIdfScore(), is(0.2218487496163564));
+
+            assertThat(treePostings.get(0).tfIdfScore(), is(0.6989700043360189));
+
+            assertThat(indexRepo.documentVectorMagnitude(1), is(0.5177318877571058));
+            assertThat(indexRepo.documentVectorMagnitude(2), is(0.3979400086720376));
+            assertThat(indexRepo.documentVectorMagnitude(3), is(0.28863187775142785));
+            assertThat(indexRepo.documentVectorMagnitude(4), is(0.7333320766663866));
+            assertThat(indexRepo.documentVectorMagnitude(5), is(0.2218487496163564));
         }
     }
 

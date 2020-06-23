@@ -17,7 +17,9 @@ public class App {
             urlPrefix = args[1];
         }
         
-        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
+        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
+                                                                  .setDatabase("javadocs-search-db")
+                                                                  .build();
 
         Crawler.Builder builder = new Crawler.Builder(seedUrl);
         if(urlPrefix != null){

@@ -34,4 +34,14 @@ public interface IndexRepository {
      * Returns number of unique terms in this index.
      */
     public long size();
+
+    /**
+     * Returns the magnitude of a document vector.
+     */
+    public double documentVectorMagnitude(int docId);
+
+    /**
+     * Saves magnitude value for a specific document in the repository.
+     */
+    public void addDocumentVectorMagnitude(int docId, double magnitude);
 }

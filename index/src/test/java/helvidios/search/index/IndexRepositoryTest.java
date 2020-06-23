@@ -8,10 +8,13 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class IndexRepositoryTest {
+
+    private final static String DB = "test-index";
+
     @Test
     public void addTerm(){
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
-                                                              .setDatabase("test-index")
+                                                              .setDatabase(DB)
                                                               .build();
         indexRepo.clear();
 
@@ -38,7 +41,7 @@ public class IndexRepositoryTest {
     public void getVocabulary(){
 
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
-                                                              .setDatabase("test-index")
+                                                              .setDatabase(DB)
                                                               .build();
         indexRepo.clear();
 
@@ -78,7 +81,7 @@ public class IndexRepositoryTest {
     @Test(expected = Exception.class)
     public void  nonUniqueTerm(){
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
-                                                              .setDatabase("test-index")
+                                                              .setDatabase(DB)
                                                               .build();
         indexRepo.clear();
 
@@ -103,7 +106,7 @@ public class IndexRepositoryTest {
     @Test
     public void storeTfIdfScore(){
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
-                                                              .setDatabase("test-index")
+                                                              .setDatabase(DB)
                                                               .build();
         indexRepo.clear();
 
@@ -120,5 +123,19 @@ public class IndexRepositoryTest {
         assertThat(actual.get(0).docId(), is(1000));
         assertThat(actual.get(0).tf(), is(15));
         assertThat(actual.get(0).tfIdfScore(), is(0.4321));
+    }
+
+    @Test
+    public void storeDocVectorMagnitude(){
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+                                                              .setDatabase(DB)
+                                                              .build();
+        indexRepo.clear();
+
+        indexRepo.addDocumentVectorMagnitude(123, 0.55432);
+        indexRepo.addDocumentVectorMagnitude(1234, 23.55431);
+
+        assertThat(indexRepo.documentVectorMagnitude(123), is(0.55432));
+        assertThat(indexRepo.documentVectorMagnitude(1234), is(23.55431));
     }
 }

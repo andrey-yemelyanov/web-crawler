@@ -71,16 +71,11 @@ public class Searcher {
     private Map<Integer, Double> computeDocumentScores(List<String> queryTerms){
 
         Map<Integer, Double> scores = new HashMap<>();
-        Map<Integer, Double> len = new HashMap<>();
 
         for(String queryTerm : queryTerms){
             List<Posting> postings = index.postingsList(queryTerm);
             for(Posting posting : postings){
                 final int docId = posting.docId();
-                len.put(
-                    docId, 
-                    len.getOrDefault(docId, 0.0) + Math.pow(posting.tfIdfScore(), 2)
-                );
                 // weights of all query terms are assumed to be equal to 1
                 scores.put(
                     docId, 
@@ -89,12 +84,11 @@ public class Searcher {
             }
         }
 
-        // length-normalize scores
+        // length-normalize the scores
         for(int docId : scores.keySet()){
             final double docScore = scores.get(docId);
-            final double haha = len.get(docId);
-            final double docVectorLen = Math.sqrt(len.get(docId));
-            //scores.put(docId, docScore / docVectorLen);
+            final double vectorMagnitude = index.documentVectorMagnitude(docId);
+            scores.put(docId, docScore / vectorMagnitude);
         }
 
         return scores;
