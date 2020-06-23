@@ -20,19 +20,29 @@ public class MongoDbIndexRepository implements IndexRepository {
 
     private final MongoClient client;
     private final MongoCollection<Document> collection;
+    private final String connectionDetails;
 
     private MongoDbIndexRepository(
         String host,
         int port,
         String database){
 
+        final String collectionName = "index";
         this.client = new MongoClient(host, port);
-        this.collection = client.getDatabase(database).getCollection("index");
+        this.collection = client.getDatabase(database).getCollection(collectionName);
         IndexOptions indexOptions = new IndexOptions().unique(true);
         this.collection.createIndex(Indexes.ascending("term"), indexOptions);
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
+
+        this.connectionDetails = String.format("Index repository: MongoDB at %s:%d/%s/%s",
+            host, port, database, collectionName);
+    }
+
+    @Override
+    public String toString(){
+        return connectionDetails;
     }
 
     @Override
@@ -81,6 +91,8 @@ public class MongoDbIndexRepository implements IndexRepository {
     
     /**
      * Builder class for {@link MongoDbIndexRepository}.
+     * If no additional parameters are supplied, the following default values are used:
+     * HOST={@value #HOST}, PORT={@value #PORT}, DATABASE={@value #DATABASE}
      */
     public static class Builder{
         private final static String HOST = "localhost";

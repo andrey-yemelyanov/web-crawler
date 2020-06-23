@@ -24,25 +24,31 @@ public class App {
 
     public static void main(String[] args) throws Exception
     {
+        System.out.println("Welcome to the SEARCH console!");
+        
+        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
+        System.out.println(docRepo.toString());
+
+        IndexRepository indexRepo = new MongoDbIndexRepository.Builder().build();
+        System.out.println(indexRepo.toString());
+        
+        Tokenizer tokenizer = new HtmlTokenizer();
+        Lemmatizer lemmatizer = new ApacheNlpLemmatizer();
+        
+        Searcher searcher = new Searcher(
+            indexRepo, 
+            docRepo, 
+            tokenizer, 
+            lemmatizer, 
+            log);
+
         while(true){
             
-            DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().build();
-            IndexRepository indexRepo = new MongoDbIndexRepository.Builder().build();
-            Tokenizer tokenizer = new HtmlTokenizer();
-            Lemmatizer lemmatizer = new ApacheNlpLemmatizer();
-            
-            Searcher searcher = new Searcher(
-                indexRepo, 
-                docRepo, 
-                tokenizer, 
-                lemmatizer, 
-                log);
-            
             String query = getQuery();
-            if(query.equals("Q")) break;
+            if(query.equals("q:")) break;
             List<Match> matches = searcher.search(query, K);
 
-            System.out.printf("\nFound %d documents for '%s'\n", matches.size(), query);
+            System.out.printf("\nFound %d documents for query '%s'\n", matches.size(), query);
             printMatches(matches);
         }
     }
@@ -56,7 +62,7 @@ public class App {
     }
 
     private static String getQuery(){
-        System.out.print("\nEnter query (enter Q to exit):");
+        System.out.print("\nEnter query (enter q: to exit):");
         return scanner.nextLine().trim();
     }
 }

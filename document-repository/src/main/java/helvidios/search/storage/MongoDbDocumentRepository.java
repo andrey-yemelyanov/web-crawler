@@ -15,17 +15,27 @@ public class MongoDbDocumentRepository implements DocumentRepository {
 
     private final MongoClient client;
     private final MongoCollection<Document> collection;
+    private final String connectionDetails;
 
     private MongoDbDocumentRepository(
         String host, 
         int port, 
         String database){
 
+        final String collectionName = "documents";
         this.client = new MongoClient(host, port);
-        this.collection = client.getDatabase(database).getCollection("documents");
+        this.collection = client.getDatabase(database).getCollection(collectionName);
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
+
+        this.connectionDetails = String.format("Document repository: MongoDB at %s:%d/%s/%s",
+            host, port, database, collectionName);
+    }
+
+    @Override
+    public String toString(){
+        return connectionDetails;
     }
 
     public void insert(HtmlDocument doc) {
@@ -83,6 +93,8 @@ public class MongoDbDocumentRepository implements DocumentRepository {
 
     /**
      * Builder class for {@link MongoDbDocumentRepository}.
+     * If no additional parameters are supplied, the following default values are used:
+     * HOST={@value #HOST}, PORT={@value #PORT}, DATABASE={@value #DATABASE}
      */
     public static class Builder{
         private final static String HOST = "localhost";

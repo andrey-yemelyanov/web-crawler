@@ -55,8 +55,8 @@ public class Searcher {
             log.info("Empty query. Nothing found.");
             return Arrays.asList();
         }
-        List<String> terms = lemmatizer.getLemmas(tokens);
-        List<Match> matches = getTopKMatches(computeDocumentScores(terms), k);
+        List<String> queryTerms = lemmatizer.getLemmas(tokens);
+        List<Match> matches = getTopKMatches(computeDocumentScores(queryTerms), k);
         log.info("Found {} matches for query {}.", matches.size(), query);
         return matches;
     }
@@ -68,27 +68,23 @@ public class Searcher {
         return index.vocabulary();
     }
 
-    private Map<Integer, Double> computeDocumentScores(List<String> terms){
+    private Map<Integer, Double> computeDocumentScores(List<String> queryTerms){
 
-        Map<String, Double> queryWeights = weights(terms);
         Map<Integer, Double> scores = new HashMap<>();
         Map<Integer, Double> len = new HashMap<>();
 
-        List<Double> w = new ArrayList<>();
-        for(String term : terms){
-            List<Posting> postings = index.postingsList(term);
+        for(String queryTerm : queryTerms){
+            List<Posting> postings = index.postingsList(queryTerm);
             for(Posting posting : postings){
                 final int docId = posting.docId();
-                if(docId == 249024210){
-                    w.add(posting.tfIdfScore());
-                }
                 len.put(
                     docId, 
                     len.getOrDefault(docId, 0.0) + Math.pow(posting.tfIdfScore(), 2)
                 );
+                // weights of all query terms are assumed to be equal to 1
                 scores.put(
                     docId, 
-                    scores.getOrDefault(docId, 0.0) + (queryWeights.get(term) * posting.tfIdfScore())
+                    scores.getOrDefault(docId, 0.0) + posting.tfIdfScore()
                 );
             }
         }
@@ -121,13 +117,5 @@ public class Searcher {
                         .documentTitle(doc.getTitle())
                         .documentScore(documentScore)
                         .build();
-    }
-
-    private Map<String, Double> weights(List<String> terms){
-        Map<String, Double> weights = new HashMap<>();
-        for(String term : terms){
-            weights.put(term, 1.0);
-        }
-        return weights;
     }
 }
