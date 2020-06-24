@@ -28,9 +28,9 @@ public class App
                                                                   .setDatabase(dbName)
                                                                   .build();
 
-        // String doc = new String (Files.readAllBytes(Paths.get("C:\\Users\\A351509\\Downloads\\xml.html")));
-        //  docRepo.insert(new HtmlDocument("https://docs.oracle.com/javase/7/docs/api/javax/management/modelmbean/XMLParseException.html", 
-        //       doc, "Class XmlParseException"));
+        //String doc = new String (Files.readAllBytes(Paths.get("C:\\Users\\A351509\\Downloads\\map.html")));
+        //docRepo.insert(new HtmlDocument("https://docs.oracle.com/javase/8/docs/api/java/util/Map.html", 
+        //       doc, "Interface Map<K, V>"));
             
         
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
