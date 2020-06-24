@@ -19,7 +19,7 @@ import helvidios.search.tokenizer.Tokenizer;
 public class App {
 
     private static final Logger log = LogManager.getLogger(Searcher.class.getName());
-    private static final int K = 5;
+    private static final int K = 10;
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception
@@ -62,7 +62,9 @@ public class App {
 
     private static void printMatches(List<Match> matches){
         System.out.println("**********************************************************************");
+        int i = 1;
         for(Match match : matches){
+            System.out.print((i++) + ": ");
             System.out.println(match.toString());
             System.out.println();
         }

@@ -88,7 +88,8 @@ public class Searcher {
     }
 
     private double tfIdfScore(Posting posting){
-        double tfWeight = ((double) posting.tf()) / index.getDocumentLength(posting.docId());
+        //double tfWeight = ((double) posting.tf()) / index.getDocumentLength(posting.docId());
+        double tfWeight = 1 + Math.log10(posting.tf());
         double idf = posting.term().idf();
         return tfWeight * idf;
     }
