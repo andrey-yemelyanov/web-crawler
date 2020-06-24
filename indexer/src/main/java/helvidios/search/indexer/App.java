@@ -1,13 +1,9 @@
 package helvidios.search.indexer;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import org.apache.logging.log4j.*;
 import helvidios.search.index.storage.*;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
 import helvidios.search.storage.DocumentRepository;
-import helvidios.search.storage.HtmlDocument;
 import helvidios.search.storage.MongoDbDocumentRepository;
 import helvidios.search.tokenizer.HtmlTokenizer;
 import helvidios.search.tokenizer.Tokenizer;
@@ -22,21 +18,23 @@ public class App
 
     public static void main( String[] args ) throws Exception
     {
-        final String dbName = "javadocs-search-db";
+        if(args.length == 0) throw new IllegalArgumentException(
+            "Command line argument for database name is required. Usage: run-indexer.bat [dbName]");
+
+        final String dbName = args[0];
 
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
                                                                   .setDatabase(dbName)
                                                                   .build();
 
-        //String doc = new String (Files.readAllBytes(Paths.get("C:\\Users\\A351509\\Downloads\\map.html")));
-        //docRepo.insert(new HtmlDocument("https://docs.oracle.com/javase/8/docs/api/java/util/Map.html", 
-        //       doc, "Interface Map<K, V>"));
-            
-        
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
                                                               .setDatabase(dbName)
                                                               .build();
         indexRepo.clear();
+
+        System.out.printf("Index repo: %s\nDoc repo: %s\n", indexRepo.toString(), docRepo.toString());
+        System.out.println("Indexing started. Check logs for details...");
+        log.info("Indexing started.\nIndex repo: {}\nDoc repo: {}", indexRepo.toString(), docRepo.toString());
 
         Tokenizer tokenizer = new HtmlTokenizer();
         try(ApacheNlpLemmatizer lemmatizer = new ApacheNlpLemmatizer()){
@@ -44,5 +42,7 @@ public class App
                 indexBuilder.build();
             }
         }
+
+        System.out.println("Indexing completed!");
     }
 }

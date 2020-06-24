@@ -24,9 +24,13 @@ public class App {
 
     public static void main(String[] args) throws Exception
     {
-        System.out.println("Welcome to the SEARCH console!");
 
-        final String dbName = "javadocs-search-db";
+        if(args.length == 0) throw new IllegalArgumentException(
+            "Command line argument for database name is required. Usage: run-searcher.bat [dbName]");
+
+        final String dbName = args[0];
+
+        System.out.println("Welcome to the SEARCH console!");
 
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
                                                                   .setDatabase(dbName)

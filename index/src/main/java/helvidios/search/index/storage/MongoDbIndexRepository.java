@@ -42,8 +42,8 @@ public class MongoDbIndexRepository implements IndexRepository {
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
 
-        this.connectionDetails = String.format("Index repository: MongoDB at %s:%d/%s",
-            host, port, database);
+        this.connectionDetails = String.format("Index repository: MongoDB at %s:%d/%s/%s",
+            host, port, database, indexCollectionName);
     }
 
     @Override

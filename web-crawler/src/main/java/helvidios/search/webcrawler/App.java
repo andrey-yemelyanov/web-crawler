@@ -10,15 +10,18 @@ import helvidios.search.storage.MongoDbDocumentRepository;
 public class App {
     public static void main(String... args) throws InterruptedException, MalformedURLException {
 
-        if(args.length == 0) throw new IllegalArgumentException("Seed URL is required as command-line arg.");
-        String seedUrl = args[0];
+        if(args.length < 2) throw new IllegalArgumentException(
+            "Command line arguments missing. Usage: run-web-crawler.bat [dbName] [seedUrl] [urlPrefix(optional)]");
+
+        final String dbName = args[0];
+        final String seedUrl = args[1];
         String urlPrefix = null;
-        if(args.length > 1){
-            urlPrefix = args[1];
+        if(args.length > 2){
+            urlPrefix = args[2];
         }
         
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
-                                                                  .setDatabase("javadocs-search-db")
+                                                                  .setDatabase(dbName)
                                                                   .build();
 
         Crawler.Builder builder = new Crawler.Builder(seedUrl);
