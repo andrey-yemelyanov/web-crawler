@@ -13,6 +13,9 @@ public class GreetingController {
     
     @GetMapping("/greeting")
     public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name){
+        // IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
+        //                                                       .setDatabase(dbName)
+        //                                                       .build();
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 }
