@@ -112,7 +112,6 @@ public class IndexRepositoryTest {
 
         Term term = new Term("hashmap");
         Posting posting = new Posting(term, 1000, 15);
-        posting.setTfIdfScore(0.4321);
         List<Posting> postingsList = Arrays.asList(posting);
 
         indexRepo.addTerm(term, postingsList);
@@ -122,20 +121,16 @@ public class IndexRepositoryTest {
         assertThat(actual.get(0).term().equals(term), is(true));
         assertThat(actual.get(0).docId(), is(1000));
         assertThat(actual.get(0).tf(), is(15));
-        assertThat(actual.get(0).tfIdfScore(), is(0.4321));
     }
 
     @Test
-    public void storeDocVectorMagnitude(){
+    public void storeDocLen(){
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
                                                               .setDatabase(DB)
                                                               .build();
         indexRepo.clear();
 
-        indexRepo.addDocumentVectorMagnitude(123, 0.55432);
-        indexRepo.addDocumentVectorMagnitude(1234, 23.55431);
-
-        assertThat(indexRepo.documentVectorMagnitude(123), is(0.55432));
-        assertThat(indexRepo.documentVectorMagnitude(1234), is(23.55431));
+        indexRepo.setDocumentLength(1234, 56);
+        assertThat(indexRepo.getDocumentLength(1234), is(56L));
     }
 }

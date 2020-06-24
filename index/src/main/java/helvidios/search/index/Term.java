@@ -6,15 +6,18 @@ package helvidios.search.index;
 public class Term {
     private final String name;
     private final int df;
+    private final double idf;
 
     /**
      * Initializes a new instance of {@link Term}.
      * @param name String representation of the term
      * @param df document frequency of this term
+     * @param idf inverse document frequency of this term
      */
-    public Term(String name, int df){
+    public Term(String name, int df, double idf){
         this.name = name;
         this.df = df;
+        this.idf = idf;
     }
 
     /**
@@ -22,7 +25,14 @@ public class Term {
      * @param name String representation of the term
      */
     public Term(String name){
-        this(name, 0);
+        this(name, 0, 0.0);
+    }
+
+    /**
+     * Returns inverse document frequency of this term.
+     */
+    public double idf(){
+        return idf;
     }
 
     /**
@@ -42,7 +52,7 @@ public class Term {
 
     @Override
     public String toString(){
-        return String.format("term(%s)", name);
+        return String.format("<term(%s) df=%d idf=%f>", name, df, idf);
     }
 
     @Override

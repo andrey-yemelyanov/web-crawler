@@ -41,15 +41,15 @@ public class IndexerTest {
         @Override
         public long size() {return terms.size();}
 
-        Map<Integer, Double> magnt = new HashMap<>();
+        Map<Integer, Long> docLen = new HashMap<>();
         @Override
-        public double documentVectorMagnitude(int docId) {
-            return magnt.get(docId);
+        public long getDocumentLength(int docId) {
+            return docLen.get(docId);
         }
 
         @Override
-        public void addDocumentVectorMagnitude(int docId, double magnitude) {
-            magnt.put(docId, magnitude);
+        public void setDocumentLength(int docId, long len) {
+            docLen.put(docId, len);
         }
     }
 
@@ -67,9 +67,9 @@ public class IndexerTest {
                     new Posting(new Term("map"), 1, 1)
                 )
             )));
-            Posting posting = indexRepo.postings.get(0).get(0);
-            assertThat(posting.tfIdfScore(), is(0.0));
-            assertThat(indexRepo.documentVectorMagnitude(posting.docId()), is(0.0));
+            
+            assertThat(indexRepo.getDocumentLength(1), is(1L));
+            assertThat(indexRepo.terms.get(0).idf(), is(0.0));
         }
     }  
     
@@ -81,7 +81,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 3)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log, 1);
+            Indexer indexer = new Indexer(indexRepo, br, log, 3);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -91,6 +91,11 @@ public class IndexerTest {
                     new Posting(new Term("map"), 3, 1)
                 )
             )));
+
+            assertThat(indexRepo.getDocumentLength(1), is(1L));
+            assertThat(indexRepo.getDocumentLength(2), is(1L));
+            assertThat(indexRepo.getDocumentLength(3), is(1L));
+            assertThat(indexRepo.terms.get(0).idf(), is(0.0));
         }
     }
 
@@ -102,7 +107,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 3)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log, 1);
+            Indexer indexer = new Indexer(indexRepo, br, log, 2);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -111,6 +116,11 @@ public class IndexerTest {
                     new Posting(new Term("map"), 3, 1)
                 )
             )));
+
+            assertThat(indexRepo.getDocumentLength(1), is(2L));
+            assertThat(indexRepo.getDocumentLength(3), is(1L));
+
+            assertThat(indexRepo.terms.get(0).idf(), is(0.0));
         }
     }
 
@@ -125,7 +135,7 @@ public class IndexerTest {
             new TermDocIdPair("map", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log, 1);
+            Indexer indexer = new Indexer(indexRepo, br, log, 3);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
@@ -135,6 +145,12 @@ public class IndexerTest {
                     new Posting(new Term("map"), 4, 1)
                 )
             )));
+
+            assertThat(indexRepo.getDocumentLength(1), is(2L));
+            assertThat(indexRepo.getDocumentLength(3), is(3L));
+            assertThat(indexRepo.getDocumentLength(4), is(1L));
+
+            assertThat(indexRepo.terms.get(0).idf(), is(0.0));
         }
     }
 
@@ -169,24 +185,15 @@ public class IndexerTest {
                 )
             )));
 
-            List<Posting> mapPostings = indexRepo.postings.get(0);
-            List<Posting> nodePostings = indexRepo.postings.get(1);
-            List<Posting> treePostings = indexRepo.postings.get(2);
+            assertThat(indexRepo.getDocumentLength(1), is(2L));
+            assertThat(indexRepo.getDocumentLength(2), is(1L));
+            assertThat(indexRepo.getDocumentLength(3), is(2L));
+            assertThat(indexRepo.getDocumentLength(4), is(2L));
+            assertThat(indexRepo.getDocumentLength(5), is(1L));
 
-            assertThat(mapPostings.get(0).tfIdfScore(), is(0.5177318877571058));
-            assertThat(mapPostings.get(1).tfIdfScore(), is(0.3979400086720376));
-            
-            assertThat(nodePostings.get(0).tfIdfScore(), is(0.28863187775142785));
-            assertThat(nodePostings.get(1).tfIdfScore(), is(0.2218487496163564));
-            assertThat(nodePostings.get(2).tfIdfScore(), is(0.2218487496163564));
-
-            assertThat(treePostings.get(0).tfIdfScore(), is(0.6989700043360189));
-
-            assertThat(indexRepo.documentVectorMagnitude(1), is(0.5177318877571058));
-            assertThat(indexRepo.documentVectorMagnitude(2), is(0.3979400086720376));
-            assertThat(indexRepo.documentVectorMagnitude(3), is(0.28863187775142785));
-            assertThat(indexRepo.documentVectorMagnitude(4), is(0.7333320766663866));
-            assertThat(indexRepo.documentVectorMagnitude(5), is(0.2218487496163564));
+            assertThat(indexRepo.terms.get(0).idf(), is(0.3979400086720376));
+            assertThat(indexRepo.terms.get(1).idf(), is(0.2218487496163564));
+            assertThat(indexRepo.terms.get(2).idf(), is(0.6989700043360189));
         }
     }
 
@@ -200,7 +207,7 @@ public class IndexerTest {
             new TermDocIdPair("tree", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
-            Indexer indexer = new Indexer(indexRepo, br, log, 73);
+            Indexer indexer = new Indexer(indexRepo, br, log, 3);
             indexer.buildIndex();
             assertThat(indexRepo.terms, is(Arrays.asList(
                 new Term("map"), 
@@ -218,8 +225,13 @@ public class IndexerTest {
                 )
             )));
 
-            Posting mapPosting = indexRepo.postings.get(0).get(0);
-            assertThat(mapPosting.tfIdfScore(), is(2.7523538010889577));
+            assertThat(indexRepo.getDocumentLength(1), is(3L));
+            assertThat(indexRepo.getDocumentLength(3), is(1L));
+            assertThat(indexRepo.getDocumentLength(4), is(1L));
+
+            assertThat(indexRepo.terms.get(0).idf(), is(0.47712125471966244));
+            assertThat(indexRepo.terms.get(1).idf(), is(0.47712125471966244));
+            assertThat(indexRepo.terms.get(2).idf(), is(0.47712125471966244));
         }
     }
 }

@@ -53,10 +53,10 @@ public class Index {
     }
 
     /**
-     * Returns document vector magnitude for a specific document vector.
+     * Returns number of words that appear in a document.
      * @param docId document ID
      */
-    public double documentVectorMagnitude(int docId){
-        return indexRepo.documentVectorMagnitude(docId);
+    public long getDocumentLength(int docId){
+        return indexRepo.getDocumentLength(docId);
     }
 }

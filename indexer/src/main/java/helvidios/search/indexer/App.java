@@ -27,6 +27,11 @@ public class App
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
                                                                   .setDatabase(dbName)
                                                                   .build();
+
+        // String doc = new String (Files.readAllBytes(Paths.get("C:\\Users\\A351509\\Downloads\\xml.html")));
+        //  docRepo.insert(new HtmlDocument("https://docs.oracle.com/javase/7/docs/api/javax/management/modelmbean/XMLParseException.html", 
+        //       doc, "Class XmlParseException"));
+            
         
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
                                                               .setDatabase(dbName)

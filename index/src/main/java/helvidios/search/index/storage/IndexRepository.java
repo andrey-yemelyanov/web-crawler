@@ -36,12 +36,15 @@ public interface IndexRepository {
     public long size();
 
     /**
-     * Returns the magnitude of a document vector.
+     * Returns total number of words in a document. The words are not necessarily distinct.
+     * @param docId document ID
      */
-    public double documentVectorMagnitude(int docId);
+    public long getDocumentLength(int docId);
 
     /**
-     * Saves magnitude value for a specific document in the repository.
+     * Stores number of words occurring in a document in the index.
+     * @param docId document ID
+     * @param len number of words occurring in the document
      */
-    public void addDocumentVectorMagnitude(int docId, double magnitude);
+    public void setDocumentLength(int docId, long len);
 }

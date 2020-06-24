@@ -20,7 +20,7 @@ public class MongoDbIndexRepository implements IndexRepository {
 
     private final MongoClient client;
     private final MongoCollection<Document> indexCollection;
-    private final MongoCollection<Document> docVectorCollection;
+    private final MongoCollection<Document> docStatsCollection;
     private final String connectionDetails;
 
     private MongoDbIndexRepository(
@@ -29,7 +29,7 @@ public class MongoDbIndexRepository implements IndexRepository {
         String database){
 
         final String indexCollectionName = "index";
-        final String docVectorCollectionName = "doc-vector-magnitudes";
+        final String docStatsCollectionName = "doc-stats";
 
         this.client = new MongoClient(host, port);
         
@@ -37,7 +37,7 @@ public class MongoDbIndexRepository implements IndexRepository {
         IndexOptions indexOptions = new IndexOptions().unique(true);
         this.indexCollection.createIndex(Indexes.ascending("term"), indexOptions);
 
-        this.docVectorCollection = client.getDatabase(database).getCollection(docVectorCollectionName);
+        this.docStatsCollection = client.getDatabase(database).getCollection(docStatsCollectionName);
 
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
@@ -59,13 +59,13 @@ public class MongoDbIndexRepository implements IndexRepository {
             Map<String, Object> map = new HashMap<>();
             map.put("docId", posting.docId());
             map.put("tf", posting.tf());
-            map.put("tfIdfScore", posting.tfIdfScore());
             list.add(new BasicDBObject(map));
         }
 
         indexCollection.insertOne(
             new Document("term", term.name())
                 .append("df", postingsList.size())
+                .append("idf", term.idf())
                 .append("postingsList", list)
         );
     }
@@ -74,7 +74,10 @@ public class MongoDbIndexRepository implements IndexRepository {
     public List<Term> getVocabulary() {
         List<Term> terms = new ArrayList<>();
         for(Document doc : indexCollection.find().sort(new BasicDBObject("term", 1))){
-            terms.add(new Term(doc.getString("term"), doc.getInteger("df")));
+            terms.add(new Term(
+                doc.getString("term"), 
+                doc.getInteger("df"),
+                doc.getDouble("idf")));
         }
         return terms;
     }
@@ -85,13 +88,9 @@ public class MongoDbIndexRepository implements IndexRepository {
         Document doc = indexCollection.find(eq("term", term.name())).first();
         if(doc == null) return Arrays.asList();
         List<Document> postingsList = (List<Document>) doc.get("postingsList");
-        final Term t = new Term(term.name(), doc.getInteger("df"));
+        final Term t = new Term(term.name(), doc.getInteger("df"), doc.getDouble("idf"));
         return postingsList.stream()
-                           .map(obj -> {
-                               Posting posting = new Posting(t, obj.getInteger("docId"), obj.getInteger("tf"));
-                               posting.setTfIdfScore(obj.getDouble("tfIdfScore"));
-                               return posting;
-                            })
+                           .map(obj -> new Posting(t, obj.getInteger("docId"), obj.getInteger("tf")))
                            .collect(Collectors.toList());
     }
     
@@ -147,7 +146,7 @@ public class MongoDbIndexRepository implements IndexRepository {
     @Override
     public void clear() {
         indexCollection.deleteMany(new Document());
-        docVectorCollection.deleteMany(new Document());
+        docStatsCollection.deleteMany(new Document());
     }
 
     @Override
@@ -156,15 +155,16 @@ public class MongoDbIndexRepository implements IndexRepository {
     }
 
     @Override
-    public double documentVectorMagnitude(int docId) {
-        Document doc = docVectorCollection.find(eq("_id", docId)).first();
-        return doc.getDouble("magnitude");
+    public long getDocumentLength(int docId) {
+        Document doc = docStatsCollection.find(eq("_id", docId)).first();
+        return doc.getLong("len");
     }
 
     @Override
-    public void addDocumentVectorMagnitude(int docId, double magnitude) {
-        docVectorCollection.insertOne(
-            new Document("_id", docId).append("magnitude", magnitude)
+    public void setDocumentLength(int docId, long len) {
+        docStatsCollection.insertOne(
+            new Document("_id", docId)
+                .append("len", len)
         );
     }
 }

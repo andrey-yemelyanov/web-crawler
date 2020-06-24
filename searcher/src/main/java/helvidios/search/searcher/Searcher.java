@@ -78,20 +78,19 @@ public class Searcher {
                 final int docId = posting.docId();
                 // weights of all query terms are assumed to be equal to 1
                 scores.put(
-                    docId, 
-                    scores.getOrDefault(docId, 0.0) + posting.tfIdfScore()
+                    docId,
+                    scores.getOrDefault(docId, 0.0) + tfIdfScore(posting)
                 );
             }
         }
 
-        // length-normalize the scores
-        for(int docId : scores.keySet()){
-            final double docScore = scores.get(docId);
-            final double vectorMagnitude = index.documentVectorMagnitude(docId);
-            scores.put(docId, docScore / vectorMagnitude);
-        }
-
         return scores;
+    }
+
+    private double tfIdfScore(Posting posting){
+        double tfWeight = ((double) posting.tf()) / index.getDocumentLength(posting.docId());
+        double idf = posting.term().idf();
+        return tfWeight * idf;
     }
 
     private List<Match> getTopKMatches(Map<Integer, Double> scores, int k){
