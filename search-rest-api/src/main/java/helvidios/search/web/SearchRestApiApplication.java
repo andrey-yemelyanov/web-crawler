@@ -8,6 +8,7 @@ public class SearchRestApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SearchRestApiApplication.class, args);
+		
 	}
 
 }
