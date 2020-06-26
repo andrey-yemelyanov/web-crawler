@@ -5,6 +5,7 @@ import helvidios.search.searcher.Searcher;
 import helvidios.search.web.SearchException;
 import helvidios.search.web.model.SearchHit;
 import helvidios.search.web.model.TermPage;
+import helvidios.search.web.util.Trie;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class SearchController {
 
     private final Searcher searcher;
-    private final List<String> terms;
+    private final Trie terms;
 
     @Autowired
     public SearchController(Searcher searcher){
         this.searcher = searcher;
-        this.terms = searcher.vocabulary();
+        this.terms = new Trie();
+        searcher.vocabulary().forEach(terms::add);
     }
 
     @GetMapping(value = "/api/search")
@@ -41,12 +43,19 @@ public class SearchController {
 
     @GetMapping(value = "/api/vocabulary")
     public TermPage getVocabulary(
+        @RequestParam(value = "prefix", required = false, defaultValue = "") String prefix,
         @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page){
-        List<String> termSlice = terms.stream()
-                                      .skip(limit * (page - 1))
-                                      .limit(limit)
-                                      .collect(Collectors.toList());
-        return new TermPage(page, limit, (int) Math.ceil(terms.size() / (double) limit), termSlice);
+
+        List<String> termSlice = terms.getByPrefix(prefix);
+        final int nPages = (int) Math.ceil(termSlice.size() / (double) limit);
+
+        termSlice = termSlice.stream()
+                             .skip(limit * (page - 1))
+                             .limit(limit)
+                             .sorted()
+                             .collect(Collectors.toList());
+                                      
+        return new TermPage(page, limit, nPages, termSlice);
     }
 }
