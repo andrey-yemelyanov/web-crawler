@@ -15,4 +15,9 @@ public interface Searcher {
      * @throws Exception
      */
     public List<Match> search(String query, int k) throws Exception;
+
+    /**
+     * Returns a list of terms (vocabulary) in the index.
+     */
+    public List<String> vocabulary();
 }

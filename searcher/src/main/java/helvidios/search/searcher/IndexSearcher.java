@@ -58,9 +58,7 @@ public class IndexSearcher implements Searcher {
         return matches;
     }
 
-    /**
-     * Returns a vocabulary of unique terms in the index.
-     */
+    @Override
     public List<String> vocabulary(){
         return index.vocabulary();
     }

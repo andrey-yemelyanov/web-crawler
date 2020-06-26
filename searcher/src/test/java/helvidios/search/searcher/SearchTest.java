@@ -98,10 +98,6 @@ public class SearchTest {
             m3 = matches.get(2);
             Match m4 = matches.get(3);
 
-            for(Match m : matches){
-                System.out.println(m);
-            }
-
             assertThat(m1.docId(), is(doc1000));
             assertThat(m1.content(), is("doc1000content"));
             assertThat(m1.title(), is("doc1000"));
