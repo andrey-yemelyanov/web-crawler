@@ -31,7 +31,7 @@ public class SearchController {
 
             return searcher.search(query, k)
                            .stream()
-                           .map(match -> new SearchHit(match.docId(), match.url(), match.score()))
+                           .map(match -> new SearchHit(match.docId(), match.url(), match.title(), match.score()))
                            .collect(Collectors.toList());
 
         } catch (Exception e) {
