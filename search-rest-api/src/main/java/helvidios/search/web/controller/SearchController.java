@@ -6,6 +6,7 @@ import helvidios.search.web.SearchException;
 import helvidios.search.web.model.SearchHit;
 import helvidios.search.web.model.TermPage;
 import helvidios.search.web.util.Trie;
+import helvidios.search.web.util.Vocabulary;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class SearchController {
 
     private final Searcher searcher;
-    private final Trie terms;
+    private final Vocabulary terms;
 
     @Autowired
     public SearchController(Searcher searcher){
@@ -53,7 +54,6 @@ public class SearchController {
         termSlice = termSlice.stream()
                              .skip(limit * (page - 1))
                              .limit(limit)
-                             .sorted()
                              .collect(Collectors.toList());
                                       
         return new TermPage(page, limit, nPages, termSlice);

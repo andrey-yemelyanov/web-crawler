@@ -2,7 +2,7 @@ package helvidios.search.web.util;
 
 import java.util.*;
 
-public class Trie {
+public class Trie implements Vocabulary{
 
     private static class TrieNode{
         Map<Character, TrieNode> children = new HashMap<>();
@@ -16,6 +16,7 @@ public class Trie {
         root = new TrieNode();
     }
 
+    @Override
     public void add(String word) {
         TrieNode current = root;
         for(char c : word.toCharArray()){
@@ -29,6 +30,7 @@ public class Trie {
         size++;
     }
 
+    @Override
     public boolean containsWord(String word){
         if(word.isEmpty()) return false;
         TrieNode current = root;
@@ -41,6 +43,7 @@ public class Trie {
         return current.isEndOfWord;
     }
 
+    @Override
     public boolean containsPrefix(String prefix){
         if(prefix.isEmpty()) return false;
         TrieNode current = root;
@@ -48,10 +51,12 @@ public class Trie {
             if(!current.children.containsKey(c)){
                 return false;
             }
+            current = current.children.get(c);
         }
         return true;
     }
 
+    @Override
     public List<String> getByPrefix(String prefix) {
         if(!containsPrefix(prefix)) return Arrays.asList();
         List<String> words = new ArrayList<>();
@@ -60,6 +65,7 @@ public class Trie {
             current = current.children.get(c);
         }
         getByPrefix(prefix, words, current);
+        Collections.sort(words);
         return words;
     }
 
@@ -70,6 +76,7 @@ public class Trie {
         }
     }
 
+    @Override
     public int size() {
         return size;
     }
