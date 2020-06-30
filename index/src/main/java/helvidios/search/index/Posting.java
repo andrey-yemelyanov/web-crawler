@@ -23,7 +23,7 @@ public class Posting implements Comparable<Posting> {
     }
 
     /**
-     * Returns document ID where the term appears.
+     * Returns document ID where this posting appears.
      */
     public int docId(){
         return docId;

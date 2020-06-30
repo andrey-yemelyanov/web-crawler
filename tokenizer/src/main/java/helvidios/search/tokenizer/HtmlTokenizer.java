@@ -7,7 +7,14 @@ public class HtmlTokenizer extends TextTokenizer {
 
     @Override
     public List<String> getTokens(String html){
-        String text = Jsoup.parse(html).select("body").text(); // extract text from HTML page
-        return super.getTokens(text);
+        return super.getTokens(getText(html));
+    }
+
+    /**
+     * Extracts raw text from an HTML page.
+     * @param html source document in HTML format
+     */
+    public String getText(String html){
+        return Jsoup.parse(html).select("body").text(); 
     }
 }

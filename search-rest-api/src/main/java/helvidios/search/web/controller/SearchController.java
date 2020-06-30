@@ -23,7 +23,7 @@ public class SearchController {
     public SearchController(Searcher searcher){
         this.searcher = searcher;
         this.terms = new Trie();
-        searcher.vocabulary().forEach(terms::add);
+        searcher.vocabulary().forEach(terms::add); // load the entire vocabulary into an in-memory trie
     }
 
     @GetMapping(value = "/api/search")
