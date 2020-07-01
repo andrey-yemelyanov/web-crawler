@@ -14,6 +14,7 @@ public class HtmlTokenizer extends TextTokenizer {
      * Extracts raw text from an HTML page.
      * @param html source document in HTML format
      */
+    @Override
     public String getText(String html){
         return Jsoup.parse(html).select("body").text(); 
     }

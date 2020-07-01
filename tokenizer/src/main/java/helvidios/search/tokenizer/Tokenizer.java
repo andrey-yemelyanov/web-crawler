@@ -14,4 +14,9 @@ public interface Tokenizer {
      * @param content text content
      */
     List<String> getTokens(String content);
+
+    /**
+     * Returns text that will be tokenized.
+     */
+    String getText(String content);
 }

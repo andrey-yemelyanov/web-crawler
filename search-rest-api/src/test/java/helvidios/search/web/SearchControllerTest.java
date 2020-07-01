@@ -55,8 +55,8 @@ public class SearchControllerTest {
             String.format("http://localhost:%d/api/search?query=map put&limit=3", port), 
             SearchHit[].class);
         assertThat(hits.length).isEqualTo(3);
-        assertThat(hits[0]).isEqualTo(new SearchHit(-1965704338, "https://docs.oracle.com/javase/8/docs/api/java/util/Map.html", "Map (Java Platform SE 8 )", 7.432675089531022));
-        assertThat(hits[1]).isEqualTo(new SearchHit(-30051156, "https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html", "TreeMap (Java Platform SE 8 )", 7.213925016886638));
-        assertThat(hits[2]).isEqualTo(new SearchHit(460305784, "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html", "ConcurrentSkipListMap (Java Platform SE 8 )", 7.0617820051664015));
+        assertThat(hits[0]).isEqualTo(new SearchHit(-1965704338, "https://docs.oracle.com/javase/8/docs/api/java/util/Map.html", "Map (Java Platform SE 8 )", 7.432675089531022, null));
+        assertThat(hits[1]).isEqualTo(new SearchHit(-30051156, "https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html", "TreeMap (Java Platform SE 8 )", 7.213925016886638, null));
+        assertThat(hits[2]).isEqualTo(new SearchHit(460305784, "https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html", "ConcurrentSkipListMap (Java Platform SE 8 )", 7.0617820051664015, null));
     }
 }

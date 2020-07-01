@@ -1,27 +1,33 @@
 package helvidios.search.searcher;
 
+import java.util.HashMap;
+
 /**
  * Represents a search hit.
  */
 public class Match {
-    
+
     private final int docId;
     private final String url;
     private final String title;
     private final String content;
     private final double score;
+    private final TextSnippet snippet;
 
-    private Match(
-        int docId, 
-        String url, 
-        String title, 
-        String content,
-        double score){
+    private Match(int docId, String url, String title, String content, double score, TextSnippet snippet) {
         this.docId = docId;
         this.url = url;
         this.title = title;
         this.content = content;
         this.score = score;
+        this.snippet = snippet;
+    }
+
+    /**
+     * Returns text snippet with term highlights.
+     */
+    public TextSnippet getSnippet() {
+        return snippet;
     }
 
     @Override
@@ -70,6 +76,7 @@ public class Match {
         private String title = "unknown-title";
         private String content = "no-content";
         private double score = 0.0;
+        private TextSnippet snippet = new TextSnippet("", new HashMap<>());
 
         public Builder docId(int docId){
             this.docId = docId;
@@ -96,8 +103,13 @@ public class Match {
             return this;
         }
 
+        public Builder textSnippet(TextSnippet snippet){
+            this.snippet = snippet;
+            return this;
+        }
+
         public Match build(){
-            return new Match(docId, url, title, content, score);
+            return new Match(docId, url, title, content, score, snippet);
         }
     }
 }

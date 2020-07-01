@@ -18,4 +18,9 @@ public class TextTokenizer implements Tokenizer {
                      .collect(Collectors.toList());
     }
 
+    @Override
+    public String getText(String content) {
+        return content;
+    }
+
 }

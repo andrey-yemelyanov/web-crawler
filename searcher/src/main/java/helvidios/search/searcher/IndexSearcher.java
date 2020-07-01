@@ -53,7 +53,7 @@ public class IndexSearcher implements Searcher {
             return Arrays.asList();
         }
         List<String> queryTerms = lemmatizer.getLemmas(tokens);
-        List<Match> matches = getTopKMatches(computeDocumentScores(queryTerms), k);
+        List<Match> matches = getTopKMatches(computeDocumentScores(queryTerms), k, queryTerms);
         log.info("Found {} matches for query {}.", matches.size(), query);
         return matches;
     }
@@ -89,22 +89,24 @@ public class IndexSearcher implements Searcher {
         return tfWeight * idf;
     }
 
-    private List<Match> getTopKMatches(Map<Integer, Double> scores, int k){
+    private List<Match> getTopKMatches(Map<Integer, Double> scores, int k, List<String> queryTerms){
         return scores.keySet().stream()
                               .sorted((docId1, docId2) -> Double.compare(scores.get(docId2), scores.get(docId1)))
                               .limit(k)
-                              .map(docId -> buildMatch(docId, scores.get(docId)))
+                              .map(docId -> buildMatch(docId, scores.get(docId), queryTerms))
                               .collect(Collectors.toList());
     }
 
-    private Match buildMatch(int docId, double documentScore){
+    private Match buildMatch(int docId, double documentScore, List<String> queryTerms){
         HtmlDocument doc = docRepo.get(new DocId(docId));
+        TextHighlighter highlighter = new TextHighlighter(tokenizer.getText(doc.getContent()));
         return new Match.Builder()
                         .docId(docId)
                         .documentUrl(doc.getUrl())
-                        .documentContent(doc.getContent())
                         .documentTitle(doc.getTitle())
                         .documentScore(documentScore)
+                        .documentContent(doc.getContent())
+                        .textSnippet(highlighter.generateSnippet(queryTerms))
                         .build();
     }
 }

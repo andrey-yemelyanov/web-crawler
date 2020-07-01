@@ -6,12 +6,18 @@ public class SearchHit {
     private final String url;
     private final String title;
     private final double score;
+    private final Snippet snippet;
 
-    public SearchHit(int docId, String url, String title, double score) {
+    public SearchHit(int docId, String url, String title, double score, Snippet snippet) {
         this.docId = docId;
         this.url = url;
         this.score = score;
         this.title = title;
+        this.snippet = snippet;
+    }
+
+    public Snippet getSnippet() {
+        return snippet;
     }
 
     public String getTitle() {

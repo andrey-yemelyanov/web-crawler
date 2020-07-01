@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 import helvidios.search.searcher.Searcher;
 import helvidios.search.web.SearchException;
 import helvidios.search.web.model.SearchHit;
+import helvidios.search.web.model.Snippet;
 import helvidios.search.web.model.TermPage;
 import helvidios.search.web.util.Trie;
 import helvidios.search.web.util.Vocabulary;
@@ -34,7 +35,12 @@ public class SearchController {
 
             return searcher.search(query, k)
                            .stream()
-                           .map(match -> new SearchHit(match.docId(), match.url(), match.title(), match.score()))
+                           .map(match -> new SearchHit(
+                               match.docId(), 
+                               match.url(), 
+                               match.title(), 
+                               match.score(), 
+                               new Snippet(match.getSnippet())))
                            .collect(Collectors.toList());
 
         } catch (Exception e) {
