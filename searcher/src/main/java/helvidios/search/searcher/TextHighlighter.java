@@ -22,7 +22,7 @@ public class TextHighlighter {
      * @param query list of normalized query tokens
      */
     public TextSnippet generateSnippet(List<String> query){
-        final String snippet = generateSnippetText(Interval.mergeIntervals(getTextIntervals(query)));
+        final String snippet = generateSnippetText(query);
         return new TextSnippet(snippet, generateOffsets(query, snippet));
     }
 
@@ -45,7 +45,8 @@ public class TextHighlighter {
         return offsets;
     }
 
-    private String generateSnippetText(List<Interval> intervals){
+    private String generateSnippetText(List<String> query){
+        List<Interval> intervals = getTextIntervals(query);
         StringBuilder snippet = new StringBuilder("...");
         for(Interval interval : intervals){
             snippet.append(text.substring(interval.from(), interval.to()).replace("\n", " ").replace("\r", " "));
@@ -67,7 +68,7 @@ public class TextHighlighter {
         }
         // sort intervals by their 'from' coordinate
         Collections.sort(intervals, (i1, i2) -> Integer.compare(i1.from(), i2.from()));
-        return intervals;
+        return Interval.mergeIntervals(intervals);
     }
 
 }
