@@ -10,6 +10,7 @@ public class TextHighlighter {
 
     private final String text;
 
+    // how far from a query term do we expand the substring to the left and right (this gives us context in which the term occurs in a document)
     private static final int EXPANSION = 300;
 
     public TextHighlighter(String text){

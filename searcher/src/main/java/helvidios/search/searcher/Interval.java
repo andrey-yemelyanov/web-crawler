@@ -18,6 +18,23 @@ public class Interval{
         this.to = to;
     }
 
+    @Override
+    public String toString(){
+        return String.format("(%d,%d)", from, to);
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof Interval)) return false;
+        Interval other = (Interval) obj;
+        return this.from == other.from && this.to == other.to;
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(from, to);
+    }
+
     /**
      * Returns true if two intervals overlap.
      * @param i1 first interval
