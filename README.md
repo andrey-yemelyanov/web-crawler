@@ -34,7 +34,7 @@ If you want to use a different storage implementation or store data on a remote 
 1. Build the project using maven command: `mvn clean install`
 2. To crawl from a single seed URL launch the following script: `/web-crawler/target/run-web-crawler.bat [dbName] [seedUrl]`. E.g. `/web-crawler/target/run-web-crawler java-docs-db https://docs.oracle.com/javase/8/docs/api/overview-summary.html`
 3. Once crawling is complete, you can run the indexer by entering: `/indexer/target/run-indexer.bat [dbName]`
-4. Not that the index is built, launch the REST API by entering: `mvn spring-boot:run` inside search-rest-api folder. Set correct db.name value in application.properties file.
+4. Now that the index is built, launch the REST API by entering: `mvn spring-boot:run` inside search-rest-api folder. Set correct db.name value in application.properties file.
 5. Finally, launch Angular frontend by issuing: `ng serve --open` inside search-angular-app folder.
 
 ## A few desirable improvements
