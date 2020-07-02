@@ -29,6 +29,8 @@ You need Java 8 or higher installed on your computer. Launch scripts are current
 You will also need an instance of MongoDb running on your machine. All launch scripts run against MongoDb database on localhost.
 It is recommended that you use the same database for index and document storage.
 
+If you want to use a different storage implementation or store data on a remote MongoDb server, then you will need to modify App.java files in corresponding projects and rebuild.
+
 1. Build the project using maven command: `mvn clean install`
 2. To crawl from a single seed URL launch the following script: `/web-crawler/target/run-web-crawler.bat [dbName] [seedUrl]`. E.g. `/web-crawler/target/run-web-crawler java-docs-db https://docs.oracle.com/javase/8/docs/api/overview-summary.html`
 3. Once crawling is complete, you can run the indexer by entering: `/indexer/target/run-indexer.bat [dbName]`
