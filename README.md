@@ -23,6 +23,18 @@ During development I had a chance to implement a number of interesting practical
 + Fast term autocompletion by using trie-based prefix search
 + Vector space model for scoring query-to-document similarity
 
+## How to run
+
+You need Java 8 or higher installed on your computer. Launch scripts are currently implemented only for the Windows platform.
+You will also need an instance of MongoDb running on your machine. All launch scripts run against MongoDb database on localhost.
+It is recommended that you use the same database for index and document storage.
+
+1. Build the project using maven command: `mvn clean install`
+2. To crawl from a single seed URL launch the following script: `/web-crawler/target/run-web-crawler.bat [dbName] [seedUrl]`. E.g. `/web-crawler/target/run-web-crawler java-docs-db https://docs.oracle.com/javase/8/docs/api/overview-summary.html`
+3. Once crawling is complete, you can run the indexer by entering: `/indexer/target/run-indexer.bat [dbName]`
+4. Not that the index is built, launch the REST API by entering: `mvn spring-boot:run` inside search-rest-api folder. Set correct db.name value in application.properties file.
+5. Finally, launch Angular frontend by issuing: `ng serve --open` inside search-angular-app folder.
+
 ## A few desirable improvements
 Some of the aspects of the system that can be improved are listed below.
 ### Experiment with different scoring schemes for documents
