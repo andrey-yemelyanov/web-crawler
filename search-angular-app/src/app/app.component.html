@@ -1,2 +1,6 @@
 <h1>{{title}}</h1>
-<p>it works!!!</p>
+<p>Welcome to search</p>
+
+<app-search-bar></app-search-bar>
+
+<app-search-hit-list [searchHits]="searchHits" *ngIf="searchHits.length > 0"></app-search-hit-list>
