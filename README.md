@@ -1,35 +1,38 @@
 # web-search
-Web search project consisting of a web crawler, indexer and searcher.
+This is my attempt at creating a minimalistic search engine as a practical way to learn about information retrieval. I wanted to create a full-stack search system all the way from indexing and searching in Java to a clear REST API with a user-friendly frontend in Angular. Some ideas and algorithms are borrowed from a great text book on everything related to search: [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html).
 
-# Indexer algorithm
+As a test, I crawled and indexed the entire JavaDocs website with around 10k documents and over 35k unique terms.
 
-Index construction is done by sorting and grouping and follows the algorithm specified in the [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html) book.
+The resulting system consists of the following modules:
 
-![Indexing process](https://nlp.stanford.edu/IR-book/html/htmledition/img54.png)
++ Multithreaded Web crawler (crawls a single site with a single seed url)
++ Scalable block-sort based indexer
++ Document text tokenizer with stop word processing
++ Lemma extraction using Apache OpenNLP - natural text processing library
++ Fast searcher with dynamic document scoring and term highlighting. 
++ Scalable NoSQL storage using MongoDB (although, thanks to the inversion of control pattern, any other custom storage mechanism can be used)
++ REST API for search and term prefix autocompletion
++ Frontend written in Angular
 
-As a preprocessing step, the indexer will add integer IDs of all documents stored in the repository into a thread-safe queue for further processing by concurrent document processors.
+During development I had a chance to implement a number of interesting practical algorithms, such as:
 
-Multiple document processors run in parallel (using Java ExecutorService), where each processor has the following workflow:
++ Compact binary file storage for index postings lists
++ External sorting with intermediate files, including k-way merge using priority queue, during index construction
++ Multi-threaded web crawling using the BFS pattern
++ Generating a relevant text snippet with term highlighting for a specific user search query (interval merging etc.)
++ Fast term autocompletion by using trie-based prefix search
++ Vector space model for scoring query-to-document similarity
 
-1. Get docId from the document queue
-2. Get document content for docId
-2. Tokenize the document and strip all stopwords
-3. Get lemmas (normalized words/terms) from the tokens
-4. Build a list consisting of tuples **(term, docId)**
-5. Add the list of tuples to the global term list
-
-Once all the documents have been processed, the indexer will sort the global term list first by each term and then by docId. Equal terms will occur together. As a next step, the indexer will generate a sorted postings list for each distinct term. The postings list will consist of tuples **(docId, termFrequency)** sorted by docId in increasing order.
-
-The resulting in-memory index will have the following example dictionary structure:
-
-`term1 -> [(docId1, 432), (docId2, 2), (docId6, 21)]`
-
-`term2 -> [(docId2, 12), (docId6, 21)]`
-
-`term3 -> [(docId6, 1)]`
-
-etc...
-
-The index will then be stored in MongoDB for further use by the searcher.
-
-
+## A few desirable improvements
+Some of the aspects of the system that can be improved are listed below.
+### Experiment with different scoring schemes for documents
+Search results in the current implementation are not always the most relevant (see NullPointerException discussion below). The best match sometimes appears lower or at the bottom of the list and this is not optimal. 
+### Weigh terms that occur in the document title higher that those that occur in the body
+Currently, if you search for NullPointerException in the JavaDocs corpus, you get a lot of irrelevant hits as this particular term is mentioned in a great number of documents. This makes it difficult to assign a fair score to this term. But if the searcher pays special attention to terms occurring in document title, then the page about NullPointerException will be at the top, as it should.
+### Crawl the web using several seed URLs and implement URL filtering
+Sometimes a single seed URL is not enough to discover the whole site or a group of sites. So it is a good idea to have multiple seed URLs. 
+URL filtering based on a pattern is also beneficial. Say you want to crawl the entire English Wikipedia. Then you are only interested in pages following this pattern: https://en.wikipedia.org/wiki/[article-name]. But you want to ignore pages with metadata e.g. https://en.wikipedia.org/wiki/Portal:Current_events or https://en.wikipedia.org/wiki/Special:WhatLinksHere/Java_(programming_language). These pages are not interesting for indexing.
+### Pay attention to robot.txt
+Current implementation of the crawler is not very polite.
+### Make search REST API more production grade
+Implement logging, security, API limiter, etc.
