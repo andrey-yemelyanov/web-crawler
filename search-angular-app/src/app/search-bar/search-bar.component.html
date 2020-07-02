@@ -1,4 +1,11 @@
-<p>Search bar</p>
+<mat-form-field>
+  <mat-icon matPrefix>search</mat-icon>
+  <input matInput type="search" placeholder="search here" class="search-input">
+</mat-form-field>
 
-<input [(ngModel)]="searchQuery">
-<button (click)="search()">Search</button>
+<input [(ngModel)]="searchQuery" type="text"
+      placeholder="Type your search query..."
+      autofocus (keydown.enter)="search()">
+
+<button class="btn btn-success" type="submit"
+  (click)="search()" [disabled]="!searchQuery">Search</button>

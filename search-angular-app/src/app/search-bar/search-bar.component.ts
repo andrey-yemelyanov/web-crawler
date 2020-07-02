@@ -17,6 +17,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   search():void{
+    if(!this.searchQuery) return;
     alert("Searching for " + this.searchQuery);
   }
 
