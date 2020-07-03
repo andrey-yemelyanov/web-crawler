@@ -2,7 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import {MatInputModule} from '@angular/material/input';
+import {ButtonModule} from 'primeng/button';
+
+import {AutoCompleteModule} from 'primeng/autocomplete';
+import {ToastModule} from 'primeng/toast';
+import {CardModule} from 'primeng/card';
 
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
@@ -22,7 +26,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatInputModule
+    AutoCompleteModule,
+    ToastModule,
+    ButtonModule,
+    CardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
