@@ -1,6 +1,6 @@
 <h1>{{title}}</h1>
 <p>Java Docs</p>
 
-<app-search-bar></app-search-bar>
+<app-search-bar (searchTriggered)="searchTriggered($event)"></app-search-bar>
 
 <app-search-hit-list [searchHits]="searchHits" *ngIf="searchHits.length > 0"></app-search-hit-list>

@@ -18,5 +18,9 @@ export class AppComponent {
     ];
   }
 
+  searchTriggered(event){
+    alert(event);
+  }
+
   title = 'Search Web UI';
 }

@@ -1,11 +1,11 @@
 
-<p-card [style]="{width: '360px'}">
+<p-card [style]="{margin: '0 auto', width: '50%'}">
   <div class="ui-fluid">
-    <p-autoComplete placeholder="Search..." 
+    <p-autoComplete placeholder="Type search term..." 
       [(ngModel)]="searchQuery" [suggestions]="terms" 
       (completeMethod)="searchTerms($event)"
-      [multiple]="true" [autoHighlight]="true" [forceSelection]="true" [autofocus]="false"></p-autoComplete>
-    <button icon="pi pi-search" (click)="search()" [disabled]="!searchQuery" pButton type="button" style="margin-left: 1px;"></button>
+      [multiple]="true" [autoHighlight]="true" [forceSelection]="true" [autofocus]="false" [style]="{width: '90%'}"></p-autoComplete>
+    <button icon="pi pi-search" (click)="search()" [disabled]="searchQuery.length==0" pButton type="button" style="margin-left: 1px;"></button>
   </div>
 </p-card>
 

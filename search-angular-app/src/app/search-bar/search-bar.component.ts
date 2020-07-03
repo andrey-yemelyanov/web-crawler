@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import {MessageService} from 'primeng/api';
 
 import { SearchService } from '../search.service';
@@ -11,7 +11,9 @@ import { SearchService } from '../search.service';
 })
 export class SearchBarComponent implements OnInit {
 
-  searchQuery: string = "";
+  @Output() searchTriggered: EventEmitter<string> = new EventEmitter();
+
+  searchQuery: string[] = [];
   terms: string[] = [];
 
   constructor(private searchService: SearchService, private messageService: MessageService) { }
@@ -20,8 +22,9 @@ export class SearchBarComponent implements OnInit {
   }
 
   search():void{
-    if(!this.searchQuery) return;
-    alert("Searching for " + this.searchQuery);
+    const q = this.searchQuery.join(" ");
+    console.log("Searching for '" + q + "'");
+    this.searchTriggered.emit(q);
   }
 
   searchTerms(event):void{
