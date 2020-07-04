@@ -11,9 +11,11 @@ import helvidios.search.web.util.Vocabulary;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@CrossOrigin
 @RestController
 public class SearchController {
 
