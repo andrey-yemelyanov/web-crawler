@@ -14,6 +14,8 @@ The resulting system consists of the following modules:
 + REST API for search and term prefix autocompletion
 + Frontend written in Angular
 
+![](SearchArch.png)
+
 During development I had a chance to implement a number of interesting practical algorithms, such as:
 
 + Compact binary file storage for index postings lists
