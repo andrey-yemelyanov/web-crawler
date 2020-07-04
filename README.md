@@ -1,4 +1,4 @@
-# web-search
+# Web Search Engine
 This is my attempt at creating a minimalistic search engine as a practical way to learn about information retrieval. I wanted to create a full-stack search system all the way from indexing and searching in Java to a clear REST API with a user-friendly frontend in Angular. Some ideas and algorithms are borrowed from a great text book on everything related to search: [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/information-retrieval-book.html).
 
 As a test, I crawled and indexed the entire JavaDocs website with around 10k documents and over 35k unique terms.
@@ -48,7 +48,7 @@ Currently, if you search for NullPointerException in the JavaDocs corpus, you ge
 ### Crawl the web using several seed URLs and implement URL filtering
 Sometimes a single seed URL is not enough to discover the whole site or a group of sites. So it is a good idea to have multiple seed URLs. 
 URL filtering based on a pattern is also beneficial. Say you want to crawl the entire English Wikipedia. Then you are only interested in pages following this pattern: https://en.wikipedia.org/wiki/[article-name]. But you want to ignore pages with metadata e.g. https://en.wikipedia.org/wiki/Portal:Current_events or https://en.wikipedia.org/wiki/Special:WhatLinksHere/Java_(programming_language). These pages are not interesting for indexing.
-### Pay attention to robot.txt
+### Pay attention to robots.txt
 Current implementation of the crawler is not very polite.
 ### Make search REST API more production grade
-Implement logging, security, API limiter, etc.
+Implement logging, security, API rate limiter, etc.
