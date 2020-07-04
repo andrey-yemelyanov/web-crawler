@@ -3,6 +3,8 @@ This is my attempt at creating a minimalistic search engine as a practical way t
 
 As a test, I crawled and indexed the entire JavaDocs website with around 10k documents and over 35k unique terms.
 
+![](WebUi.png)
+
 The resulting system consists of the following modules:
 
 + Multithreaded Web crawler (crawls a single site with a single seed url)
