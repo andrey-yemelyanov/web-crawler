@@ -7,6 +7,7 @@ import {ButtonModule} from 'primeng/button';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {ToastModule} from 'primeng/toast';
 import {CardModule} from 'primeng/card';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
@@ -29,9 +30,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AutoCompleteModule,
     ToastModule,
     ButtonModule,
-    CardModule
+    CardModule,
+    ProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+// ng serve --open --host 192.168.1.84 --disable-host-check --prod=true

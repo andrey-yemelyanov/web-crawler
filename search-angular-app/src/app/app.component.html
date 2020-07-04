@@ -1,6 +1,15 @@
-<h1>{{title}}</h1>
-<p>Java Docs</p>
+<h3 style="text-align: center;">{{title}}</h3>
 
 <app-search-bar (searchTriggered)="searchTriggered($event)"></app-search-bar>
 
-<app-search-hit-list [searchHits]="searchHits" *ngIf="searchHits.length > 0"></app-search-hit-list>
+<div style="padding: 20px;text-align: center;" *ngIf="searching">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="searchHits.length > 0">
+  <div style="padding: 10px;">Showing search results for query <b>'{{query}}'</b></div>
+
+  <app-search-hit-list [searchHits]="searchHits"></app-search-hit-list>
+</div>
+
+<p-toast></p-toast>

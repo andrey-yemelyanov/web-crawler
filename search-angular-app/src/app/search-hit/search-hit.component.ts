@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-
 import { SearchHit } from '../searchHit';
+import { HighlightService } from '../highlight.service';
 
 @Component({
   selector: 'app-search-hit',
@@ -11,9 +11,12 @@ export class SearchHitComponent implements OnInit {
 
   @Input() searchHit: SearchHit;
 
-  constructor() { }
+  highlightedSnippet: string = "";
+
+  constructor(private highlightService: HighlightService) { }
 
   ngOnInit(): void {
+    this.highlightedSnippet = this.highlightService.highlight(this.searchHit.snippet);
   }
 
 }

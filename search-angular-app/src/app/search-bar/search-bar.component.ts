@@ -22,13 +22,14 @@ export class SearchBarComponent implements OnInit {
   }
 
   search():void{
-    const q = this.searchQuery.join(" ");
+    const q = this.searchQuery.join(" ").toLowerCase();
     console.log("Searching for '" + q + "'");
     this.searchTriggered.emit(q);
   }
 
   searchTerms(event):void{
-    this.searchService.getTerms(event.query).subscribe(
+    const q = (<string>event.query).toLowerCase();
+    this.searchService.getTerms(q).subscribe(
       data => {
         console.log(data);
         this.terms = data.terms;
