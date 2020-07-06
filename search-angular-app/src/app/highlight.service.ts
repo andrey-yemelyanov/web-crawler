@@ -21,13 +21,13 @@ export class HighlightService {
 
     var offset = invertedOffsets[0];
     var highlightedText: string = text.substr(0, offset.pos);
-    highlightedText += "<b>" + offset.term + "</b>";
+    highlightedText += "<b>" + text.substr(offset.pos, offset.term.length) + "</b>";
     var fromIndex = offset.pos + offset.term.length;
 
     for(var i = 1; i < invertedOffsets.length; i++){
       offset = invertedOffsets[i];
       highlightedText += text.substr(fromIndex, offset.pos - fromIndex);
-      highlightedText += "<b>" + offset.term + "</b>";
+      highlightedText += "<b>" + text.substr(offset.pos, offset.term.length) + "</b>";
       fromIndex = offset.pos + offset.term.length;
     }
 

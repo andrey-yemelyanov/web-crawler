@@ -1,7 +1,8 @@
 
 <div style="padding: 5px;">
   <p-card>
-    <a target="_blank" rel="noopener noreferrer" [href]="searchHit.url">{{ searchHit.title }}</a>
+    <a target="_blank" style="font-size: 18px;" rel="noopener noreferrer" [href]="searchHit.url">{{ searchHit.title }}</a>
+    <div style="font-size: 12px;">Score: {{ searchHit.score }}</div>
     <div [innerHTML]="highlightedSnippet"></div>
   </p-card>
 </div>
