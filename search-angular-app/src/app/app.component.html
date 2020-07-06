@@ -7,7 +7,7 @@
 </div>
 
 <div *ngIf="searchHits.length > 0">
-  <div style="padding: 10px;">Showing search results for query <b>'{{query}}'</b></div>
+  <div style="text-align: center;padding:10px;">Showing search results for query <b>'{{query}}'</b></div>
 
   <app-search-hit-list [searchHits]="searchHits"></app-search-hit-list>
 </div>
