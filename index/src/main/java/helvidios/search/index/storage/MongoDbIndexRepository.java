@@ -90,7 +90,7 @@ public class MongoDbIndexRepository implements IndexRepository {
         List<Document> postingsList = (List<Document>) doc.get("postingsList");
         final Term t = new Term(term.name(), doc.getInteger("df"), doc.getDouble("idf"));
         return postingsList.stream()
-                           .map(obj -> new Posting(t, obj.getInteger("docId"), obj.getInteger("tf")))
+                           .map(obj -> new Posting(t, obj.getInteger("docId"), obj.getInteger("tf"), obj.getBoolean("termAppearsInDocTitle")))
                            .collect(Collectors.toList());
     }
     

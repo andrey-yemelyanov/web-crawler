@@ -36,11 +36,11 @@ class Indexer {
             if(posting.equals(currentPosting)){ // two equivalent postings (same term and docId), just increment the frequency counter
                 freq++;
             }else if(posting.term().equals(currentPosting.term())){ // same term, but a different docId
-                postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
+                postings.add(new Posting(currentTerm, currentPosting.docId(), freq, currentPosting.termAppearsInDocTitle()));
                 currentPosting = posting;
                 freq = 1;
             }else{  // postings with different terms and docIds
-                postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
+                postings.add(new Posting(currentTerm, currentPosting.docId(), freq, currentPosting.termAppearsInDocTitle()));
                 writePostingsList(currentTerm, postings);
                 postings = new ArrayList<>();
                 currentPosting = posting;
@@ -49,7 +49,7 @@ class Indexer {
             }
         }
 
-        postings.add(new Posting(currentTerm, currentPosting.docId(), freq));
+        postings.add(new Posting(currentTerm, currentPosting.docId(), freq, currentPosting.termAppearsInDocTitle()));
         writePostingsList(currentTerm, postings);
         
         writeDocumentLength();

@@ -65,15 +65,15 @@ public class IndexBuilderTest {
             assertThat(indexRepo.terms, is(ex));
 
             assertThat(indexRepo.postings, is(Arrays.asList(
-                Arrays.asList(new Posting(ex.get(0), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(1), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(2), docId1, 2), new Posting(ex.get(2), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(3), docId1, 1)),
-                Arrays.asList(new Posting(ex.get(4), docId1, 2), new Posting(ex.get(4), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(5), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(6), docId1, 2), new Posting(ex.get(6), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(7), docId1, 2), new Posting(ex.get(7), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(8), docId1, 1))
+                Arrays.asList(new Posting(ex.get(0), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(1), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(2), docId1, 2, false), new Posting(ex.get(2), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(3), docId1, 1, false)),
+                Arrays.asList(new Posting(ex.get(4), docId1, 2, false), new Posting(ex.get(4), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(5), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(6), docId1, 2, false), new Posting(ex.get(6), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(7), docId1, 2, false), new Posting(ex.get(7), docId2, 1, false)),
+                Arrays.asList(new Posting(ex.get(8), docId1, 1, false))
             )));
         }
     }

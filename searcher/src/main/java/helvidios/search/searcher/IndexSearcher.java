@@ -71,24 +71,16 @@ public class IndexSearcher implements Searcher {
             List<Posting> postings = index.postingsList(queryTerm);
             for(Posting posting : postings){
                 final int docId = posting.docId();
+
                 // weights of all query terms are assumed to be equal to 1
                 scores.put(
                     docId,
                     scores.getOrDefault(docId, 0.0) + tfIdfScore(posting)
                 );
-            }
-        }
 
-        // for each query term that occurs in document title, increase document score by 1
-        for(int docId : scores.keySet()){
-            HtmlDocument doc = docRepo.get(new DocId(docId));
-            Set<String> docTitleTerms = new HashSet<>(lemmatizer.getLemmas(tokenizer.getTokens(doc.getTitle())));
-            for(String queryTerm : queryTerms){
-                if(docTitleTerms.contains(queryTerm)){
-                    scores.put(
-                        docId,
-                        scores.getOrDefault(docId, 0.0) + 1
-                    );
+                // increase document score by 1 if the term occurs in document title
+                if(posting.termAppearsInDocTitle()){
+                    scores.put(docId, scores.get(docId) + 1);
                 }
             }
         }
