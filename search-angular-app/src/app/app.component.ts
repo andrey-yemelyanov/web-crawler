@@ -25,6 +25,7 @@ export class AppComponent {
       data => {
         this.query = query;
         this.searchHits = data;
+        console.log("Found", this.searchHits.length, "search hits for", this.query, this.searchHits);
         this.searching = false;
       },
       err => {

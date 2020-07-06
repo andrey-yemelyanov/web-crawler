@@ -40,7 +40,7 @@ export class HighlightService {
     var invertedOffsets: Offset[] = [];
     Object.keys(offsets).forEach(term => {
       var positions: number[] = offsets[term];
-      console.log("Term", term, "Positions", positions);
+      //console.log("Term", term, "Positions", positions);
       positions.forEach(pos => {
         invertedOffsets.push({
           pos: pos,
@@ -49,7 +49,7 @@ export class HighlightService {
       });
     });
     invertedOffsets.sort((a, b) => a.pos - b.pos);
-    console.log("Inverted offsets: ", invertedOffsets);
+    //console.log("Inverted offsets: ", invertedOffsets);
     return invertedOffsets;
   }
 
