@@ -45,7 +45,7 @@ If you want to use a different storage implementation or store data on a remote 
 Some of the aspects of the system that can be improved are listed below.
 ### Experiment with different scoring schemes for documents
 Search results in the current implementation are not always the most relevant (see NullPointerException discussion below). The best match sometimes appears lower or at the bottom of the list and this is not optimal. 
-### Weigh terms that occur in the document title higher that those that occur in the body
+### Weigh terms that occur in the document title higher that those that occur in the body - DONE
 Currently, if you search for NullPointerException in the JavaDocs corpus, you get a lot of irrelevant hits as this particular term is mentioned in a great number of documents. This makes it difficult to assign a fair score to this term. But if the searcher pays special attention to terms occurring in document title, then the page about NullPointerException will be at the top, as it should.
 ### Crawl the web using several seed URLs and implement URL filtering
 Sometimes a single seed URL is not enough to discover the whole site or a group of sites. So it is a good idea to have multiple seed URLs. 
