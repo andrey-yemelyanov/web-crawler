@@ -63,7 +63,7 @@ public class IndexSearcher implements Searcher {
         return index.vocabulary();
     }
 
-    private Map<Integer, Double> computeDocumentScores(List<String> queryTerms){
+    private Map<Integer, Double> computeDocumentScores(List<String> queryTerms) throws Exception {
 
         Map<Integer, Double> scores = new HashMap<>();
 
@@ -76,6 +76,20 @@ public class IndexSearcher implements Searcher {
                     docId,
                     scores.getOrDefault(docId, 0.0) + tfIdfScore(posting)
                 );
+            }
+        }
+
+        // for each query term that occurs in document title, increase document score by 1
+        for(int docId : scores.keySet()){
+            HtmlDocument doc = docRepo.get(new DocId(docId));
+            Set<String> docTitleTerms = new HashSet<>(lemmatizer.getLemmas(tokenizer.getTokens(doc.getTitle())));
+            for(String queryTerm : queryTerms){
+                if(docTitleTerms.contains(queryTerm)){
+                    scores.put(
+                        docId,
+                        scores.getOrDefault(docId, 0.0) + 1
+                    );
+                }
             }
         }
 
