@@ -20,12 +20,18 @@ public class DocumentRepositoryTest {
         testDocRepo(docRepo);
     }
 
+    @Test
+    public void testCompressedDocRepo(){
+        DocumentRepository docRepo = new CompressedDocumentRepository(new InMemoryDocumentRepository());
+        testDocRepo(docRepo);
+    }
+
     private void testDocRepo(DocumentRepository docRepo){
         docRepo.clear();
 
-        HtmlDocument doc1 = new HtmlDocument("http://www.url1.com", "<html></html>", "title1");
-        HtmlDocument doc2 = new HtmlDocument("http://www.url2.com", "<html></html>", "title2");
-        HtmlDocument doc3 = new HtmlDocument("http://www.url3.com", "<html></html>", "title3");
+        HtmlDocument doc1 = new HtmlDocument("http://www.url1.com", "<html>1\n2n3</html>", "title1");
+        HtmlDocument doc2 = new HtmlDocument("http://www.url2.com", "<html>2\n\n4\n5</html>", "title2");
+        HtmlDocument doc3 = new HtmlDocument("http://www.url3.com", "<html>3</html>", "title3");
 
         assertThat(docRepo.size(), is(0L));
         assertThat(docRepo.get(doc1.getId()), is(nullValue()));
@@ -39,6 +45,8 @@ public class DocumentRepositoryTest {
         assertThat(docRepo.size(), is(3L));
 
         assertThat(docRepo.get(doc1.getUrl()).getContent(), is(doc1.getContent()));
+        assertThat(docRepo.get(doc2.getUrl()).getContent(), is(doc2.getContent()));
+        assertThat(docRepo.get(doc3.getUrl()).getContent(), is(doc3.getContent()));
 
         assertThat(docRepo.contains(doc1.getUrl()), is(true));
         assertThat(docRepo.contains(doc2.getUrl()), is(true));

@@ -3,6 +3,7 @@ package helvidios.search.indexer;
 import org.apache.logging.log4j.*;
 import helvidios.search.index.storage.*;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
+import helvidios.search.storage.CompressedDocumentRepository;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.MongoDbDocumentRepository;
 import helvidios.search.tokenizer.HtmlTokenizer;
@@ -23,9 +24,10 @@ public class App
 
         final String dbName = args[0];
 
-        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
-                                                                  .setDatabase(dbName)
-                                                                  .build();
+        DocumentRepository docRepo = new CompressedDocumentRepository(
+                                        new MongoDbDocumentRepository.Builder()
+                                                                     .setDatabase(dbName)
+                                                                     .build());
 
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
                                                               .setDatabase(dbName)

@@ -1,6 +1,8 @@
 package helvidios.search.webcrawler;
 
 import java.net.MalformedURLException;
+
+import helvidios.search.storage.CompressedDocumentRepository;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.MongoDbDocumentRepository;
 
@@ -20,9 +22,10 @@ public class App {
             urlPrefix = args[2];
         }
         
-        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
-                                                                  .setDatabase(dbName)
-                                                                  .build();
+        DocumentRepository docRepo = new CompressedDocumentRepository(
+                                        new MongoDbDocumentRepository.Builder()
+                                                                     .setDatabase(dbName)
+                                                                     .build());
 
         Crawler.Builder builder = new Crawler.Builder(seedUrl);
         if(urlPrefix != null){

@@ -43,7 +43,10 @@ public class SearchRestApiApplication {
 	Searcher getSearcher() throws IOException {
 		Tokenizer tokenizer = new HtmlTokenizer();
 		Lemmatizer lemmatizer = new ApacheNlpLemmatizer();
-		DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().setDatabase(dbName).build();
+		DocumentRepository docRepo = new CompressedDocumentRepository(
+										new MongoDbDocumentRepository.Builder()
+																	 .setDatabase(dbName)
+																	 .build());
 		IndexRepository indexRepo = new MongoDbIndexRepository.Builder().setDatabase(dbName).build();
 		return new IndexSearcher(indexRepo, docRepo, tokenizer, lemmatizer, logger);
 	}
