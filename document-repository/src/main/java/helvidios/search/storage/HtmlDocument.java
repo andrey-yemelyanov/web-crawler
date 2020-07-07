@@ -5,7 +5,7 @@ package helvidios.search.storage;
  */
 public class HtmlDocument {
 
-    private final DocId docId;
+    private final int docId;
     private final String url;
     private final String content;
     private final String title;
@@ -20,7 +20,7 @@ public class HtmlDocument {
     public HtmlDocument(String url, String content, String title) {
         this.url = url;
         this.content = content;
-        this.docId = new DocId(url);
+        this.docId = url.hashCode();
         this.title = title;
     }
 
@@ -35,7 +35,7 @@ public class HtmlDocument {
      * Returns the unique id of this document.
      */
     public int getId() {
-        return docId.get();
+        return docId;
     }
 
     /**
@@ -56,12 +56,12 @@ public class HtmlDocument {
     public boolean equals(Object obj){
         if(!(obj instanceof HtmlDocument)) return false;
         HtmlDocument other = (HtmlDocument) obj;
-        return this.docId.equals(other.docId);
+        return this.docId == other.docId;
     }
 
     @Override
     public int hashCode(){
-        return docId.hashCode();
+        return docId;
     }
 
     @Override

@@ -5,7 +5,6 @@ import helvidios.search.index.Index;
 import helvidios.search.index.Posting;
 import helvidios.search.index.storage.IndexRepository;
 import helvidios.search.linguistics.Lemmatizer;
-import helvidios.search.storage.DocId;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
 import helvidios.search.tokenizer.Tokenizer;
@@ -104,7 +103,7 @@ public class IndexSearcher implements Searcher {
     }
 
     private Match buildMatch(int docId, double documentScore, List<String> queryTerms){
-        HtmlDocument doc = docRepo.get(new DocId(docId));
+        HtmlDocument doc = docRepo.get(docId);
         TextHighlighter highlighter = new TextHighlighter(tokenizer.getText(doc.getContent()));
         return new Match.Builder()
                         .docId(docId)
