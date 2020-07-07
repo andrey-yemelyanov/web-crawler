@@ -36,7 +36,7 @@ public class Term {
     }
 
     /**
-     * Returns the document frequency of this term.
+     * Returns the document frequency of this term - number of documents where this term appears.
      */
     public int df(){
         return df;

@@ -33,18 +33,18 @@ public class ExternalSortTest {
     public void sort() throws IOException {
         List<BlockReader> readers = Arrays.asList(
             new BlockReaderMock(Arrays.asList(
-                new TermDocIdPair("hash", 1, false),
-                new TermDocIdPair("hash", 5, false),
-                new TermDocIdPair("tree", 1, false),
-                new TermDocIdPair("tree", 5, false)
+                new TermDocIdPair("hash", 1),
+                new TermDocIdPair("hash", 5),
+                new TermDocIdPair("tree", 1),
+                new TermDocIdPair("tree", 5)
             )),
             new BlockReaderMock(Arrays.asList(
-                new TermDocIdPair("attribute", 2, false),
-                new TermDocIdPair("hash", 10, false),
-                new TermDocIdPair("tree", 1, false),
-                new TermDocIdPair("tree", 2, false),
-                new TermDocIdPair("unicode", 1, false),
-                new TermDocIdPair("zip", 4, false)
+                new TermDocIdPair("attribute", 2),
+                new TermDocIdPair("hash", 10),
+                new TermDocIdPair("tree", 1),
+                new TermDocIdPair("tree", 2),
+                new TermDocIdPair("unicode", 1),
+                new TermDocIdPair("zip", 4)
             ))
         );
 
@@ -54,16 +54,16 @@ public class ExternalSortTest {
         assertThat(mergedFile, is("filePath1"));
 
         assertThat(writer.postings, is(Arrays.asList(
-            new TermDocIdPair("attribute", 2, false),
-            new TermDocIdPair("hash", 1, false),
-            new TermDocIdPair("hash", 5, false),
-            new TermDocIdPair("hash", 10, false),
-            new TermDocIdPair("tree", 1, false),
-            new TermDocIdPair("tree", 1, false),
-            new TermDocIdPair("tree", 2, false),
-            new TermDocIdPair("tree", 5, false),
-            new TermDocIdPair("unicode", 1, false),
-            new TermDocIdPair("zip", 4, false)
+            new TermDocIdPair("attribute", 2),
+            new TermDocIdPair("hash", 1),
+            new TermDocIdPair("hash", 5),
+            new TermDocIdPair("hash", 10),
+            new TermDocIdPair("tree", 1),
+            new TermDocIdPair("tree", 1),
+            new TermDocIdPair("tree", 2),
+            new TermDocIdPair("tree", 5),
+            new TermDocIdPair("unicode", 1),
+            new TermDocIdPair("zip", 4)
         )));
     }
 }

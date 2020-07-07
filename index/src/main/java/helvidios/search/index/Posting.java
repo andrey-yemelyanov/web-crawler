@@ -27,6 +27,10 @@ public class Posting implements Comparable<Posting> {
         this.termAppearsInDocTitle = termAppearsInDocTitle;
     }
 
+    public Posting(Term term, int docId, int tf) {
+        this(term, docId, tf, false);
+    }
+
     /**
      * Returns true if the posting term appears in document title.
      */

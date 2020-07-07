@@ -49,7 +49,7 @@ public class SearchTest {
         Term bitset = new Term("bitset", 3, 0.2218487496);
 
         indexRepo.addTerm(hashmap, Arrays.asList(
-            new Posting(hashmap, doc1000, 15),
+            new Posting(hashmap, doc1000, 15, true),
             new Posting(hashmap, doc1010, 25),
             new Posting(hashmap, doc1020, 30)
         ));
@@ -74,6 +74,8 @@ public class SearchTest {
             Match m1 = matches.get(0);
             Match m2 = matches.get(1);
             Match m3 = matches.get(2);
+
+            System.out.println(matches);
 
             assertThat(m1.docId(), is(doc1000));
             assertThat(m1.content(), is("doc1000content"));

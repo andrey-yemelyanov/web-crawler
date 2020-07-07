@@ -59,6 +59,7 @@ public class MongoDbIndexRepository implements IndexRepository {
             Map<String, Object> map = new HashMap<>();
             map.put("docId", posting.docId());
             map.put("tf", posting.tf());
+            map.put("termAppearsInDocTitle", posting.termAppearsInDocTitle());
             list.add(new BasicDBObject(map));
         }
 

@@ -22,21 +22,21 @@ public class IndexTest {
 
         Term term1 = new Term("hashmap");
         List<Posting> postingsList1 = Arrays.asList(
-            new Posting(term1, 1000, 15),
+            new Posting(term1, 1000, 15, true),
             new Posting(term1, 1001, 25),
             new Posting(term1, 1002, 30)
         );
 
         Term term2 = new Term("array");
         List<Posting> postingsList2 = Arrays.asList(
-            new Posting(term2, 1000, 15),
+            new Posting(term2, 1000, 15, true),
             new Posting(term2, 1001, 25),
             new Posting(term2, 1002, 30)
         );
 
         Term term3 = new Term("bitset");
         List<Posting> postingsList3 = Arrays.asList(
-            new Posting(term3, 1000, 15),
+            new Posting(term3, 1000, 15, true),
             new Posting(term3, 1001, 25),
             new Posting(term3, 1002, 30)
         );
@@ -62,5 +62,10 @@ public class IndexTest {
         )));
         assertThat(index.postingsList("abracadabra"), is(Arrays.asList()));
         assertThat(index.postingsList("termdoesnotexist"), is(Arrays.asList()));
+
+        List<Posting> hashmapPostings = index.postingsList("hashmap");
+        assertThat(hashmapPostings.get(0).termAppearsInDocTitle(), is(true));
+        assertThat(hashmapPostings.get(1).termAppearsInDocTitle(), is(false));
+        assertThat(hashmapPostings.get(2).termAppearsInDocTitle(), is(false));
     }
 }

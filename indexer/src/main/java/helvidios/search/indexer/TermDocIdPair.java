@@ -13,6 +13,10 @@ public class TermDocIdPair implements Comparable<TermDocIdPair> {
         this.termAppearsInDocTitle = termAppearsInDocTitle;
     }
 
+    public TermDocIdPair(String term, int docId) {
+        this(term, docId, false);
+    }
+
     public boolean termAppearsInDocTitle() {
         return termAppearsInDocTitle;
     }

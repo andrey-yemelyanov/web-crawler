@@ -63,20 +63,20 @@ public class BlockTest {
             br.iterator().forEachRemaining(p -> actualPostings.add(p));
             assertThat(actualPostings, is(postings));
 
-            assertThat(actualPostings.get(0), is(true));
-            assertThat(actualPostings.get(1), is(true));
+            assertThat(actualPostings.get(0).termAppearsInDocTitle(), is(true));
+            assertThat(actualPostings.get(1).termAppearsInDocTitle(), is(true));
 
-            assertThat(actualPostings.get(2), is(false));
-            assertThat(actualPostings.get(3), is(false));
+            assertThat(actualPostings.get(2).termAppearsInDocTitle(), is(false));
+            assertThat(actualPostings.get(3).termAppearsInDocTitle(), is(false));
 
-            assertThat(actualPostings.get(4), is(true));
-            assertThat(actualPostings.get(5), is(true));
+            assertThat(actualPostings.get(4).termAppearsInDocTitle(), is(true));
+            assertThat(actualPostings.get(5).termAppearsInDocTitle(), is(true));
 
-            assertThat(actualPostings.get(6), is(false));
-            assertThat(actualPostings.get(7), is(false));
+            assertThat(actualPostings.get(6).termAppearsInDocTitle(), is(false));
+            assertThat(actualPostings.get(7).termAppearsInDocTitle(), is(false));
 
-            assertThat(actualPostings.get(8), is(true));
-            assertThat(actualPostings.get(9), is(true));
+            assertThat(actualPostings.get(8).termAppearsInDocTitle(), is(true));
+            assertThat(actualPostings.get(9).termAppearsInDocTitle(), is(true));
         }
     }
 }

@@ -49,23 +49,26 @@ public class InverterTest {
                 List<TermDocIdPair> pairs = new ArrayList<>();
                 br.iterator().forEachRemaining(pair -> pairs.add(pair));
                 List<TermDocIdPair> expected = Arrays.asList(
-                    new TermDocIdPair("2", docId2, false),
-                    new TermDocIdPair("attribute", docId2, false),
-                    new TermDocIdPair("html", docId1, false),
-                    new TermDocIdPair("html", docId1, false),
+                    new TermDocIdPair("2", docId2),
+                    new TermDocIdPair("attribute", docId2),
+                    new TermDocIdPair("html", docId1),
+                    new TermDocIdPair("html", docId1),
                     new TermDocIdPair("html", docId2, true),
-                    new TermDocIdPair("link", docId1, false),
-                    new TermDocIdPair("link1", docId1, false),
-                    new TermDocIdPair("link1", docId1, false),
-                    new TermDocIdPair("link1", docId2, false),
-                    new TermDocIdPair("page", docId2, false),
-                    new TermDocIdPair("title", docId1, false),
-                    new TermDocIdPair("title", docId1, false),
-                    new TermDocIdPair("title", docId2, false),
-                    new TermDocIdPair("tutorial", docId1, false),
-                    new TermDocIdPair("tutorial", docId1, false),
+                    new TermDocIdPair("html", docId2, true), // title term for doc2
+                    new TermDocIdPair("link", docId1),
+                    new TermDocIdPair("link1", docId1),
+                    new TermDocIdPair("link1", docId1),
+                    new TermDocIdPair("link1", docId2),
+                    new TermDocIdPair("page", docId2),
+                    new TermDocIdPair("title", docId1),
+                    new TermDocIdPair("title", docId1),
+                    new TermDocIdPair("title", docId2),
+                    new TermDocIdPair("title1", docId1, true), // title term for doc1
+                    new TermDocIdPair("tutorial", docId1),
+                    new TermDocIdPair("tutorial", docId1),
                     new TermDocIdPair("tutorial", docId2, true),
-                    new TermDocIdPair("visit", docId1, false)
+                    new TermDocIdPair("tutorial", docId2, true), // title term for doc2
+                    new TermDocIdPair("visit", docId1)
                 );
                 assertThat(pairs, is(expected));
 

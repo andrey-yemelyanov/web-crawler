@@ -56,7 +56,7 @@ public class IndexerTest {
     @Test
     public void buildIndex1() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
-            new TermDocIdPair("map", 1, false)
+            new TermDocIdPair("map", 1)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
             Indexer indexer = new Indexer(indexRepo, br, log, 1);
@@ -64,7 +64,7 @@ public class IndexerTest {
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 1, false)
+                    new Posting(new Term("map"), 1, 1)
                 )
             )));
             
@@ -76,9 +76,9 @@ public class IndexerTest {
     @Test
     public void buildIndex2() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 2, false),
-            new TermDocIdPair("map", 3, false)
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 2),
+            new TermDocIdPair("map", 3)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
             Indexer indexer = new Indexer(indexRepo, br, log, 3);
@@ -86,9 +86,9 @@ public class IndexerTest {
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 1, false),
-                    new Posting(new Term("map"), 2, 1, false),
-                    new Posting(new Term("map"), 3, 1, false)
+                    new Posting(new Term("map"), 1, 1),
+                    new Posting(new Term("map"), 2, 1),
+                    new Posting(new Term("map"), 3, 1)
                 )
             )));
 
@@ -102,9 +102,9 @@ public class IndexerTest {
     @Test
     public void buildIndex3() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 3, false)
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 3)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
             Indexer indexer = new Indexer(indexRepo, br, log, 2);
@@ -112,8 +112,8 @@ public class IndexerTest {
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 2, false),
-                    new Posting(new Term("map"), 3, 1, false)
+                    new Posting(new Term("map"), 1, 2),
+                    new Posting(new Term("map"), 3, 1)
                 )
             )));
 
@@ -127,12 +127,12 @@ public class IndexerTest {
     @Test
     public void buildIndex4() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 3, false),
-            new TermDocIdPair("map", 3, false),
-            new TermDocIdPair("map", 3, false),
-            new TermDocIdPair("map", 4, false)
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 3),
+            new TermDocIdPair("map", 3),
+            new TermDocIdPair("map", 3),
+            new TermDocIdPair("map", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
             Indexer indexer = new Indexer(indexRepo, br, log, 3);
@@ -140,9 +140,9 @@ public class IndexerTest {
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 2, false),
-                    new Posting(new Term("map"), 3, 3, false),
-                    new Posting(new Term("map"), 4, 1, false)
+                    new Posting(new Term("map"), 1, 2),
+                    new Posting(new Term("map"), 3, 3),
+                    new Posting(new Term("map"), 4, 1)
                 )
             )));
 
@@ -157,14 +157,14 @@ public class IndexerTest {
     @Test
     public void buildIndex5() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 2, false),
-            new TermDocIdPair("node", 3, false),
-            new TermDocIdPair("node", 3, false),
-            new TermDocIdPair("node", 4, false),
-            new TermDocIdPair("node", 5, false),
-            new TermDocIdPair("tree", 4, false)
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 2),
+            new TermDocIdPair("node", 3),
+            new TermDocIdPair("node", 3),
+            new TermDocIdPair("node", 4),
+            new TermDocIdPair("node", 5),
+            new TermDocIdPair("tree", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
             Indexer indexer = new Indexer(indexRepo, br, log, 5);
@@ -172,16 +172,16 @@ public class IndexerTest {
             assertThat(indexRepo.terms, is(Arrays.asList(new Term("map"), new Term("node"), new Term("tree"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 2, false),
-                    new Posting(new Term("map"), 2, 1, false)
+                    new Posting(new Term("map"), 1, 2),
+                    new Posting(new Term("map"), 2, 1)
                 ),
                 Arrays.asList(
-                    new Posting(new Term("node"), 3, 2, false),
-                    new Posting(new Term("node"), 4, 1, false),
-                    new Posting(new Term("node"), 5, 1, false)
+                    new Posting(new Term("node"), 3, 2),
+                    new Posting(new Term("node"), 4, 1),
+                    new Posting(new Term("node"), 5, 1)
                 ),
                 Arrays.asList(
-                    new Posting(new Term("tree"), 4, 1, false)
+                    new Posting(new Term("tree"), 4, 1)
                 )
             )));
 
@@ -200,11 +200,11 @@ public class IndexerTest {
     @Test
     public void buildIndex6() throws Exception {
         try(BlockReader br = new BlockReaderMock(Arrays.asList(
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("map", 1, false),
-            new TermDocIdPair("node", 3, false),
-            new TermDocIdPair("tree", 4, false)
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("map", 1),
+            new TermDocIdPair("node", 3),
+            new TermDocIdPair("tree", 4)
         ))){
             IndexRepoMock indexRepo = new IndexRepoMock();
             Indexer indexer = new Indexer(indexRepo, br, log, 3);
@@ -215,13 +215,13 @@ public class IndexerTest {
                 new Term("tree"))));
             assertThat(indexRepo.postings, is(Arrays.asList(
                 Arrays.asList(
-                    new Posting(new Term("map"), 1, 3, false)
+                    new Posting(new Term("map"), 1, 3)
                 ),
                 Arrays.asList(
-                    new Posting(new Term("node"), 3, 1, false)
+                    new Posting(new Term("node"), 3, 1)
                 ),
                 Arrays.asList(
-                    new Posting(new Term("tree"), 4, 1, false)
+                    new Posting(new Term("tree"), 4, 1)
                 )
             )));
 
