@@ -8,6 +8,7 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 import {ToastModule} from 'primeng/toast';
 import {CardModule} from 'primeng/card';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {CheckboxModule} from 'primeng/checkbox';
 
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
@@ -31,7 +32,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ToastModule,
     ButtonModule,
     CardModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    CheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

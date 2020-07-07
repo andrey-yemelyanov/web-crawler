@@ -10,11 +10,12 @@
       [forceSelection]="true" 
       [autofocus]="false" 
       [style]="{width: '100%'}"
-      (onSelect)="search()"
-      (onUnselect)="search()"></p-autoComplete>
+      (onSelect)="liveSearchEnabled && search()"
+      (onUnselect)="liveSearchEnabled && search()"></p-autoComplete>
   </div>
   <div style="text-align: center;padding: 5px;">
-    <button [disabled]="searchQuery.length==0" (click)="search()" pButton type="button" label="Search" class="ui-button-rounded"></button>
+    <button [disabled]="searchQuery.length==0" (click)="search()" pButton type="button" label="Search" class="ui-button-rounded" style="margin: 10px;"></button>
+    <p-checkbox [(ngModel)]="liveSearchEnabled" [binary]="true" style="margin: 0 auto;"></p-checkbox> Live search
   </div>
 </p-card>
 
