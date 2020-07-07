@@ -58,22 +58,70 @@ public class IndexBuilderTest {
                 new Term("link1"),
                 new Term("page"),
                 new Term("title"),
+                new Term("title1"), // title term
+                new Term("title2"), // title term
                 new Term("tutorial"),
                 new Term("visit")
             );
 
             assertThat(indexRepo.terms, is(ex));
 
+            // 2
+            assertThat(indexRepo.terms.get(0).df(), is(1));
+            assertThat(indexRepo.terms.get(0).idf(), is(0.3010299956639812));
+
+            // attribute
+            assertThat(indexRepo.terms.get(1).df(), is(1));
+            assertThat(indexRepo.terms.get(1).idf(), is(0.3010299956639812));
+
+            // html
+            assertThat(indexRepo.terms.get(2).df(), is(2));
+            assertThat(indexRepo.terms.get(2).idf(), is(0.0));
+
+            // link
+            assertThat(indexRepo.terms.get(3).df(), is(1));
+            assertThat(indexRepo.terms.get(3).idf(), is(0.3010299956639812));
+
+            // link1
+            assertThat(indexRepo.terms.get(4).df(), is(2));
+            assertThat(indexRepo.terms.get(4).idf(), is(0.0));
+
+            // page
+            assertThat(indexRepo.terms.get(5).df(), is(1));
+            assertThat(indexRepo.terms.get(5).idf(), is(0.3010299956639812));
+
+            // title
+            assertThat(indexRepo.terms.get(6).df(), is(2));
+            assertThat(indexRepo.terms.get(6).idf(), is(0.0));
+
+            // title1
+            assertThat(indexRepo.terms.get(7).df(), is(1));
+            assertThat(indexRepo.terms.get(7).idf(), is(0.3010299956639812));
+
+            // title2
+            assertThat(indexRepo.terms.get(8).df(), is(1));
+            assertThat(indexRepo.terms.get(8).idf(), is(0.3010299956639812));
+
+            // tutorial
+            assertThat(indexRepo.terms.get(9).df(), is(2));
+            assertThat(indexRepo.terms.get(9).idf(), is(0.0));
+
+            // visit
+            assertThat(indexRepo.terms.get(10).df(), is(1));
+            assertThat(indexRepo.terms.get(10).idf(), is(0.3010299956639812));
+
             assertThat(indexRepo.postings, is(Arrays.asList(
-                Arrays.asList(new Posting(ex.get(0), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(1), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(2), docId1, 2), new Posting(ex.get(2), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(3), docId1, 1)),
-                Arrays.asList(new Posting(ex.get(4), docId1, 2), new Posting(ex.get(4), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(5), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(6), docId1, 2), new Posting(ex.get(6), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(7), docId1, 2), new Posting(ex.get(7), docId2, 1)),
-                Arrays.asList(new Posting(ex.get(8), docId1, 1))
+                Arrays.asList(new Posting(ex.get(0), docId2, 1)), // 2
+                Arrays.asList(new Posting(ex.get(1), docId2, 1)), // attribute
+                Arrays.asList(new Posting(ex.get(2), docId1, 2), new Posting(ex.get(2), docId2, 1)), // html
+                Arrays.asList(new Posting(ex.get(3), docId1, 1)), // link
+                Arrays.asList(new Posting(ex.get(4), docId1, 2), new Posting(ex.get(4), docId2, 1)), // link1
+                Arrays.asList(new Posting(ex.get(5), docId2, 1)), // page
+                Arrays.asList(new Posting(ex.get(6), docId1, 2), new Posting(ex.get(6), docId2, 1)), // title
+                Arrays.asList(new Posting(ex.get(7), docId1, 1)), // title1
+                Arrays.asList(new Posting(ex.get(8), docId2, 1)), // title2
+                Arrays.asList(new Posting(ex.get(9), docId1, 2), new Posting(ex.get(9), docId2, 1)), // tutorial
+                Arrays.asList(new Posting(ex.get(10), docId1, 1)) // visit
             )));
         }
     }

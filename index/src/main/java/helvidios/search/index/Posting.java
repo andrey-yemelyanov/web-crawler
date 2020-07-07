@@ -9,17 +9,33 @@ public class Posting implements Comparable<Posting> {
     private final int docId;
     private final int tf;
     private final Term term;
+    private final boolean termAppearsInDocTitle;
 
     /**
      * Initializes a new instance of {@link Posting}.
-     * @param term term
-     * @param docId document ID where the specified term appears
-     * @param tf number of times the specified term appears in the document
+     * 
+     * @param term              term
+     * @param docId             document ID where the specified term appears
+     * @param tf                number of times the specified term appears in the
+     *                          document
+     * @param termAppearsInDocTitle true if the term occurs in document title
      */
-    public Posting(Term term, int docId, int tf){
+    public Posting(Term term, int docId, int tf, boolean termAppearsInDocTitle) {
         this.term = term;
         this.docId = docId;
         this.tf = tf;
+        this.termAppearsInDocTitle = termAppearsInDocTitle;
+    }
+
+    public Posting(Term term, int docId, int tf) {
+        this(term, docId, tf, false);
+    }
+
+    /**
+     * Returns true if the posting term appears in document title.
+     */
+    public boolean termAppearsInDocTitle() {
+        return termAppearsInDocTitle;
     }
 
     /**

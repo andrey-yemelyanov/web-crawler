@@ -58,7 +58,10 @@ public class FileBlockReader implements BlockReader {
                                 ((docIdBytes[2] & 0xFF) << 8 ) | 
                                 ((docIdBytes[3] & 0xFF) << 0 );
 
-                    return new TermDocIdPair(term, docId);
+                    // read boolean byte
+                    boolean termAppearsInDocTitle = inputStream.read() == 1;
+
+                    return new TermDocIdPair(term, docId, termAppearsInDocTitle);
                 }
                 catch(Exception ex){
                     log.error(ex);

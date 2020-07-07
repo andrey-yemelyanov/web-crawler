@@ -23,8 +23,15 @@ class FileBlockWriter implements BlockWriter {
         // byte 0: byte length of the term that follows
         // bytes 1 to byteLen(term): term
         // bytes byteLen(term) + 1 to byteLen(term) + 5: docId
+        // last byte stores boolean: termAppearsInDocTitle
         writeTerm(posting.term());
         writeDocId(posting.docId());
+        writeBoolean(posting.termAppearsInDocTitle());
+    }
+
+    private void writeBoolean(boolean val) throws IOException {
+        byte byteVal = val ? (byte) 1 : (byte) 0;
+        outputStream.write(byteVal);
     }
 
     private void writeTerm(String term) throws IOException {

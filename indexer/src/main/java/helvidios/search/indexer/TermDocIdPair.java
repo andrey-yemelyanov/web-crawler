@@ -5,13 +5,25 @@ import java.util.Objects;
 public class TermDocIdPair implements Comparable<TermDocIdPair> {
     private final String term;
     private final int docId;
+    private final boolean termAppearsInDocTitle;
 
-    public TermDocIdPair(String term, int docId){
-        this.term = term; 
+    public TermDocIdPair(String term, int docId, boolean termAppearsInDocTitle) {
+        this.term = term;
         this.docId = docId;
+        this.termAppearsInDocTitle = termAppearsInDocTitle;
     }
 
-    public String term() { return term; }
+    public TermDocIdPair(String term, int docId) {
+        this(term, docId, false);
+    }
+
+    public boolean termAppearsInDocTitle() {
+        return termAppearsInDocTitle;
+    }
+
+    public String term() {
+        return term;
+    }
     
     public int docId() { return docId; }
 

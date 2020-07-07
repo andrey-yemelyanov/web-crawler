@@ -5,7 +5,6 @@ import helvidios.search.index.Index;
 import helvidios.search.index.Posting;
 import helvidios.search.index.storage.IndexRepository;
 import helvidios.search.linguistics.Lemmatizer;
-import helvidios.search.storage.DocId;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
 import helvidios.search.tokenizer.Tokenizer;
@@ -71,24 +70,16 @@ public class IndexSearcher implements Searcher {
             List<Posting> postings = index.postingsList(queryTerm);
             for(Posting posting : postings){
                 final int docId = posting.docId();
+
                 // weights of all query terms are assumed to be equal to 1
                 scores.put(
                     docId,
                     scores.getOrDefault(docId, 0.0) + tfIdfScore(posting)
                 );
-            }
-        }
 
-        // for each query term that occurs in document title, increase document score by 1
-        for(int docId : scores.keySet()){
-            HtmlDocument doc = docRepo.get(new DocId(docId));
-            Set<String> docTitleTerms = new HashSet<>(lemmatizer.getLemmas(tokenizer.getTokens(doc.getTitle())));
-            for(String queryTerm : queryTerms){
-                if(docTitleTerms.contains(queryTerm)){
-                    scores.put(
-                        docId,
-                        scores.getOrDefault(docId, 0.0) + 1
-                    );
+                // increase document score by 1 if the term occurs in document title
+                if(posting.termAppearsInDocTitle()){
+                    scores.put(docId, scores.get(docId) + 1);
                 }
             }
         }
@@ -112,7 +103,7 @@ public class IndexSearcher implements Searcher {
     }
 
     private Match buildMatch(int docId, double documentScore, List<String> queryTerms){
-        HtmlDocument doc = docRepo.get(new DocId(docId));
+        HtmlDocument doc = docRepo.get(docId);
         TextHighlighter highlighter = new TextHighlighter(tokenizer.getText(doc.getContent()));
         return new Match.Builder()
                         .docId(docId)

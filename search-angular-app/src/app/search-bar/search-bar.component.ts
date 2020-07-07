@@ -15,6 +15,7 @@ export class SearchBarComponent implements OnInit {
 
   searchQuery: string[] = [];
   terms: string[] = [];
+  liveSearchEnabled: boolean = true;
 
   constructor(private searchService: SearchService, private messageService: MessageService) { }
 

@@ -1,7 +1,6 @@
 package helvidios.search.indexer;
 
 import java.util.*;
-import helvidios.search.storage.DocId;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
 
@@ -19,7 +18,7 @@ public class DocRepoMock implements DocumentRepository {
     }
 
     @Override
-    public HtmlDocument get(DocId id) {
+    public HtmlDocument get(int id) {
         // TODO Auto-generated method stub
         return null;
     }

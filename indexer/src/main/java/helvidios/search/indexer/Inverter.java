@@ -89,10 +89,15 @@ class Inverter {
     }
 
     private void invert(HtmlDocument doc) throws Exception {
-        List<String> tokens = tokenizer.getTokens(doc.getContent());
-        List<String> terms = lemmatizer.getLemmas(tokens);
-        for(String term : terms){
-            postings.add(new TermDocIdPair(term, doc.getId()));
+        List<String> docTerms = lemmatizer.getLemmas(tokenizer.getTokens(doc.getContent()));
+        Set<String> titleTerms = new HashSet<>(lemmatizer.getLemmas(tokenizer.getTokens(doc.getTitle())));
+        
+        for(String term : docTerms){
+            postings.add(new TermDocIdPair(term, doc.getId(), titleTerms.contains(term)));
+        }
+
+        for(String term : titleTerms){
+            postings.add(new TermDocIdPair(term, doc.getId(), true));
         }
     }
 }

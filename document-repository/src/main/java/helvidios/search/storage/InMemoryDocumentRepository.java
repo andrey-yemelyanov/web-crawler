@@ -14,9 +14,9 @@ public class InMemoryDocumentRepository implements DocumentRepository {
         docs.put(doc.getId(), doc);
     }
 
-    public HtmlDocument get(DocId id) {
-        if(!docs.containsKey(id.get())) return null;
-        return docs.get(id.get());
+    public HtmlDocument get(int id) {
+        if(!docs.containsKey(id)) return null;
+        return docs.get(id);
     }
 
     public void clear() {
@@ -36,6 +36,6 @@ public class InMemoryDocumentRepository implements DocumentRepository {
     }
 
     public HtmlDocument get(String url) {
-        return get(new DocId(url));
+        return get(new HtmlDocument(url, "", "").getId());
     }
 }

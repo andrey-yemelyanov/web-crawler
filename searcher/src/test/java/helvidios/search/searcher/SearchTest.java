@@ -6,7 +6,6 @@ import helvidios.search.index.Posting;
 import helvidios.search.index.Term;
 import helvidios.search.index.storage.IndexRepository;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
-import helvidios.search.storage.DocId;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.HtmlDocument;
 import helvidios.search.tokenizer.HtmlTokenizer;
@@ -30,11 +29,11 @@ public class SearchTest {
         final String url1010 = "http://doc1010.url";
         final String url1020 = "http://doc1020.url";
 
-        final int doc1000 = new DocId(url1000).get();
-        final int doc1001 = new DocId(url1001).get();
-        final int doc1002 = new DocId(url1002).get();
-        final int doc1010 = new DocId(url1010).get();
-        final int doc1020 = new DocId(url1020).get();
+        final int doc1000 = new HtmlDocument(url1000, "", "").getId();
+        final int doc1001 = new HtmlDocument(url1001, "", "").getId();
+        final int doc1002 = new HtmlDocument(url1002, "", "").getId();
+        final int doc1010 = new HtmlDocument(url1010, "", "").getId();
+        final int doc1020 = new HtmlDocument(url1020, "", "").getId();
 
         docRepo.insert(new HtmlDocument(url1000, "doc1000content", "doc1000 HashMap<T,V>"));
         docRepo.insert(new HtmlDocument(url1001, "doc1001content", "doc1001"));
@@ -49,7 +48,7 @@ public class SearchTest {
         Term bitset = new Term("bitset", 3, 0.2218487496);
 
         indexRepo.addTerm(hashmap, Arrays.asList(
-            new Posting(hashmap, doc1000, 15),
+            new Posting(hashmap, doc1000, 15, true),
             new Posting(hashmap, doc1010, 25),
             new Posting(hashmap, doc1020, 30)
         ));
@@ -74,6 +73,8 @@ public class SearchTest {
             Match m1 = matches.get(0);
             Match m2 = matches.get(1);
             Match m3 = matches.get(2);
+
+            System.out.println(matches);
 
             assertThat(m1.docId(), is(doc1000));
             assertThat(m1.content(), is("doc1000content"));
@@ -105,11 +106,11 @@ public class SearchTest {
         final String url1010 = "http://doc1010.url";
         final String url1020 = "http://doc1020.url";
 
-        final int doc1000 = new DocId(url1000).get();
-        final int doc1001 = new DocId(url1001).get();
-        final int doc1002 = new DocId(url1002).get();
-        final int doc1010 = new DocId(url1010).get();
-        final int doc1020 = new DocId(url1020).get();
+        final int doc1000 = new HtmlDocument(url1000, "", "").getId();
+        final int doc1001 = new HtmlDocument(url1001, "", "").getId();
+        final int doc1002 = new HtmlDocument(url1002, "", "").getId();
+        final int doc1010 = new HtmlDocument(url1010, "", "").getId();
+        final int doc1020 = new HtmlDocument(url1020, "", "").getId();
 
         docRepo.insert(new HtmlDocument(url1000, "doc1000content", "doc1000"));
         docRepo.insert(new HtmlDocument(url1001, "doc1001content", "doc1001"));
