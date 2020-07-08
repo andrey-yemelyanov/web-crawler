@@ -1,7 +1,7 @@
 package helvidios.search.webcrawler;
 
 import java.net.MalformedURLException;
-
+import org.apache.logging.log4j.*;
 import helvidios.search.storage.CompressedDocumentRepository;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.MongoDbDocumentRepository;
@@ -10,6 +10,9 @@ import helvidios.search.storage.MongoDbDocumentRepository;
  * Web Crawler runner. For convenience use run-web-crawler.bat to execute the crawler.
  */
 public class App {
+
+    private static final Logger log = LogManager.getLogger(Crawler.class.getName());
+
     public static void main(String... args) throws InterruptedException, MalformedURLException {
 
         if(args.length < 2) throw new IllegalArgumentException(
@@ -25,7 +28,7 @@ public class App {
         DocumentRepository docRepo = new CompressedDocumentRepository(
                                         new MongoDbDocumentRepository.Builder()
                                                                      .setDatabase(dbName)
-                                                                     .build());
+                                                                     .build(), log);
 
         Crawler.Builder builder = new Crawler.Builder(seedUrl);
         if(urlPrefix != null){

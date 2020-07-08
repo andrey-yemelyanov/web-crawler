@@ -27,7 +27,7 @@ public class App
         DocumentRepository docRepo = new CompressedDocumentRepository(
                                         new MongoDbDocumentRepository.Builder()
                                                                      .setDatabase(dbName)
-                                                                     .build());
+                                                                     .build(), log);
 
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder()
                                                               .setDatabase(dbName)

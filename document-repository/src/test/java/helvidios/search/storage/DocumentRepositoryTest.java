@@ -22,14 +22,14 @@ public class DocumentRepositoryTest {
 
     @Test
     public void testCompressedDocRepo(){
-        DocumentRepository docRepo = new CompressedDocumentRepository(new InMemoryDocumentRepository());
+        DocumentRepository docRepo = new CompressedDocumentRepository(new InMemoryDocumentRepository(), new ConsoleLogger());
         testDocRepo(docRepo);
     }
 
     private void testDocRepo(DocumentRepository docRepo){
         docRepo.clear();
 
-        HtmlDocument doc1 = new HtmlDocument("http://www.url1.com", "<html>1\n2n3</html>", "title1");
+        HtmlDocument doc1 = new HtmlDocument("http://www.url1.com", "<html>1\n2\n\n\n3\n</html>", "title1");
         HtmlDocument doc2 = new HtmlDocument("http://www.url2.com", "<html>2\n\n4\n5</html>", "title2");
         HtmlDocument doc3 = new HtmlDocument("http://www.url3.com", "<html>3</html>", "title3");
 
