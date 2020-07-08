@@ -1,11 +1,23 @@
 package helvidios.search.storage;
 
+import org.apache.logging.log4j.Logger;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import java.util.*;
 
 public class DocumentRepositoryTest {
+
+    @Mock
+    Logger log;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @Test
     public void testMongoDbDocRepo(){
         DocumentRepository docRepo = new MongoDbDocumentRepository.Builder()
@@ -22,7 +34,7 @@ public class DocumentRepositoryTest {
 
     @Test
     public void testCompressedDocRepo(){
-        DocumentRepository docRepo = new CompressedDocumentRepository(new InMemoryDocumentRepository(), new ConsoleLogger());
+        DocumentRepository docRepo = new CompressedDocumentRepository(new InMemoryDocumentRepository(), log);
         testDocRepo(docRepo);
     }
 

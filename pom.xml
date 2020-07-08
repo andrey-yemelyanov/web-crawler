@@ -9,7 +9,7 @@
   <!-- sub modules -->
   <modules>
     <module>document-repository</module>
-	<module>tokenizer</module>
+	  <module>tokenizer</module>
     <module>linguistics</module>
     <module>web-crawler</module>
     <module>index</module>

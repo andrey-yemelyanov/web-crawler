@@ -11,6 +11,7 @@ import helvidios.search.index.storage.MongoDbIndexRepository;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
 import helvidios.search.linguistics.Lemmatizer;
 import helvidios.search.searcher.*;
+import helvidios.search.storage.CompressedDocumentRepository;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.MongoDbDocumentRepository;
 import helvidios.search.tokenizer.HtmlTokenizer;
@@ -46,7 +47,7 @@ public class SearchRestApiApplication {
 		DocumentRepository docRepo = new CompressedDocumentRepository(
 										new MongoDbDocumentRepository.Builder()
 																	 .setDatabase(dbName)
-																	 .build());
+																	 .build(), logger);
 		IndexRepository indexRepo = new MongoDbIndexRepository.Builder().setDatabase(dbName).build();
 		return new IndexSearcher(indexRepo, docRepo, tokenizer, lemmatizer, logger);
 	}
