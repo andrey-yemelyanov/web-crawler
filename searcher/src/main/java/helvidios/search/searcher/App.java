@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import helvidios.search.index.storage.IndexRepository;
 import helvidios.search.index.storage.MongoDbIndexRepository;
 import helvidios.search.linguistics.ApacheNlpLemmatizer;
+import helvidios.search.storage.CompressedDocumentRepository;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.storage.MongoDbDocumentRepository;
 import helvidios.search.tokenizer.HtmlTokenizer;
@@ -31,7 +32,10 @@ public class App {
 
         System.out.println("Welcome to the SEARCH console!");
 
-        DocumentRepository docRepo = new MongoDbDocumentRepository.Builder().setDatabase(dbName).build();
+        DocumentRepository docRepo = new CompressedDocumentRepository(
+                                        new MongoDbDocumentRepository.Builder()
+                                                                     .setDatabase(dbName)
+                                                                     .build(), log);
 
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder().setDatabase(dbName).build();
 
