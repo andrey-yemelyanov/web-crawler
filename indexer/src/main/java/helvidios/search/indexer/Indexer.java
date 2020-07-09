@@ -1,6 +1,7 @@
 package helvidios.search.indexer;
 
 import java.util.*;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.Logger;
 import helvidios.search.index.Posting;
 import helvidios.search.index.Term;
@@ -13,12 +14,14 @@ class Indexer {
     private final Logger log;
     private final long nDocs;
     private final Map<Integer, Integer> docLen = new HashMap<>();
+    private final StopWatch stopWatch;
 
     Indexer(IndexRepository indexRepo, BlockReader blockReader, Logger log, long nDocumentsInCorpus){
         this.indexRepo = indexRepo;
         this.blockReader = blockReader;
         this.log = log;
         this.nDocs = nDocumentsInCorpus;
+        this.stopWatch = new StopWatch();
     }
 
     void buildIndex(){
@@ -30,6 +33,7 @@ class Indexer {
         List<Posting> postings = new ArrayList<>();
 
         log.info("Indexing started.");
+        stopWatch.start();
         
         while(it.hasNext()){
             TermDocIdPair posting = it.next();
@@ -54,7 +58,8 @@ class Indexer {
         
         writeDocumentLength();
 
-        log.info("Index successfully built! Size = {} terms", indexRepo.size());
+        stopWatch.stop();
+        log.info("Index successfully built in {}! Size = {} terms", stopWatch.toString(), indexRepo.size());
     }
 
     private void writeDocumentLength(){

@@ -4,6 +4,7 @@ import helvidios.search.linguistics.Lemmatizer;
 import helvidios.search.storage.*;
 import helvidios.search.tokenizer.Tokenizer;
 import java.util.*;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -19,6 +20,8 @@ class Inverter {
     private final Lemmatizer lemmatizer;
     private final List<TermDocIdPair> postings;
     private final Logger log;
+    private final StopWatch stopWatch;
+    private final StopWatch overallStopWatch;
 
     private static final int BLOCK_SIZE = 10 * 1000 * 1000;
 
@@ -32,6 +35,8 @@ class Inverter {
         this.lemmatizer = lemmatizer;
         postings = new ArrayList<>();
         this.log = log;
+        this.stopWatch = new StopWatch();
+        this.overallStopWatch = new StopWatch();
     }
 
     /**
@@ -46,14 +51,22 @@ class Inverter {
         int nDocs = 0;
 
         log.info("Inverter started.");
-
+        overallStopWatch.start();
+        
         while(it.hasNext()){
             
+            stopWatch.reset();
+            stopWatch.start();
             HtmlDocument doc = it.next();
-            invert(doc);
-            nDocs++;
+            stopWatch.stop();
+            log.info("Retrieved {} from docRepo in {}", doc.toString(), stopWatch.toString());
 
-            log.info("Inverted document {}", doc.toString());
+            stopWatch.reset();
+            stopWatch.start();
+            final int nLemmas = invert(doc);
+            nDocs++;
+            stopWatch.stop();
+            log.info("Inverted document {} ({} lemmas) in {}", doc.toString(), nLemmas, stopWatch.toString());
 
             if(postings.size() >= BLOCK_SIZE){
                 blocks.add(writeBlock());
@@ -63,7 +76,9 @@ class Inverter {
         // write final block to the file
         blocks.add(writeBlock());
 
-        log.info("Inverter completed. Processed {} docs.", nDocs);
+        overallStopWatch.stop();
+
+        log.info("Inverter completed. Processed {} docs in {}", nDocs, overallStopWatch.toString());
         log.info("Created {} blocks.\n{}", blocks.size(), blocks.toString());
 
         return blocks;
@@ -71,10 +86,12 @@ class Inverter {
 
     private String writeBlock() throws Exception{
 
+        stopWatch.reset();
+        stopWatch.start();
+
         Collections.sort(postings);
 
         try(BlockWriter blockWriter = new FileBlockWriter()){
-            log.info("Writing a block of {} postings to file {}...", postings.size(), blockWriter.filePath());
 
             for(TermDocIdPair posting : postings){
                 blockWriter.writePosting(posting);
@@ -82,14 +99,26 @@ class Inverter {
 
             postings.clear(); // clear postings for the next block
 
-            log.info("Block successfully written to file {}", blockWriter.filePath());
+            stopWatch.stop();
+            log.info("Block successfully written to file {} in {}", blockWriter.filePath(), stopWatch.toString());
 
             return blockWriter.filePath();
         }
     }
 
-    private void invert(HtmlDocument doc) throws Exception {
-        List<String> docTerms = lemmatizer.getLemmas(tokenizer.getTokens(doc.getContent()));
+    private int invert(HtmlDocument doc) throws Exception {
+        final StopWatch sw = new StopWatch();
+        sw.start();
+        List<String> tokens = tokenizer.getTokens(doc.getContent());
+        sw.stop();
+        log.info("Extracted {} tokens in {}", tokens.size(), sw.toString());
+
+        sw.reset();
+        sw.start();
+        List<String> docTerms = lemmatizer.getLemmas(tokens);
+        sw.stop();
+        log.info("Extracted {} lemmas in {}", tokens.size(), sw.toString());
+
         Set<String> titleTerms = new HashSet<>(lemmatizer.getLemmas(tokenizer.getTokens(doc.getTitle())));
         
         for(String term : docTerms){
@@ -99,5 +128,7 @@ class Inverter {
         for(String term : titleTerms){
             postings.add(new TermDocIdPair(term, doc.getId(), true));
         }
+
+        return docTerms.size() + titleTerms.size();
     }
 }

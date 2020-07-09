@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.Logger;
+
 class ExternalSort {
 
     private static class Item implements Comparable<Item> {
@@ -29,6 +32,8 @@ class ExternalSort {
     private final List<Iterator<TermDocIdPair>> readers;
     private final BlockWriter writer;
     private final List<TermDocIdPair> buffer;
+    private final Logger log;
+    private final StopWatch stopWatch;
 
     private static final int MAX_BUFFER_SIZE = 10 * 1000;
 
@@ -37,14 +42,17 @@ class ExternalSort {
      * 
      * @param readers list of readers for the input blocks
      * @param writer  writer where all merged blocks will be written
+     * @param log log component
      */
-    ExternalSort(List<BlockReader> readers, BlockWriter writer) {
+    ExternalSort(List<BlockReader> readers, BlockWriter writer, Logger log) {
         this.readers = readers.stream()
                               .map(reader -> reader.iterator())
                               .collect(Collectors.toList());
         
         this.writer = writer;
         this.buffer = new ArrayList<>();
+        this.log = log;
+        this.stopWatch = new StopWatch();
     }
 
     /**
@@ -54,6 +62,9 @@ class ExternalSort {
      * @throws IOException
      */
     String sort() throws IOException {
+
+        log.info("External sorting {} blocks...", readers.size());
+        stopWatch.start();
 
         PriorityQueue<Item> pq = new PriorityQueue<>();
         for (int i = 0; i < readers.size(); i++) {
@@ -76,6 +87,9 @@ class ExternalSort {
         }
 
         flushBuffer();
+
+        stopWatch.stop();
+        log.info("External sorting completed in {}", stopWatch.toString());
 
         return writer.filePath();
     }

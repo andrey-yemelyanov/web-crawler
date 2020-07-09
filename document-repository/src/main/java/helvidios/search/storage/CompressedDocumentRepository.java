@@ -110,5 +110,10 @@ public class CompressedDocumentRepository implements DocumentRepository {
     public long size() {
         return docRepo.size();
     }
+
+    @Override
+    public String toString(){
+        return "Compressed doc repo based on " + docRepo.toString();
+    }
     
 }

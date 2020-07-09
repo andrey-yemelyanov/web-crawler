@@ -3,7 +3,8 @@ package helvidios.search.storage;
 import java.util.Iterator;
 
 /**
- * Represents HTML document storage. For each document, its URL and full HTML content is stored.
+ * Represents HTML document storage. For each document, its URL, title and full HTML content is stored.
+ * Depending on the implementation, the content can be compressed to save storage space.
  */
 public interface DocumentRepository {
 

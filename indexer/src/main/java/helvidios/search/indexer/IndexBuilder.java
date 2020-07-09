@@ -5,6 +5,8 @@ import helvidios.search.linguistics.Lemmatizer;
 import helvidios.search.storage.DocumentRepository;
 import helvidios.search.tokenizer.Tokenizer;
 import java.util.*;
+
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.Logger;
 
 public class IndexBuilder implements AutoCloseable {
@@ -14,6 +16,7 @@ public class IndexBuilder implements AutoCloseable {
     private final Tokenizer tokenizer;
     private final Lemmatizer lemmatizer;
     private final Logger log;
+    private final StopWatch stopWatch;
 
     private List<BlockReader> readers = new ArrayList<>();
 
@@ -28,12 +31,13 @@ public class IndexBuilder implements AutoCloseable {
         this.tokenizer = tokenizer;
         this.lemmatizer = lemmatizer;
         this.log = log;
+        this.stopWatch = new StopWatch();
     }
 
     public void build() throws Exception{
         
         log.info("Indexing started. {} documents in corpus.", docRepo.size());
-        long startTime = System.currentTimeMillis();
+        stopWatch.start();
 
         Inverter inverter = new Inverter(docRepo, tokenizer, lemmatizer, log);
         List<String> blockFiles = inverter.buildPostings();
@@ -44,7 +48,7 @@ public class IndexBuilder implements AutoCloseable {
                 readers.add(new FileBlockReader(blockFile, log));
             }
 
-            ExternalSort externalSort = new ExternalSort(readers, writer);
+            ExternalSort externalSort = new ExternalSort(readers, writer, log);
             completeBlock = externalSort.sort();
         }
         
@@ -53,16 +57,8 @@ public class IndexBuilder implements AutoCloseable {
             indexer.buildIndex();
         }
 
-        long endTime = System.currentTimeMillis();
-        long timeElapsed = (endTime - startTime) / 1000;
-        log.info("Indexing completed in time: {}. Total index size: {}", format(timeElapsed), indexRepo.size());
-    }
-
-    private static String format(long totalSeconds){
-        long hours = totalSeconds / 3600;
-        long minutes = (totalSeconds % 3600) / 60;
-        long seconds = totalSeconds % 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        stopWatch.stop();
+        log.info("Indexing completed in time: {}. Total index size: {}", stopWatch.toString(), indexRepo.size());
     }
 
     @Override

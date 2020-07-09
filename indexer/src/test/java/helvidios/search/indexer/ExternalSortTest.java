@@ -1,12 +1,23 @@
 package helvidios.search.indexer;
 
+import org.apache.logging.log4j.Logger;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.*;
 
 public class ExternalSortTest {
+
+    @Mock
+    Logger log;
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private static class BlockWriterMock implements BlockWriter {
 
@@ -49,7 +60,7 @@ public class ExternalSortTest {
         );
 
         BlockWriterMock writer = new BlockWriterMock();
-        ExternalSort sorter = new ExternalSort(readers, writer);
+        ExternalSort sorter = new ExternalSort(readers, writer, log);
         String mergedFile = sorter.sort();
         assertThat(mergedFile, is("filePath1"));
 
