@@ -8,9 +8,7 @@ import opennlp.tools.postag.POSTaggerME;
 import java.util.*;
 
 /**
- * Removes any changes in form of the word like tense, 
- * gender, mood, etc. and returns dictionary or base form of word.
- * E.g. cars -> car, threw -> throw
+    Lemmatizer based on Apache NLP.
  */
 public class ApacheNlpLemmatizer implements AutoCloseable, Lemmatizer {
     private final InputStream posModelInputStream;
