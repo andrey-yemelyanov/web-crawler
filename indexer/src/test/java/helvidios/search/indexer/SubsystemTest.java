@@ -18,7 +18,7 @@ public class SubsystemTest {
     private static final Logger log = LogManager.getLogger(SubsystemTest.class.getName());
 
     @Test
-    //@Ignore
+    @Ignore
     public void downloadPagesAndBuildIndex() throws Exception {
 
         final boolean compressDocs = true;
