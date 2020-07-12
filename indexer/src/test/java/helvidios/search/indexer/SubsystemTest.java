@@ -3,6 +3,7 @@ package helvidios.search.indexer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
+import org.junit.Ignore;
 import org.junit.Test;
 import helvidios.search.index.storage.IndexRepository;
 import helvidios.search.index.storage.MongoDbIndexRepository;
@@ -21,7 +22,7 @@ public class SubsystemTest {
     public void downloadPagesAndBuildIndex() throws Exception {
 
         final boolean compressDocs = true;
-        final String dbName = "wiki-compressed-doc-db";
+        final String dbName = "wiki-doc-db";
 
         final DocumentRepository mongoDbDocRepo = new MongoDbDocumentRepository.Builder()
                                                                                .setDatabase(dbName)
@@ -33,23 +34,23 @@ public class SubsystemTest {
             docRepo = new CompressedDocumentRepository(mongoDbDocRepo, log);
         }
 
-        // docRepo.clear();
+        docRepo.clear();
 
-        // List<String> urls = Arrays.asList(
-        //     //"https://en.wikipedia.org/wiki/Wikipedia",
-        //     //"https://en.wikipedia.org/wiki/List_of_compositions_by_Franz_Schubert",
-        //     "https://en.wikipedia.org/wiki/List_of_Private_Passions_episodes"
-        // );
+        List<String> urls = Arrays.asList(
+            //"https://en.wikipedia.org/wiki/Wikipedia",
+            //"https://en.wikipedia.org/wiki/List_of_compositions_by_Franz_Schubert",
+            "https://en.wikipedia.org/wiki/List_of_Private_Passions_episodes"
+        );
 
-        // for(String url : urls){
-        //     String htmlContent = Jsoup.connect(url).get().html();
-        //     String title = Jsoup.parse(htmlContent).title().trim();
-        //     System.out.printf("Downloaded '%s' from %s\n", title, url);
-        //     HtmlDocument doc = new HtmlDocument(url, htmlContent, title);
-        //     docRepo.insert(doc);
-        // }
+        for(String url : urls){
+            String htmlContent = Jsoup.connect(url).get().html();
+            String title = Jsoup.parse(htmlContent).title().trim();
+            System.out.printf("Downloaded '%s' from %s\n", title, url);
+            HtmlDocument doc = new HtmlDocument(url, htmlContent, title);
+            docRepo.insert(doc);
+        }
 
-        // System.out.println("DocRepo populated. Downloaded " + docRepo.size() + " documents.");
+        System.out.println("DocRepo populated. Downloaded " + docRepo.size() + " documents.");
 
         IndexRepository indexRepo = new MongoDbIndexRepository.Builder().setDatabase(dbName).build();
         indexRepo.clear();
